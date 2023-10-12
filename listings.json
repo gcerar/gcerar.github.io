@@ -1,0 +1,20 @@
+[
+  {
+    "listing": "/snippets.html",
+    "items": []
+  },
+  {
+    "listing": "/posts.html",
+    "items": [
+      "/posts/simple-generative-advsersarial-networks/index.html",
+      "/posts/neural-style-transfer/index.html"
+    ]
+  },
+  {
+    "listing": "/projects.html",
+    "items": [
+      "/posts/simple-generative-advsersarial-networks/index.html",
+      "/posts/neural-style-transfer/index.html"
+    ]
+  }
+]
