@@ -9,14 +9,13 @@
 <link>gcerar.github.io/posts.html</link>
 <atom:link href="gcerar.github.io/posts.xml" rel="self" type="application/rss+xml"/>
 <description>Greg&#39;s personal blog</description>
-<generator>quarto-1.4.510</generator>
+<generator>quarto-1.3.450</generator>
 <lastBuildDate>Mon, 20 Nov 2023 00:00:00 GMT</lastBuildDate>
 <item>
   <title>Research Compute Infrastructure</title>
   <dc:creator>Gregor Cerar</dc:creator>
-  <link>gcerar.github.io/posts/2023-11-20-research-compute-infrastructure/</link>
+  <link>gcerar.github.io/posts/2023-11-20-research-compute-infrastructure/index.html</link>
   <description><![CDATA[ 
-
 
 
 
@@ -50,13 +49,9 @@
 <section id="architecture" class="level1">
 <h1>Architecture</h1>
 <p>We decided to base our private cloud on the Kubernetes platform to meet system scalability and resource management requirements, aiming to enhance the functionality, accessibility, and sharing of Jupyter notebooks <span class="citation" data-cites="bussonnier2018jupyterhub">(Bussonnier 2018)</span> within the Kubernetes private cloud. In this section, will delve deeper into the system’s architecture that integrates services and elaborate on the design decisions. Subsequently, we describe the individual services within our infrastructure.</p>
-<div id="tbl-stack" class="hover anchored">
-<figure class="quarto-float quarto-float-tbl figure">
-<figcaption class="table quarto-float-caption quarto-float-tbl" id="tbl-stack-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Table&nbsp;1: Services and Used Technologies.
-</figcaption>
-<div aria-describedby="tbl-stack-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div id="tbl-stack" class="anchored">
 <table class="table-hover table">
+<caption>Table&nbsp;1: Services and Used Technologies.</caption>
 <thead>
 <tr class="header">
 <th>Service</th>
@@ -131,17 +126,11 @@ Table&nbsp;1: Services and Used Technologies.
 </tbody>
 </table>
 </div>
-</figure>
-</div>
 <p>Table&nbsp;1, in its first column, lists all the services required for system operation. The second column lists the open-source solutions that can provide these services. Bolded services indicate those selected and used in our private cloud. We made our choices based on specific criteria. We first surveyed technologies and solutions utilized in related projects. We further narrowed our selection to open-source solutions tested in private clouds on native infrastructure. A significant factor in our decision-making was also an insight into the popularity of the projects, gauged by the number of stars in repositories, the number of forks of the project, and the level of development activity on GitHub/GitLab. In our decision-making process, we didn’t follow a single empirical metric but took multiple factors into account to ensure a comprehensive assessment of solutions.</p>
 <div id="fig-architecture" class="quarto-figure quarto-figure-center anchored">
-<figure class="quarto-float quarto-float-fig figure">
-<div aria-describedby="fig-architecture-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<img src="gcerar.github.io/posts/2023-11-20-research-compute-infrastructure/figures/over10k-arch.png" class="img-fluid figure-img">
-</div>
-<figcaption class="figure quarto-float-caption quarto-float-fig" id="fig-architecture-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Figure&nbsp;1: A three-tier logical infrastructure diagram. At the bottom is the foundational infrastructure, followed by internal Kubernetes services in the middle, and on top are the services exposed to users.
-</figcaption>
+<figure class="figure">
+<p><img src="gcerar.github.io/posts/2023-11-20-research-compute-infrastructure/figures/over10k-arch.png" class="img-fluid figure-img"></p>
+<figcaption class="figure-caption">Figure&nbsp;1: A three-tier logical infrastructure diagram. At the bottom is the foundational infrastructure, followed by internal Kubernetes services in the middle, and on top are the services exposed to users.</figcaption>
 </figure>
 </div>
 <p>The diagram in Figure&nbsp;1 provides a high-level representation of our private cloud and its infrastructure across three levels. The first level comprises heterogeneous computing nodes, forming the foundational infrastructure. Each node operates its operating system, running a portion of the Kubernetes platform. The second level encompasses internal Kubernetes services, which are essential for operation and never directly accessed by users. The final third level includes the services availed by end-users.</p>
@@ -195,13 +184,9 @@ Figure&nbsp;1: A three-tier logical infrastructure diagram. At the bottom is the
 <p>In this section, we’ll present how we deployed our computing infrastructure. First, I’ll summarize the hardware decisions, caveats, and finally, the user experience with some screenshots.</p>
 <section id="hardware" class="level2">
 <h2 class="anchored" data-anchor-id="hardware">Hardware</h2>
-<div id="tbl-hardware" class="hover anchored">
-<figure class="quarto-float quarto-float-tbl figure">
-<figcaption class="table quarto-float-caption quarto-float-tbl" id="tbl-hardware-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Table&nbsp;2: Hardware specifications of Computing node.
-</figcaption>
-<div aria-describedby="tbl-hardware-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div id="tbl-hardware" class="anchored">
 <table class="table-hover table">
+<caption>Table&nbsp;2: Hardware specifications of Computing node.</caption>
 <thead>
 <tr class="header">
 <th>Hardware</th>
@@ -236,21 +221,15 @@ Table&nbsp;2: Hardware specifications of Computing node.
 </tbody>
 </table>
 </div>
-</figure>
-</div>
 <p>When we bought the hardware in early 2022, we chose third-generation AMD EPYC processors. Specifically, we went for the F-series, which has higher base and turbo frequencies — up to 4GHz — at the cost of fewer cores. We picked a CPU with the highest available TDP of 280W. We installed server-grade registered error-correcting memory at the highest frequency supported by the processor and populated all eight channels on both processors. Sixteen sticks of RAM in total. Although we considered solutions from Intel, AMD EPYC processors had better price-to-performance ratios.</p>
 <p>From the perspective of numerical performance, our significant concern was Intel-optimized libraries, such as Intel MKL, often found in numerical tools. The library has a “bug” that causes non-Intel processors to utilize a slower SSE instead of more advanced AVX vectorization instructions [<a href="https://danieldk.eu/Posts/2020-08-31-MKL-Zen.html">src</a>]. <a href="https://www.openblas.net/">OpenBLAS</a> is a good alternative but requires some effort to install it. See Anaconda <a href="https://github.com/conda-forge/nomkl-feedstock">no-mkl</a> package.</p>
 <p>We chose two NVMe drives configured in the mirror configuration (RAID1) for the system drive. We selected six 8TB SSD SATA drives configured in ZFS RAIDZ1 for data storage, which has one drive redundancy. We also chose two A100 GPUs as accelerators.</p>
 <p>NVIDIA A100 GPUs come in two form factors: PCI-E and SXM4. The SXM4 proprietary form factor has a higher TDP and high-bandwidth NVLink interconnections between every GPU through NVSwitch hardware. The downside of SXM4 is that it will only support Ampere generation GPUs and require a special motherboard. The PCI-E variant has a lower TDP, and NVLink can only be across two GPUs. However, we decided against vendor lock-in, limiting ourselves to one brand and generation, and went with the PCI-E variant.</p>
 <p>We considered the most likely workflow scenarios. We expected most communication to be CPU-to-GPU, with GPUs sliced into several instances. Once GPU slicing is enabled, the NVIDIA drivers disable NVLink, rendering NVLink connections useless. We can change GPU slicing strategy freely.</p>
 <div id="fig-hardware" class="quarto-figure quarto-figure-center anchored">
-<figure class="quarto-float quarto-float-fig figure">
-<div aria-describedby="fig-hardware-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<img src="gcerar.github.io/posts/2023-11-20-research-compute-infrastructure/figures/hardware-top-view-resize.jpg" class="img-fluid figure-img">
-</div>
-<figcaption class="figure quarto-float-caption quarto-float-fig" id="fig-hardware-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Figure&nbsp;2: The computing node on my desk underwent final checks before being installed in the server rack.
-</figcaption>
+<figure class="figure">
+<p><img src="gcerar.github.io/posts/2023-11-20-research-compute-infrastructure/figures/hardware-top-view-resize.jpg" class="img-fluid figure-img"></p>
+<figcaption class="figure-caption">Figure&nbsp;2: The computing node on my desk underwent final checks before being installed in the server rack.</figcaption>
 </figure>
 </div>
 </section>
@@ -264,13 +243,9 @@ Figure&nbsp;2: The computing node on my desk underwent final checks before being
 <h3 class="anchored" data-anchor-id="jupyterhub">JupyterHub</h3>
 <p>JupyterHub has become a crucial component of our research infrastructure, enhancing our workflow significantly. Its smooth integration was largely due to the interface and functionality of JupyterHub, which closely resemble the tools our researchers and students were familiar with. This similarity played a key role in its quick adoption and high user satisfaction.</p>
 <div id="fig-jhub-profiles" class="quarto-figure quarto-figure-center anchored">
-<figure class="quarto-float quarto-float-fig figure">
-<div aria-describedby="fig-jhub-profiles-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<img src="gcerar.github.io/posts/2023-11-20-research-compute-infrastructure/figures/jhub-profiles.png" class="img-fluid figure-img">
-</div>
-<figcaption class="figure quarto-float-caption quarto-float-fig" id="fig-jhub-profiles-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Figure&nbsp;3: JupyterHub offers a list of predefined containers, where some of them offer a GPU instance.
-</figcaption>
+<figure class="figure">
+<p><img src="gcerar.github.io/posts/2023-11-20-research-compute-infrastructure/figures/jhub-profiles.png" class="img-fluid figure-img"></p>
+<figcaption class="figure-caption">Figure&nbsp;3: JupyterHub offers a list of predefined containers, where some of them offer a GPU instance.</figcaption>
 </figure>
 </div>
 <p>Upon logging into JupyterHub, users are presented with a list of predefined containers (as shown in Figure&nbsp;3). Our recent update includes several options:</p>
@@ -281,13 +256,9 @@ Figure&nbsp;3: JupyterHub offers a list of predefined containers, where some of 
 </ul>
 <p>The development environment greets users with a layout similar to modern IDEs, featuring a file explorer on the left and code editor tabs on the right (see Figure&nbsp;4).</p>
 <div id="fig-jhub-workspace" class="quarto-figure quarto-figure-center anchored">
-<figure class="quarto-float quarto-float-fig figure">
-<div aria-describedby="fig-jhub-workspace-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<img src="gcerar.github.io/posts/2023-11-20-research-compute-infrastructure/figures/jhub-workspace.png" class="img-fluid figure-img">
-</div>
-<figcaption class="figure quarto-float-caption quarto-float-fig" id="fig-jhub-workspace-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Figure&nbsp;4: JupyterLab workspace with familiar layout: a file explorer on the left and code editor tabs on the right.
-</figcaption>
+<figure class="figure">
+<p><img src="gcerar.github.io/posts/2023-11-20-research-compute-infrastructure/figures/jhub-workspace.png" class="img-fluid figure-img"></p>
+<figcaption class="figure-caption">Figure&nbsp;4: JupyterLab workspace with familiar layout: a file explorer on the left and code editor tabs on the right.</figcaption>
 </figure>
 </div>
 </section>
@@ -296,13 +267,9 @@ Figure&nbsp;4: JupyterLab workspace with familiar layout: a file explorer on the
 <p>For transparent insight into infrastructure availability, the user has read-only access to the Grafana dashboard (Figure~<img src="https://latex.codecogs.com/png.latex?%5Cref%7Bfig:grafana:dashboard%7D">). Here, they can observe most of the infrastructure metrics.</p>
 <p>For transparent insight into infrastructure availability, the user has read-only access to the Grafana dashboard. Dashboard visualizes computing resource utilization including metrics like total and per-container CPU usage, memory usage per container, GPU utilization, temperature readings, and storage I/O (see Figure&nbsp;5).</p>
 <div id="fig-grafana-dashboard" class="quarto-figure quarto-figure-center anchored">
-<figure class="quarto-float quarto-float-fig figure">
-<div aria-describedby="fig-grafana-dashboard-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<img src="gcerar.github.io/posts/2023-11-20-research-compute-infrastructure/figures/grafana-censored.png" class="img-fluid figure-img">
-</div>
-<figcaption class="figure quarto-float-caption quarto-float-fig" id="fig-grafana-dashboard-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Figure&nbsp;5: Visualization of computing cluster utilization showing total and per-container CPU utilization, per-container memory utilization, GPU slices utilization, temperatures, and storage I/O.
-</figcaption>
+<figure class="figure">
+<p><img src="gcerar.github.io/posts/2023-11-20-research-compute-infrastructure/figures/grafana-censored.png" class="img-fluid figure-img"></p>
+<figcaption class="figure-caption">Figure&nbsp;5: Visualization of computing cluster utilization showing total and per-container CPU utilization, per-container memory utilization, GPU slices utilization, temperatures, and storage I/O.</figcaption>
 </figure>
 </div>
 </section>
@@ -320,7 +287,7 @@ Figure&nbsp;5: Visualization of computing cluster utilization showing total and 
 </section>
 
 
-<div id="quarto-appendix" class="default"><section class="quarto-appendix-contents"><h2 class="anchored quarto-appendix-heading">References</h2><div id="refs" class="references csl-bib-body hanging-indent" data-entry-spacing="0">
+<div id="quarto-appendix" class="default"><section class="quarto-appendix-contents"><h2 class="anchored quarto-appendix-heading">References</h2><div id="refs" class="references csl-bib-body hanging-indent">
 <div id="ref-bussonnier2018jupyterhub" class="csl-entry">
 Bussonnier, Matthias. 2018. <span>“<span class="nocase">Jupyter and HPC: Current state and future roadmap</span>.”</span> <em>Exascale Computing Project</em>. <a href="https://www.exascaleproject.org/event/jupyter/">https://www.exascaleproject.org/event/jupyter/</a>.
 </div>
@@ -333,25 +300,24 @@ Mendez, Kevin M et al. 2019. <span>“<span class="nocase">Toward collaborative 
 <div id="ref-perkel2018jupyter" class="csl-entry">
 Perkel, Jeffrey M. 2018. <span>“<span class="nocase">Why Jupyter is data scientists’ computational notebook of choice</span>.”</span> <em>Nature</em> 563 (7732): 145–47.
 </div>
-</div></section><aside id="footnotes" class="footnotes footnotes-end-of-document"><h2 class="anchored quarto-appendix-heading">Footnotes</h2>
+</div></section><section id="footnotes" class="footnotes footnotes-end-of-document"><h2 class="anchored quarto-appendix-heading">Footnotes</h2>
 
 <ol>
 <li id="fn1"><p>JSON: JavaScript Object Notation↩︎</p></li>
 <li id="fn2"><p>REPL: read–eval–print loop↩︎</p></li>
 <li id="fn3"><p>WETL: write-eval-think-loop↩︎</p></li>
 </ol>
-</aside></div> ]]></description>
+</section></div> ]]></description>
   <category>compute</category>
   <category>infrastructure</category>
-  <guid>gcerar.github.io/posts/2023-11-20-research-compute-infrastructure/</guid>
+  <guid>gcerar.github.io/posts/2023-11-20-research-compute-infrastructure/index.html</guid>
   <pubDate>Mon, 20 Nov 2023 00:00:00 GMT</pubDate>
 </item>
 <item>
   <title>Generative Adversarial Networks</title>
   <dc:creator>Gregor Cerar</dc:creator>
-  <link>gcerar.github.io/posts/2023-10-10-vanilla-GANs/</link>
+  <link>gcerar.github.io/posts/2023-10-10-vanilla-GANs/index.html</link>
   <description><![CDATA[ 
-
 
 
 
@@ -364,13 +330,9 @@ Perkel, Jeffrey M. 2018. <span>“<span class="nocase">Why Jupyter is data scien
 <h1>Vanilla GAN</h1>
 <p>The most fundamental variant of GAN is the “vanilla” GAN, where “vanilla” signifies the model in its original and most straightforward form rather than a flavor. To better understand its mechanism, I’ve illustrated its structure on Figure&nbsp;1.</p>
 <div id="fig-architecture" class="quarto-figure quarto-figure-center anchored">
-<figure class="quarto-float quarto-float-fig figure">
-<div aria-describedby="fig-architecture-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<img src="gcerar.github.io/posts/2023-10-10-vanilla-GANs/figures/GAN-architecture.png" class="img-fluid figure-img">
-</div>
-<figcaption class="figure quarto-float-caption quarto-float-fig" id="fig-architecture-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Figure&nbsp;1: GAN architecture
-</figcaption>
+<figure class="figure">
+<p><img src="gcerar.github.io/posts/2023-10-10-vanilla-GANs/figures/GAN-architecture.png" class="img-fluid figure-img"></p>
+<figcaption class="figure-caption">Figure&nbsp;1: GAN architecture</figcaption>
 </figure>
 </div>
 <ul>
@@ -419,7 +381,7 @@ Figure&nbsp;1: GAN architecture
 <li>Determine the computational device (e.g., GPU).</li>
 <li>Provide a weight initialization helper function.</li>
 </ul>
-<div id="cell-7" class="cell" data-execution_count="1">
+<div class="cell" data-execution_count="1">
 <div class="sourceCode cell-code" id="cb1" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><span class="im" style="color: #00769E;
 background-color: null;
 font-style: inherit;">from</span> typing <span class="im" style="color: #00769E;
@@ -525,7 +487,7 @@ font-style: inherit;">/</span> <span class="st" style="color: #20794D;
 background-color: null;
 font-style: inherit;">'datasets'</span></span></code></pre></div>
 </div>
-<div id="cell-8" class="cell" data-execution_count="2">
+<div class="cell" data-execution_count="2">
 <div class="sourceCode cell-code" id="cb2" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><span class="co" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;"># Disable functionalities for speed-up</span></span>
@@ -562,7 +524,7 @@ font-style: inherit;">=</span> <span class="va" style="color: #111111;
 background-color: null;
 font-style: inherit;">True</span></span></code></pre></div>
 </div>
-<div id="cell-9" class="cell" data-execution_count="3">
+<div class="cell" data-execution_count="3">
 <div class="sourceCode cell-code" id="cb3" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><span class="kw" style="color: #003B4F;
 background-color: null;
 font-style: inherit;">def</span> weights_init(net: nn.Module) <span class="op" style="color: #5E5E5E;
@@ -653,7 +615,7 @@ font-style: inherit;">0.0</span>)</span></code></pre></div>
 <li><strong>Output:</strong> Reshapes data to desired format (e.g., image). Often uses ‘tanh’ for activation.</li>
 <li><strong>Objective:</strong> Generate data indistinguishable from real by the Discriminator.</li>
 </ul>
-<div id="cell-12" class="cell" data-execution_count="5">
+<div class="cell" data-execution_count="5">
 <div class="sourceCode cell-code" id="cb4" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><span class="kw" style="color: #003B4F;
 background-color: null;
 font-style: inherit;">class</span> Generator(nn.Module):</span>
@@ -839,7 +801,7 @@ Estimated Total Size (MB): 8.63
 <li><strong>Output:</strong> Uses a sigmoid activation, yielding a score between 0-1, reflecting the data’s authenticity.</li>
 <li><strong>Objective:</strong> Recognize real data and identify fake data from the Generator.</li>
 </ul>
-<div id="cell-14" class="cell" data-execution_count="6">
+<div class="cell" data-execution_count="6">
 <div class="sourceCode cell-code" id="cb6" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><span class="kw" style="color: #003B4F;
 background-color: null;
 font-style: inherit;">class</span> Discriminator(nn.Module):</span>
@@ -1022,7 +984,7 @@ Note
 <p>Using <code>.eval()</code> and <code>.train()</code> modes initially seemed promising for faster training. However, they affected layers like <code>BatchNorm2d</code> and <code>Dropout</code>, making the GAN diverge. Also, switching between eval and train modes is not free of charge.</p>
 </div>
 </div>
-<div id="cell-16" class="cell" data-execution_count="7">
+<div class="cell" data-execution_count="7">
 <div class="sourceCode cell-code" id="cb8" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><span class="kw" style="color: #003B4F;
 background-color: null;
 font-style: inherit;">def</span> train_step(</span>
@@ -1154,7 +1116,7 @@ font-style: inherit;">return</span> loss_G.item(), loss_D.item()</span></code></
 <section id="evaluation" class="level2 page-columns page-full">
 <h2 class="anchored" data-anchor-id="evaluation">Evaluation</h2>
 <p>Before evaluation, we configured the learning rate (LR), optimizer’s <img src="https://latex.codecogs.com/png.latex?%5Cbeta"> parameters, batch size, and data loader settings for all experiments. We used the MNIST digits and MNIST fashion datasets for assessment.</p>
-<div id="cell-18" class="cell" data-execution_count="8">
+<div class="cell" data-execution_count="8">
 <div class="sourceCode cell-code" id="cb9" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1">OPTIMIZER_LR <span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">=</span> <span class="fl" style="color: #AD0000;
@@ -1183,7 +1145,7 @@ font-style: inherit;">=</span> <span class="dv" style="color: #AD0000;
 background-color: null;
 font-style: inherit;">128</span></span></code></pre></div>
 </div>
-<div id="cell-19" class="cell" data-execution_count="9">
+<div class="cell" data-execution_count="9">
 <div class="sourceCode cell-code" id="cb10" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1">loader_kwargs <span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">=</span> {</span>
@@ -1226,7 +1188,7 @@ font-style: inherit;">False</span>,</span>
 <h3 class="anchored" data-anchor-id="mnist-digits-dataset">MNIST Digits Dataset</h3>
 <p>The MNIST (Modified National Institute of Standards and Technology) dataset is a well-known collection of handwritten digits, extensively used in the fields of machine learning and computer vision for training and testing purposes. Its simplicity and size make it a popular choice for introductory courses and experiments in image recognition.</p>
 <p>In total, the dataset contains 70,000 grayscale images of handwritten digits (from 0 to 9). Each image is 28x28 pixels.</p>
-<div id="cell-21" class="cell" data-execution_count="10">
+<div class="cell" data-execution_count="10">
 <div class="sourceCode cell-code" id="cb11" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><span class="kw" style="color: #003B4F;
 background-color: null;
 font-style: inherit;">def</span> get_minst_dataset(transform<span class="op" style="color: #5E5E5E;
@@ -1286,7 +1248,7 @@ font-style: inherit;">=</span> ConcatDataset([trainset, testset])</span>
 background-color: null;
 font-style: inherit;">return</span> dataset</span></code></pre></div>
 </div>
-<div id="cell-23" class="cell" data-execution_count="12">
+<div class="cell" data-execution_count="12">
 <div class="sourceCode cell-code" id="cb12" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1">IMG_DIM <span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">=</span> (<span class="dv" style="color: #AD0000;
@@ -1302,7 +1264,7 @@ font-style: inherit;">=</span> <span class="dv" style="color: #AD0000;
 background-color: null;
 font-style: inherit;">100</span></span></code></pre></div>
 </div>
-<div id="cell-24" class="cell" data-execution_count="13">
+<div class="cell" data-execution_count="13">
 <div class="sourceCode cell-code" id="cb13" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1">transform <span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">=</span> T.Compose([</span>
@@ -1397,7 +1359,7 @@ font-style: inherit;">=</span>L2_NORM,</span>
 background-color: null;
 font-style: inherit;">=</span> nn.BCELoss().to(device)</span></code></pre></div>
 </div>
-<div id="cell-25" class="cell" data-execution_count="14">
+<div class="cell" data-execution_count="14">
 <div class="sourceCode cell-code" id="cb14" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1">animation <span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">=</span> []</span>
@@ -1462,13 +1424,13 @@ font-style: inherit;">True</span>)</span>
 <pre><code>100%|████████████████████████████████████████████████████████████████████████████████| 100/100 [03:43&lt;00:00,  2.23s/epochs]</code></pre>
 </div>
 </div>
-<div id="cell-26" class="cell page-columns page-full" data-execution_count="15">
+<div class="cell page-columns page-full" data-execution_count="15">
 
 <div class="no-row-height column-margin column-container"><div class="cell-output cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
 <p><img src="gcerar.github.io/posts/2023-10-10-vanilla-GANs/index_files/figure-html/cell-16-output-1.png" class="img-fluid figure-img"></p>
-<figcaption>Generator and Discriminator loss evolution over epochs using Vanilla GAN on the MNIST digit dataset.</figcaption>
+<figcaption class="figure-caption">Generator and Discriminator loss evolution over epochs using Vanilla GAN on the MNIST digit dataset.</figcaption>
 </figure>
 </div>
 </div></div></div>
@@ -1477,7 +1439,7 @@ font-style: inherit;">True</span>)</span>
 <section id="mnist-fashion-dataset" class="level3 page-columns page-full">
 <h3 class="anchored" data-anchor-id="mnist-fashion-dataset">MNIST Fashion Dataset</h3>
 <p>The Fashion MNIST dataset is a collection of grayscale images of 10 different categories of clothing items, designed as a more challenging alternative to the classic MNIST dataset of handwritten digits. Each image in the dataset is 28x28 pixels. The 10 categories include items like t-shirts/tops, trousers, pullovers, dresses, coats, sandals, and more. With 70,000 images, Fashion MNIST is commonly used for benchmarking machine learning algorithms, especially in image classification tasks.</p>
-<div id="cell-30" class="cell" data-execution_count="17">
+<div class="cell" data-execution_count="17">
 <div class="sourceCode cell-code" id="cb16" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb16-1">IMG_DIM <span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">=</span> (<span class="dv" style="color: #AD0000;
@@ -1493,7 +1455,7 @@ font-style: inherit;">=</span> <span class="dv" style="color: #AD0000;
 background-color: null;
 font-style: inherit;">100</span></span></code></pre></div>
 </div>
-<div id="cell-31" class="cell" data-execution_count="18">
+<div class="cell" data-execution_count="18">
 <div class="sourceCode cell-code" id="cb17" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb17-1"><span class="kw" style="color: #003B4F;
 background-color: null;
 font-style: inherit;">def</span> get_mnist_fashion_dataset(transform<span class="op" style="color: #5E5E5E;
@@ -1551,7 +1513,7 @@ font-style: inherit;">=</span> ConcatDataset([trainset, testset])</span>
 background-color: null;
 font-style: inherit;">return</span> dataset</span></code></pre></div>
 </div>
-<div id="cell-32" class="cell" data-execution_count="20">
+<div class="cell" data-execution_count="20">
 <div class="sourceCode cell-code" id="cb18" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb18-1">transform <span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">=</span> T.Compose([</span>
@@ -1646,7 +1608,7 @@ font-style: inherit;">=</span>L2_NORM,</span>
 background-color: null;
 font-style: inherit;">=</span> nn.BCELoss().to(device)</span></code></pre></div>
 </div>
-<div id="cell-33" class="cell" data-execution_count="21">
+<div class="cell" data-execution_count="21">
 <div class="sourceCode cell-code" id="cb19" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb19-1">animation <span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">=</span> []</span>
@@ -1713,13 +1675,13 @@ font-style: inherit;">True</span>)</span>
 <pre><code>100%|████████████████████████████████████████████████████████████████████████████████| 100/100 [03:49&lt;00:00,  2.30s/epochs]</code></pre>
 </div>
 </div>
-<div id="cell-34" class="cell page-columns page-full" data-execution_count="22">
+<div class="cell page-columns page-full" data-execution_count="22">
 
 <div class="no-row-height column-margin column-container"><div class="cell-output cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
 <p><img src="gcerar.github.io/posts/2023-10-10-vanilla-GANs/index_files/figure-html/cell-22-output-1.png" class="img-fluid figure-img"></p>
-<figcaption>Generator and Discriminator loss evolution over epochs using Vanilla GAN on the MNIST fashion dataset.</figcaption>
+<figcaption class="figure-caption">Generator and Discriminator loss evolution over epochs using Vanilla GAN on the MNIST fashion dataset.</figcaption>
 </figure>
 </div>
 </div></div></div>
@@ -1734,7 +1696,7 @@ font-style: inherit;">True</span>)</span>
 <h2 class="anchored" data-anchor-id="setting-up-dcgans">Setting Up DCGANs</h2>
 <section id="generator-1" class="level3">
 <h3 class="anchored" data-anchor-id="generator-1">Generator</h3>
-<div id="cell-40" class="cell" data-execution_count="24">
+<div class="cell" data-execution_count="24">
 <div class="sourceCode cell-code" id="cb21" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb21-1"><span class="kw" style="color: #003B4F;
 background-color: null;
 font-style: inherit;">class</span> Generator(nn.Module):</span>
@@ -1946,7 +1908,7 @@ Estimated Total Size (MB): 25.56
 </section>
 <section id="discriminator-1" class="level3">
 <h3 class="anchored" data-anchor-id="discriminator-1">Discriminator</h3>
-<div id="cell-42" class="cell" data-execution_count="25">
+<div class="cell" data-execution_count="25">
 <div class="sourceCode cell-code" id="cb23" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb23-1"><span class="kw" style="color: #003B4F;
 background-color: null;
 font-style: inherit;">class</span> Discriminator(nn.Module):</span>
@@ -2150,7 +2112,7 @@ Estimated Total Size (MB): 24.30
 <h2 class="anchored" data-anchor-id="evaluation-1">Evaluation</h2>
 <section id="mnist-digits-dataset-1" class="level3 page-columns page-full">
 <h3 class="anchored" data-anchor-id="mnist-digits-dataset-1">MNIST Digits Dataset</h3>
-<div id="cell-45" class="cell" data-execution_count="26">
+<div class="cell" data-execution_count="26">
 <div class="sourceCode cell-code" id="cb25" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb25-1">IMG_DIM <span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">=</span> (<span class="dv" style="color: #AD0000;
@@ -2270,7 +2232,7 @@ font-style: inherit;">=</span>L2_NORM,</span>
 background-color: null;
 font-style: inherit;">=</span> nn.BCELoss().to(device)</span></code></pre></div>
 </div>
-<div id="cell-46" class="cell" data-execution_count="27">
+<div class="cell" data-execution_count="27">
 <div class="sourceCode cell-code" id="cb26" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb26-1">animation <span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">=</span> []</span>
@@ -2337,13 +2299,13 @@ font-style: inherit;">True</span>)</span>
 <pre><code>100%|████████████████████████████████████████████████████████████████████████████████| 100/100 [04:54&lt;00:00,  2.94s/epochs]</code></pre>
 </div>
 </div>
-<div id="cell-47" class="cell page-columns page-full" data-execution_count="28">
+<div class="cell page-columns page-full" data-execution_count="28">
 
 <div class="no-row-height column-margin column-container"><div class="cell-output cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
 <p><img src="gcerar.github.io/posts/2023-10-10-vanilla-GANs/index_files/figure-html/cell-28-output-1.png" class="img-fluid figure-img"></p>
-<figcaption>Generator and Discriminator loss evolution over epochs using DCGAN on the MNIST digit dataset.</figcaption>
+<figcaption class="figure-caption">Generator and Discriminator loss evolution over epochs using DCGAN on the MNIST digit dataset.</figcaption>
 </figure>
 </div>
 </div></div></div>
@@ -2351,7 +2313,7 @@ font-style: inherit;">True</span>)</span>
 </section>
 <section id="mnist-fashion-dataset-1" class="level3 page-columns page-full">
 <h3 class="anchored" data-anchor-id="mnist-fashion-dataset-1">MNIST Fashion Dataset</h3>
-<div id="cell-51" class="cell" data-execution_count="30">
+<div class="cell" data-execution_count="30">
 <div class="sourceCode cell-code" id="cb28" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb28-1">IMG_DIM <span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">=</span> (<span class="dv" style="color: #AD0000;
@@ -2473,7 +2435,7 @@ font-style: inherit;">=</span> nn.BCELoss().to(device) <span class="co" style="c
 background-color: null;
 font-style: inherit;"># F.binary_cross_entropy_with_logits #nn.BCELoss().to(device)</span></span></code></pre></div>
 </div>
-<div id="cell-52" class="cell" data-execution_count="31">
+<div class="cell" data-execution_count="31">
 <div class="sourceCode cell-code" id="cb29" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb29-1">animation <span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">=</span> []</span>
@@ -2540,13 +2502,13 @@ font-style: inherit;">True</span>)</span>
 <pre><code>100%|████████████████████████████████████████████████████████████████████████████████| 100/100 [04:55&lt;00:00,  2.95s/epochs]</code></pre>
 </div>
 </div>
-<div id="cell-53" class="cell page-columns page-full" data-execution_count="32">
+<div class="cell page-columns page-full" data-execution_count="32">
 
 <div class="no-row-height column-margin column-container"><div class="cell-output cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
 <p><img src="gcerar.github.io/posts/2023-10-10-vanilla-GANs/index_files/figure-html/cell-32-output-1.png" class="img-fluid figure-img"></p>
-<figcaption>Generator and Discriminator loss evolution over epochs using DCGAN on the MNIST fashion dataset.</figcaption>
+<figcaption class="figure-caption">Generator and Discriminator loss evolution over epochs using DCGAN on the MNIST fashion dataset.</figcaption>
 </figure>
 </div>
 </div></div></div>
@@ -2566,23 +2528,22 @@ font-style: inherit;">True</span>)</span>
 
 </section>
 
-<div id="quarto-appendix" class="default"><section class="quarto-appendix-contents"><h2 class="anchored quarto-appendix-heading">References</h2><div id="refs" class="references csl-bib-body hanging-indent" data-entry-spacing="0">
+<div id="quarto-appendix" class="default"><section class="quarto-appendix-contents"><h2 class="anchored quarto-appendix-heading">References</h2><div id="refs" class="references csl-bib-body hanging-indent">
 <div id="ref-goodfellow2014generative" class="csl-entry">
 Goodfellow, Ian J., Jean Pouget-Abadie, Mehdi Mirza, Bing Xu, David Warde-Farley, Sherjil Ozair, Aaron Courville, and Yoshua Bengio. 2014. <span>“Generative Adversarial Networks.”</span> <a href="https://arxiv.org/abs/1406.2661">https://arxiv.org/abs/1406.2661</a>.
 </div>
 </div></section></div> ]]></description>
   <category>pytorch</category>
   <category>GAN</category>
-  <guid>gcerar.github.io/posts/2023-10-10-vanilla-GANs/</guid>
+  <guid>gcerar.github.io/posts/2023-10-10-vanilla-GANs/index.html</guid>
   <pubDate>Tue, 10 Oct 2023 00:00:00 GMT</pubDate>
   <media:content url="gcerar.github.io/posts/2023-10-10-vanilla-GANs/featured.webp" medium="image" type="image/webp"/>
 </item>
 <item>
   <title>Neural Style Transfer</title>
   <dc:creator>Gregor Cerar</dc:creator>
-  <link>gcerar.github.io/posts/2023-09-15-neural-style-transfer/</link>
+  <link>gcerar.github.io/posts/2023-09-15-neural-style-transfer/index.html</link>
   <description><![CDATA[ 
-
 
 
 
@@ -2595,7 +2556,7 @@ Goodfellow, Ian J., Jean Pouget-Abadie, Mehdi Mirza, Bing Xu, David Warde-Farley
 <section id="prerequisites" class="level1">
 <h1>Prerequisites</h1>
 <p>Before we get started, we need to install <a href="https://numpy.org/">NumPy</a>, <a href="https://matplotlib.org/">Matplotlib</a>, <a href="https://pytorch.org/">PyTorch</a> deep learning framework, and finally, <a href="https://pytorch.org/vision/stable/index.html">Torchvision</a> library.</p>
-<div id="cell-3" class="cell" data-execution_count="1">
+<div class="cell" data-execution_count="1">
 <div class="sourceCode cell-code" id="cb1" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><span class="im" style="color: #00769E;
 background-color: null;
 font-style: inherit;">from</span> pathlib <span class="im" style="color: #00769E;
@@ -2694,7 +2655,7 @@ background-color: null;
 font-style: inherit;">512</span></span></code></pre></div>
 </div>
 <p>Although it is possible to run neural networks on a CPU, using compute accelerators, such as GPU, will do transformation much faster. Here, I utilize my NVIDIA RTX 3090, where I also took advantage of available tensor cores and reduced precision data type <a href="https://en.wikipedia.org/wiki/Bfloat16_floating-point_format">bfloat16</a> for faster transformation.</p>
-<div id="cell-5" class="cell" data-execution_count="2">
+<div class="cell" data-execution_count="2">
 <div class="sourceCode cell-code" id="cb2" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1">AMP_ENABLED <span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">=</span> <span class="va" style="color: #111111;
@@ -2743,13 +2704,9 @@ font-style: inherit;">'medium'</span>)</span></code></pre></div>
 <section id="implementation" class="level1">
 <h1>Implementation</h1>
 <div id="fig-architecture" class="quarto-figure quarto-figure-center anchored">
-<figure class="quarto-float quarto-float-fig figure">
-<div aria-describedby="fig-architecture-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<img src="gcerar.github.io/posts/2023-09-15-neural-style-transfer/figures/neural-style-transfer.png" class="img-fluid figure-img">
-</div>
-<figcaption class="figure quarto-float-caption quarto-float-fig" id="fig-architecture-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Figure&nbsp;1: The Neural Style Transfer framework introduced by Gatys <em>et al.</em> distinguishes style and content features from designated layers.
-</figcaption>
+<figure class="figure">
+<p><img src="gcerar.github.io/posts/2023-09-15-neural-style-transfer/figures/neural-style-transfer.png" class="img-fluid figure-img"></p>
+<figcaption class="figure-caption">Figure&nbsp;1: The Neural Style Transfer framework introduced by Gatys <em>et al.</em> distinguishes style and content features from designated layers.</figcaption>
 </figure>
 </div>
 <p>Implementing NST was initially confusing since it does not follow the typical boilerplate used in deep learning. In the following sections, I’ll delve into its implementation step by step and often refer back to Figure&nbsp;1. The steps are as follows:</p>
@@ -2760,7 +2717,7 @@ Figure&nbsp;1: The Neural Style Transfer framework introduced by Gatys <em>et al
 <li>Adjust the neural network to extract features during forward-backward passes, applying gradient modifications to the target image. The neural network stays unchanged in the process.</li>
 <li>Iterate through this process.</li>
 </ul>
-<div id="cell-7" class="cell" data-execution_count="3">
+<div class="cell" data-execution_count="3">
 <div class="sourceCode cell-code" id="cb3" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><span class="co" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;"># Weights for different features (were these used by original authors?)</span></span>
@@ -2842,7 +2799,7 @@ font-style: inherit;">5_000</span></span></code></pre></div>
 <p>Content loss is calculated through Euclidean distance (<em>i.e.,</em> mean squared error) between the respective intermediate higher-level feature representation <img src="https://latex.codecogs.com/png.latex?F%5El"> and <img src="https://latex.codecogs.com/png.latex?P%5El"> of original input image <img src="https://latex.codecogs.com/png.latex?%5Cvec%7Bx%7D"> and the content image <img src="https://latex.codecogs.com/png.latex?%5Cvec%7Bp%7D"> at layer <img src="https://latex.codecogs.com/png.latex?l">.</p>
 <p>Hence, a given input image <img src="https://latex.codecogs.com/png.latex?%5Cvec%7Bx%7D"> is encoded in each layer of the CNN by the filter responses to that image. A layer with <img src="https://latex.codecogs.com/png.latex?N_l"> distinct filters has <img src="https://latex.codecogs.com/png.latex?N_l"> feature maps of size <img src="https://latex.codecogs.com/png.latex?M_l">, where <img src="https://latex.codecogs.com/png.latex?M_l"> is the height times the width of the feature map. So the response in a layer <img src="https://latex.codecogs.com/png.latex?l"> can be stored in a matrix <img src="https://latex.codecogs.com/png.latex?F%5El%20%5Cin%20%5Cmathcal%7BR%7D%5E%7BN_l%20%5Ctimes%20M_l%7D"> where <img src="https://latex.codecogs.com/png.latex?F_%7Bij%7D%5E%7Bl%7D"> is the activation of the <img src="https://latex.codecogs.com/png.latex?i%5E%7Bth%7D"> filter at position <img src="https://latex.codecogs.com/png.latex?j"> in layer <img src="https://latex.codecogs.com/png.latex?l">.</p>
 <p><img src="https://latex.codecogs.com/png.latex?%0A%5Cmathcal%7BL%7D_%7Bcontent%7D(%5Cvec%7Bp%7D,%20%5Cvec%7Bx%7D,%20l)%20=%20%5Cfrac%7B1%7D%7B2%7D%5Csum_%7Bi,j%7D%20(F%5E%7Bl%7D_%7Bij%7D%20-%20P%5E%7Bl%7D_%7Bij%7D)%5E2%0A"></p>
-<div id="cell-10" class="cell" data-execution_count="4">
+<div class="cell" data-execution_count="4">
 <div class="sourceCode cell-code" id="cb4" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><span class="kw" style="color: #003B4F;
 background-color: null;
 font-style: inherit;">def</span> content_loss_func(target_features, precomputed_content_features):</span>
@@ -2885,7 +2842,7 @@ font-style: inherit;">return</span> content_loss</span></code></pre></div>
 <p>First, let’s understand the <a href="https://en.wikipedia.org/wiki/Gram_matrix">Gram matrix</a>. Given the feature map <img src="https://latex.codecogs.com/png.latex?F"> of size <img src="https://latex.codecogs.com/png.latex?C%20%5Ctimes%20(H%20%5Ctimes%20W)">, where <img src="https://latex.codecogs.com/png.latex?C"> is the number of channels and <img src="https://latex.codecogs.com/png.latex?H%20%5Ctimes%20W"> are the spatial dimensions, the Gram matrix <img src="https://latex.codecogs.com/png.latex?G"> is of size <img src="https://latex.codecogs.com/png.latex?C%20%5Ctimes%20C"> and is computed as</p>
 <p><img src="https://latex.codecogs.com/png.latex?%0AG%5El_%7Bij%7D%20=%20%5Csum_k%20F%5El_%7Bik%7D%20F%5El_%7Bjk%7D%0A"></p>
 <p>where <img src="https://latex.codecogs.com/png.latex?G_%7Bij%7D"> is the inner product between vectorized feature maps <img src="https://latex.codecogs.com/png.latex?i"> and <img src="https://latex.codecogs.com/png.latex?j">. This results in a matrix that captures the correlation between different feature maps and, thus, the style information.</p>
-<div id="cell-12" class="cell" data-execution_count="5">
+<div class="cell" data-execution_count="5">
 <div class="sourceCode cell-code" id="cb5" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><span class="kw" style="color: #003B4F;
 background-color: null;
 font-style: inherit;">def</span> gram_matrix(<span class="bu" style="color: null;
@@ -2928,7 +2885,7 @@ font-style: inherit;">return</span> gram</span></code></pre></div>
 <p>Where <img src="https://latex.codecogs.com/png.latex?E_l"> is the style loss for layer <img src="https://latex.codecogs.com/png.latex?l">, <img src="https://latex.codecogs.com/png.latex?N_l"> and <img src="https://latex.codecogs.com/png.latex?M_l"> are the numbers of channels and height times width in the feature representation of layer <img src="https://latex.codecogs.com/png.latex?l">, respectively. <img src="https://latex.codecogs.com/png.latex?G_%7Bij%7D%5El"> and <img src="https://latex.codecogs.com/png.latex?A_%7Bij%7D%5El"> are the gram matrices of the intermediate representation of the style image <img src="https://latex.codecogs.com/png.latex?%5Cvec%7Ba%7D"> and the input base image <img src="https://latex.codecogs.com/png.latex?%5Cvec%7Bx%7D"> respectively.</p>
 <p>The total style loss is:</p>
 <p><img src="https://latex.codecogs.com/png.latex?%0A%5Cmathcal%7BL%7D_%7Bstyle%7D(%5Cvec%7Ba%7D,%20%5Cvec%7Bx%7D)%20=%20%5Csum_%7Bl=0%7D%5E%7BL%7D%20w_l%20E_l%0A"></p>
-<div id="cell-14" class="cell" data-execution_count="6">
+<div class="cell" data-execution_count="6">
 <div class="sourceCode cell-code" id="cb6" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><span class="kw" style="color: #003B4F;
 background-color: null;
 font-style: inherit;">def</span> style_loss_func(target_features, style_features, precomputed_style_grams):</span>
@@ -2987,7 +2944,7 @@ font-style: inherit;">return</span> style_loss</span></code></pre></div>
 <p><img src="https://latex.codecogs.com/png.latex?%0A%5Cmathcal%7BL%7D_%7BTV%7D(%5Cvec%7Bx%7D)%20=%20%5Csum_%7Bi,j%7D%20((x_%7Bi,j+1%7D%20-%20x_%7Bi,j%7D)%5E2%20+%20(x_%7Bi+1,j%7D%20-%20x_%7Bi,j%7D)%5E2)%0A"></p>
 <p>where <img src="https://latex.codecogs.com/png.latex?x_%7Bi,j%7D"> is the pixel value at position <img src="https://latex.codecogs.com/png.latex?(i,j)">.</p>
 <p>In simple terms, this loss penalizes abrupt changes in pixel values from one to its neighbors. By minimizing this loss, the generated image becomes smoother, reducing artifacts and unwanted noise. When combined with content and style losses, the TV loss ensures that the resulting image not only captures the content and style of the source images but also looks visually coherent and smooth.</p>
-<div id="cell-16" class="cell" data-execution_count="7">
+<div class="cell" data-execution_count="7">
 <div class="sourceCode cell-code" id="cb7" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><span class="kw" style="color: #003B4F;
 background-color: null;
 font-style: inherit;">def</span> total_variance_loss_func(target: Tensor):</span>
@@ -3033,7 +2990,7 @@ font-style: inherit;">return</span> tv_loss</span></code></pre></div>
 <section id="input-preparation" class="level2">
 <h2 class="anchored" data-anchor-id="input-preparation">Input preparation</h2>
 <p>Here we specify path to content and style images:</p>
-<div id="cell-20" class="cell" data-execution_count="8">
+<div class="cell" data-execution_count="8">
 <div class="sourceCode cell-code" id="cb8" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1">content_path <span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">=</span> <span class="st" style="color: #20794D;
@@ -3062,7 +3019,7 @@ Note
 <p>An intriguing choice by Gatys <em>et al.</em> was to modify VGG-19, replacing max pooling with average pooling, aiming for visually superior results. However, a challenge arises: our NN was initially trained with <code>MaxPool2d</code> layers. Substituting them can affect activations due to reduced output values. To counteract this, we’ve introduced a custom <code>ScaledAvgPool2d</code>.</p>
 </div>
 </div>
-<div id="cell-22" class="cell" data-execution_count="9">
+<div class="cell" data-execution_count="9">
 <div class="sourceCode cell-code" id="cb9" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><span class="co" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;"># We will use a frozen pre-trained VGG neural network for feature extraction.</span></span>
@@ -3161,7 +3118,7 @@ font-style: inherit;">False</span>).to(device)</span></code></pre></div>
 <li>Converting to tensors.</li>
 <li>Normalizing using ImageNet weights.</li>
 </ul>
-<div id="cell-24" class="cell" data-execution_count="10">
+<div class="cell" data-execution_count="10">
 <div class="sourceCode cell-code" id="cb10" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><span class="co" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;"># ImageNet normalization weights per channel</span></span>
@@ -3230,7 +3187,7 @@ background-color: null;
 font-style: inherit;">return</span> image</span></code></pre></div>
 </div>
 <p>The following code will prepares content <img src="https://latex.codecogs.com/png.latex?%5Cvec%7Bp%7D">, style <img src="https://latex.codecogs.com/png.latex?%5Cvec%7Ba%7D">, and target <img src="https://latex.codecogs.com/png.latex?%5Cvec%7Bx%7D"> images. The target image is a clone of the content image and we enable computation of gradients on it.</p>
-<div id="cell-26" class="cell" data-execution_count="11">
+<div class="cell" data-execution_count="11">
 <div class="sourceCode cell-code" id="cb11" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><span class="co" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;"># The "style" image from which we obtain style</span></span>
@@ -3259,7 +3216,7 @@ font-style: inherit;">True</span>).to(device)</span></code></pre></div>
 <li>Content feature map comes from <code>relu5_2</code>.</li>
 <li>Style feature maps are sourced from <code>relu1_1</code>, <code>relu2_1</code>, <code>relu3_1</code>, <code>relu4_1</code>, and <code>relu5_1</code>.</li>
 </ul>
-<div id="cell-28" class="cell" data-execution_count="12">
+<div class="cell" data-execution_count="12">
 <div class="sourceCode cell-code" id="cb12" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><span class="kw" style="color: #003B4F;
 background-color: null;
 font-style: inherit;">def</span> get_features(image: Tensor, model: nn.Module, layers<span class="op" style="color: #5E5E5E;
@@ -3401,7 +3358,7 @@ background-color: null;
 font-style: inherit;">return</span> features</span></code></pre></div>
 </div>
 <p>Since content and style images never change, we can precompute their feature maps and grams to speed up the NST process.</p>
-<div id="cell-30" class="cell" data-execution_count="13">
+<div class="cell" data-execution_count="13">
 <div class="sourceCode cell-code" id="cb13" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><span class="co" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;"># Precompute content features, style features, and style gram matrices.</span></span>
@@ -3421,7 +3378,7 @@ background-color: null;
 font-style: inherit;">in</span> style_features}</span></code></pre></div>
 </div>
 <p>Next, we will use <a href="https://pytorch.org/docs/stable/generated/torch.optim.Adam.html">Adam</a> optimizer, where we specify that only target image <img src="https://latex.codecogs.com/png.latex?%5Cvec%7Bx%7D"> is considered for optimization.</p>
-<div id="cell-32" class="cell" data-execution_count="14">
+<div class="cell" data-execution_count="14">
 <div class="sourceCode cell-code" id="cb14" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1">optimizer <span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">=</span> optim.Adam([target], lr<span class="op" style="color: #5E5E5E;
@@ -3430,7 +3387,7 @@ font-style: inherit;">=</span>LEARNING_RATE)</span></code></pre></div>
 </div>
 <p>The final step of NST is to transfer style using everything we’ve implemented. We extract feature maps, compute total loss, perform steps using gradient descent, and repeat the process <code>N_EPOCHS</code> times. Gradient changes will apply only to the target image.</p>
 <p>To notably enhance NST speed, I utilized mixed precision with the unique <code>bfloat16</code> found in newer hardware. Traditional half-precision float16 doesn’t yield the same results. I’ve tested it. Probably because of the issue with gradient scaling.</p>
-<div id="cell-34" class="cell" data-execution_count="15">
+<div class="cell" data-execution_count="15">
 <div class="sourceCode cell-code" id="cb15" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb15-1">pbar <span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">=</span> tqdm(<span class="bu" style="color: null;
@@ -3541,7 +3498,7 @@ font-style: inherit;"> "</span></span>
 </div>
 </div>
 <p>As mentioned before, images need to be denormalized (<em>i.e.</em> reverted back) to correct colors. After that we compare content, style and target images side-by-side.</p>
-<div id="cell-36" class="cell" data-execution_count="16">
+<div class="cell" data-execution_count="16">
 <div class="sourceCode cell-code" id="cb17" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb17-1"><span class="kw" style="color: #003B4F;
 background-color: null;
 font-style: inherit;">class</span> InverseNormalize(<span class="bu" style="color: null;
@@ -3751,7 +3708,7 @@ font-style: inherit;">=</span>[])</span>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
 <p><img src="gcerar.github.io/posts/2023-09-15-neural-style-transfer/index_files/figure-html/cell-17-output-1.png" class="img-fluid figure-img"></p>
-<figcaption>Successfuly applied neural style transfer. The <strong>content</strong> image (left), the <strong>style</strong> image (center), and final <strong>target</strong> image (right).</figcaption>
+<figcaption class="figure-caption">Successfuly applied neural style transfer. The <strong>content</strong> image (left), the <strong>style</strong> image (center), and final <strong>target</strong> image (right).</figcaption>
 </figure>
 </div>
 </div>
@@ -3800,14 +3757,14 @@ font-style: inherit;">=</span>[])</span>
 </section>
 </section>
 
-<div id="quarto-appendix" class="default"><section class="quarto-appendix-contents"><h2 class="anchored quarto-appendix-heading">References</h2><div id="refs" class="references csl-bib-body hanging-indent" data-entry-spacing="0">
+<div id="quarto-appendix" class="default"><section class="quarto-appendix-contents"><h2 class="anchored quarto-appendix-heading">References</h2><div id="refs" class="references csl-bib-body hanging-indent">
 <div id="ref-gatys2015neural" class="csl-entry">
 Gatys, Leon A, Alexander S Ecker, and Matthias Bethge. 2015. <span>“A Neural Algorithm of Artistic Style.”</span> <em>arXiv Preprint arXiv:1508.06576</em>.
 </div>
 </div></section></div> ]]></description>
   <category>pytorch</category>
   <category>NST</category>
-  <guid>gcerar.github.io/posts/2023-09-15-neural-style-transfer/</guid>
+  <guid>gcerar.github.io/posts/2023-09-15-neural-style-transfer/index.html</guid>
   <pubDate>Fri, 15 Sep 2023 00:00:00 GMT</pubDate>
   <media:content url="gcerar.github.io/posts/2023-09-15-neural-style-transfer/examples/bridge+walking-in-the-rain.webp" medium="image" type="image/webp"/>
 </item>

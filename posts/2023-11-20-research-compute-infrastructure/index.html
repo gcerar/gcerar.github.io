@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en-us" xml:lang="en-us"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.4.510">
+<meta name="generator" content="quarto-1.3.450">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
@@ -26,7 +26,6 @@ ul.task-list li input[type="checkbox"] {
 div.csl-bib-body { }
 div.csl-entry {
   clear: both;
-  margin-bottom: 0em;
 }
 .hanging-indent div.csl-entry {
   margin-left:2em;
@@ -67,13 +66,7 @@ div.csl-indent {
   "collapse-after": 3,
   "panel-placement": "end",
   "type": "overlay",
-  "limit": 50,
-  "keyboard-shortcut": [
-    "f",
-    "/",
-    "s"
-  ],
-  "show-item-context": false,
+  "limit": 20,
   "language": {
     "search-no-results-text": "No results",
     "search-matching-documents-text": "matching documents",
@@ -103,17 +96,20 @@ gtag('config', 'G-FB81SP2FX7', { 'anonymize_ip': true});
 
 <meta property="og:title" content="Greg’s blog - Research Compute Infrastructure">
 <meta property="og:description" content="Our research lab needed a more scalable approach to sharing computing resources among researchers. To address this, we built a scalable computing infrastructure on Kubernetes. Researchers can request resources from the pool and use a familiar workflow with Jupyter notebooks. Resources are returned to the pool once a task is complete or idle for too long.">
-<meta property="og:site_name" content="Greg's blog">
+<meta property="og:image" content="gcerar.github.io/posts/2023-11-20-research-compute-infrastructure/figures/over10k-arch.png">
+<meta property="og:site-name" content="Greg's blog">
 <meta property="og:locale" content="en_US">
+<meta property="og:image:height" content="1143">
+<meta property="og:image:width" content="1770">
 </head>
 
 <body class="nav-fixed">
 
 <div id="quarto-search-results"></div>
   <header id="quarto-header" class="headroom fixed-top">
-    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+    <nav class="navbar navbar-expand-lg navbar-dark ">
       <div class="navbar-container container-fluid">
-      <div class="navbar-brand-container mx-auto">
+      <div class="navbar-brand-container">
     <a class="navbar-brand" href="../../index.html">
     <span class="navbar-title">Greg’s blog</span>
     </a>
@@ -125,36 +121,36 @@ gtag('config', 'G-FB81SP2FX7', { 'anonymize_ip': true});
           <div class="collapse navbar-collapse" id="navbarCollapse">
             <ul class="navbar-nav navbar-nav-scroll me-auto">
   <li class="nav-item">
-    <a class="nav-link" href="../../index.html"> <i class="bi bi-house-door" role="img">
+    <a class="nav-link" href="../../index.html" rel="" target=""><i class="bi bi-house-door" role="img">
 </i> 
-<span class="menu-text">Home</span></a>
+ <span class="menu-text">Home</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link" href="../../posts.html"> <i class="bi bi-file-richtext" role="img">
+    <a class="nav-link" href="../../posts.html" rel="" target=""><i class="bi bi-file-richtext" role="img">
 </i> 
-<span class="menu-text">Blog</span></a>
+ <span class="menu-text">Blog</span></a>
   </li>  
 </ul>
             <ul class="navbar-nav navbar-nav-scroll ms-auto">
   <li class="nav-item compact">
-    <a class="nav-link" href="https://github.com/gcerar"> <i class="bi bi-github" role="img">
+    <a class="nav-link" href="https://github.com/gcerar" rel="" target=""><i class="bi bi-github" role="img">
 </i> 
-<span class="menu-text"></span></a>
+ <span class="menu-text"></span></a>
   </li>  
   <li class="nav-item compact">
-    <a class="nav-link" href="https://linkedin.com/in/gcerar"> <i class="bi bi-linkedin" role="img">
+    <a class="nav-link" href="https://linkedin.com/in/gcerar" rel="" target=""><i class="bi bi-linkedin" role="img">
 </i> 
-<span class="menu-text"></span></a>
+ <span class="menu-text"></span></a>
   </li>  
   <li class="nav-item compact">
-    <a class="nav-link" href="../../posts.xml"> <i class="bi bi-rss" role="img">
+    <a class="nav-link" href="../../posts.xml" rel="" target=""><i class="bi bi-rss" role="img">
 </i> 
-<span class="menu-text"></span></a>
+ <span class="menu-text"></span></a>
   </li>  
 </ul>
-          </div> <!-- /navcollapse -->
-          <div class="quarto-navbar-tools">
+            <div class="quarto-navbar-tools">
 </div>
+          </div> <!-- /navcollapse -->
       </div> <!-- /container-fluid -->
     </nav>
 </header>
@@ -236,14 +232,12 @@ gtag('config', 'G-FB81SP2FX7', { 'anonymize_ip': true});
   
 <div>
   <div class="abstract">
-    <div class="block-title">Abstract</div>
+    <div class="abstract-title">Abstract</div>
     <p>Our research lab needed a more scalable approach to sharing computing resources among researchers. To address this, we built a scalable computing infrastructure on Kubernetes. Researchers can request resources from the pool and use a familiar workflow with Jupyter notebooks. Resources are returned to the pool once a task is complete or idle for too long.</p>
   </div>
 </div>
 
-
 </header>
-
 
 <section id="introduction" class="level1">
 <h1>Introduction</h1>
@@ -275,13 +269,9 @@ gtag('config', 'G-FB81SP2FX7', { 'anonymize_ip': true});
 <section id="architecture" class="level1">
 <h1>Architecture</h1>
 <p>We decided to base our private cloud on the Kubernetes platform to meet system scalability and resource management requirements, aiming to enhance the functionality, accessibility, and sharing of Jupyter notebooks <span class="citation" data-cites="bussonnier2018jupyterhub">(<a href="#ref-bussonnier2018jupyterhub" role="doc-biblioref">Bussonnier 2018</a>)</span> within the Kubernetes private cloud. In this section, will delve deeper into the system’s architecture that integrates services and elaborate on the design decisions. Subsequently, we describe the individual services within our infrastructure.</p>
-<div id="tbl-stack" class="hover anchored">
-<figure class="quarto-float quarto-float-tbl figure">
-<figcaption class="table quarto-float-caption quarto-float-tbl" id="tbl-stack-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Table&nbsp;1: Services and Used Technologies.
-</figcaption>
-<div aria-describedby="tbl-stack-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div id="tbl-stack" class="anchored">
 <table class="table-hover table">
+<caption>Table&nbsp;1: Services and Used Technologies.</caption>
 <thead>
 <tr class="header">
 <th>Service</th>
@@ -356,20 +346,14 @@ Table&nbsp;1: Services and Used Technologies.
 </tbody>
 </table>
 </div>
-</figure>
-</div>
-<p><a href="#tbl-stack" class="quarto-xref">Table&nbsp;1</a>, in its first column, lists all the services required for system operation. The second column lists the open-source solutions that can provide these services. Bolded services indicate those selected and used in our private cloud. We made our choices based on specific criteria. We first surveyed technologies and solutions utilized in related projects. We further narrowed our selection to open-source solutions tested in private clouds on native infrastructure. A significant factor in our decision-making was also an insight into the popularity of the projects, gauged by the number of stars in repositories, the number of forks of the project, and the level of development activity on GitHub/GitLab. In our decision-making process, we didn’t follow a single empirical metric but took multiple factors into account to ensure a comprehensive assessment of solutions.</p>
+<p><a href="#tbl-stack">Table&nbsp;1</a>, in its first column, lists all the services required for system operation. The second column lists the open-source solutions that can provide these services. Bolded services indicate those selected and used in our private cloud. We made our choices based on specific criteria. We first surveyed technologies and solutions utilized in related projects. We further narrowed our selection to open-source solutions tested in private clouds on native infrastructure. A significant factor in our decision-making was also an insight into the popularity of the projects, gauged by the number of stars in repositories, the number of forks of the project, and the level of development activity on GitHub/GitLab. In our decision-making process, we didn’t follow a single empirical metric but took multiple factors into account to ensure a comprehensive assessment of solutions.</p>
 <div id="fig-architecture" class="quarto-figure quarto-figure-center anchored">
-<figure class="quarto-float quarto-float-fig figure">
-<div aria-describedby="fig-architecture-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<img src="./figures/over10k-arch.png" class="img-fluid figure-img">
-</div>
-<figcaption class="figure quarto-float-caption quarto-float-fig" id="fig-architecture-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Figure&nbsp;1: A three-tier logical infrastructure diagram. At the bottom is the foundational infrastructure, followed by internal Kubernetes services in the middle, and on top are the services exposed to users.
-</figcaption>
+<figure class="figure">
+<p><img src="./figures/over10k-arch.png" class="img-fluid figure-img"></p>
+<figcaption class="figure-caption">Figure&nbsp;1: A three-tier logical infrastructure diagram. At the bottom is the foundational infrastructure, followed by internal Kubernetes services in the middle, and on top are the services exposed to users.</figcaption>
 </figure>
 </div>
-<p>The diagram in <a href="#fig-architecture" class="quarto-xref">Figure&nbsp;1</a> provides a high-level representation of our private cloud and its infrastructure across three levels. The first level comprises heterogeneous computing nodes, forming the foundational infrastructure. Each node operates its operating system, running a portion of the Kubernetes platform. The second level encompasses internal Kubernetes services, which are essential for operation and never directly accessed by users. The final third level includes the services availed by end-users.</p>
+<p>The diagram in <a href="#fig-architecture">Figure&nbsp;1</a> provides a high-level representation of our private cloud and its infrastructure across three levels. The first level comprises heterogeneous computing nodes, forming the foundational infrastructure. Each node operates its operating system, running a portion of the Kubernetes platform. The second level encompasses internal Kubernetes services, which are essential for operation and never directly accessed by users. The final third level includes the services availed by end-users.</p>
 <section id="turnkey-solution" class="level2">
 <h2 class="anchored" data-anchor-id="turnkey-solution">Turnkey Solution?</h2>
 <p>When planning the private cloud, we initially explored turnkey solutions, including NVIDIA <a href="https://github.com/NVIDIA/deepops">DeepOps</a>. Despite its advantages, we built our custom solution for the following reasons. While DeepOps is an excellent turnkey solution with maintained source code on GitHub and offers commercial support, initial setup requires configuration file adjustments, including Ansible scripts for automated (re)configuration of installed Linux distribution. Its complexity discouraged us, further investing our time into tinkering with it.</p>
@@ -420,13 +404,9 @@ Figure&nbsp;1: A three-tier logical infrastructure diagram. At the bottom is the
 <p>In this section, we’ll present how we deployed our computing infrastructure. First, I’ll summarize the hardware decisions, caveats, and finally, the user experience with some screenshots.</p>
 <section id="hardware" class="level2">
 <h2 class="anchored" data-anchor-id="hardware">Hardware</h2>
-<div id="tbl-hardware" class="hover anchored">
-<figure class="quarto-float quarto-float-tbl figure">
-<figcaption class="table quarto-float-caption quarto-float-tbl" id="tbl-hardware-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Table&nbsp;2: Hardware specifications of Computing node.
-</figcaption>
-<div aria-describedby="tbl-hardware-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div id="tbl-hardware" class="anchored">
 <table class="table-hover table">
+<caption>Table&nbsp;2: Hardware specifications of Computing node.</caption>
 <thead>
 <tr class="header">
 <th>Hardware</th>
@@ -461,21 +441,15 @@ Table&nbsp;2: Hardware specifications of Computing node.
 </tbody>
 </table>
 </div>
-</figure>
-</div>
 <p>When we bought the hardware in early 2022, we chose third-generation AMD EPYC processors. Specifically, we went for the F-series, which has higher base and turbo frequencies — up to 4GHz — at the cost of fewer cores. We picked a CPU with the highest available TDP of 280W. We installed server-grade registered error-correcting memory at the highest frequency supported by the processor and populated all eight channels on both processors. Sixteen sticks of RAM in total. Although we considered solutions from Intel, AMD EPYC processors had better price-to-performance ratios.</p>
 <p>From the perspective of numerical performance, our significant concern was Intel-optimized libraries, such as Intel MKL, often found in numerical tools. The library has a “bug” that causes non-Intel processors to utilize a slower SSE instead of more advanced AVX vectorization instructions [<a href="https://danieldk.eu/Posts/2020-08-31-MKL-Zen.html">src</a>]. <a href="https://www.openblas.net/">OpenBLAS</a> is a good alternative but requires some effort to install it. See Anaconda <a href="https://github.com/conda-forge/nomkl-feedstock">no-mkl</a> package.</p>
 <p>We chose two NVMe drives configured in the mirror configuration (RAID1) for the system drive. We selected six 8TB SSD SATA drives configured in ZFS RAIDZ1 for data storage, which has one drive redundancy. We also chose two A100 GPUs as accelerators.</p>
 <p>NVIDIA A100 GPUs come in two form factors: PCI-E and SXM4. The SXM4 proprietary form factor has a higher TDP and high-bandwidth NVLink interconnections between every GPU through NVSwitch hardware. The downside of SXM4 is that it will only support Ampere generation GPUs and require a special motherboard. The PCI-E variant has a lower TDP, and NVLink can only be across two GPUs. However, we decided against vendor lock-in, limiting ourselves to one brand and generation, and went with the PCI-E variant.</p>
 <p>We considered the most likely workflow scenarios. We expected most communication to be CPU-to-GPU, with GPUs sliced into several instances. Once GPU slicing is enabled, the NVIDIA drivers disable NVLink, rendering NVLink connections useless. We can change GPU slicing strategy freely.</p>
 <div id="fig-hardware" class="quarto-figure quarto-figure-center anchored">
-<figure class="quarto-float quarto-float-fig figure">
-<div aria-describedby="fig-hardware-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<img src="./figures/hardware-top-view-resize.jpg" class="img-fluid figure-img">
-</div>
-<figcaption class="figure quarto-float-caption quarto-float-fig" id="fig-hardware-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Figure&nbsp;2: The computing node on my desk underwent final checks before being installed in the server rack.
-</figcaption>
+<figure class="figure">
+<p><img src="./figures/hardware-top-view-resize.jpg" class="img-fluid figure-img"></p>
+<figcaption class="figure-caption">Figure&nbsp;2: The computing node on my desk underwent final checks before being installed in the server rack.</figcaption>
 </figure>
 </div>
 </section>
@@ -489,45 +463,33 @@ Figure&nbsp;2: The computing node on my desk underwent final checks before being
 <h3 class="anchored" data-anchor-id="jupyterhub">JupyterHub</h3>
 <p>JupyterHub has become a crucial component of our research infrastructure, enhancing our workflow significantly. Its smooth integration was largely due to the interface and functionality of JupyterHub, which closely resemble the tools our researchers and students were familiar with. This similarity played a key role in its quick adoption and high user satisfaction.</p>
 <div id="fig-jhub-profiles" class="quarto-figure quarto-figure-center anchored">
-<figure class="quarto-float quarto-float-fig figure">
-<div aria-describedby="fig-jhub-profiles-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<img src="./figures/jhub-profiles.png" class="img-fluid figure-img">
-</div>
-<figcaption class="figure quarto-float-caption quarto-float-fig" id="fig-jhub-profiles-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Figure&nbsp;3: JupyterHub offers a list of predefined containers, where some of them offer a GPU instance.
-</figcaption>
+<figure class="figure">
+<p><img src="./figures/jhub-profiles.png" class="img-fluid figure-img"></p>
+<figcaption class="figure-caption">Figure&nbsp;3: JupyterHub offers a list of predefined containers, where some of them offer a GPU instance.</figcaption>
 </figure>
 </div>
-<p>Upon logging into JupyterHub, users are presented with a list of predefined containers (as shown in <a href="#fig-jhub-profiles" class="quarto-xref">Figure&nbsp;3</a>). Our recent update includes several options:</p>
+<p>Upon logging into JupyterHub, users are presented with a list of predefined containers (as shown in <a href="#fig-jhub-profiles">Figure&nbsp;3</a>). Our recent update includes several options:</p>
 <ul>
 <li>A basic minimal working environment environment.</li>
 <li>A comprehensive data science environment equipped with multiple packages and support for Python, R, and Julia.</li>
 <li>A selection of containers offering GPU instances.</li>
 </ul>
-<p>The development environment greets users with a layout similar to modern IDEs, featuring a file explorer on the left and code editor tabs on the right (see <a href="#fig-jhub-workspace" class="quarto-xref">Figure&nbsp;4</a>).</p>
+<p>The development environment greets users with a layout similar to modern IDEs, featuring a file explorer on the left and code editor tabs on the right (see <a href="#fig-jhub-workspace">Figure&nbsp;4</a>).</p>
 <div id="fig-jhub-workspace" class="quarto-figure quarto-figure-center anchored">
-<figure class="quarto-float quarto-float-fig figure">
-<div aria-describedby="fig-jhub-workspace-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<img src="./figures/jhub-workspace.png" class="img-fluid figure-img">
-</div>
-<figcaption class="figure quarto-float-caption quarto-float-fig" id="fig-jhub-workspace-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Figure&nbsp;4: JupyterLab workspace with familiar layout: a file explorer on the left and code editor tabs on the right.
-</figcaption>
+<figure class="figure">
+<p><img src="./figures/jhub-workspace.png" class="img-fluid figure-img"></p>
+<figcaption class="figure-caption">Figure&nbsp;4: JupyterLab workspace with familiar layout: a file explorer on the left and code editor tabs on the right.</figcaption>
 </figure>
 </div>
 </section>
 <section id="grafana" class="level3">
 <h3 class="anchored" data-anchor-id="grafana">Grafana</h3>
 <p>For transparent insight into infrastructure availability, the user has read-only access to the Grafana dashboard (Figure~<span class="math inline">\(\ref{fig:grafana:dashboard}\)</span>). Here, they can observe most of the infrastructure metrics.</p>
-<p>For transparent insight into infrastructure availability, the user has read-only access to the Grafana dashboard. Dashboard visualizes computing resource utilization including metrics like total and per-container CPU usage, memory usage per container, GPU utilization, temperature readings, and storage I/O (see <a href="#fig-grafana-dashboard" class="quarto-xref">Figure&nbsp;5</a>).</p>
+<p>For transparent insight into infrastructure availability, the user has read-only access to the Grafana dashboard. Dashboard visualizes computing resource utilization including metrics like total and per-container CPU usage, memory usage per container, GPU utilization, temperature readings, and storage I/O (see <a href="#fig-grafana-dashboard">Figure&nbsp;5</a>).</p>
 <div id="fig-grafana-dashboard" class="quarto-figure quarto-figure-center anchored">
-<figure class="quarto-float quarto-float-fig figure">
-<div aria-describedby="fig-grafana-dashboard-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<img src="./figures/grafana-censored.png" class="img-fluid figure-img">
-</div>
-<figcaption class="figure quarto-float-caption quarto-float-fig" id="fig-grafana-dashboard-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Figure&nbsp;5: Visualization of computing cluster utilization showing total and per-container CPU utilization, per-container memory utilization, GPU slices utilization, temperatures, and storage I/O.
-</figcaption>
+<figure class="figure">
+<p><img src="./figures/grafana-censored.png" class="img-fluid figure-img"></p>
+<figcaption class="figure-caption">Figure&nbsp;5: Visualization of computing cluster utilization showing total and per-container CPU utilization, per-container memory utilization, GPU slices utilization, temperatures, and storage I/O.</figcaption>
 </figure>
 </div>
 </section>
@@ -545,7 +507,7 @@ Figure&nbsp;5: Visualization of computing cluster utilization showing total and 
 </section>
 
 
-<div id="quarto-appendix" class="default"><section class="quarto-appendix-contents" role="doc-bibliography"><h2 class="anchored quarto-appendix-heading">References</h2><div id="refs" class="references csl-bib-body hanging-indent" data-entry-spacing="0" role="list">
+<div id="quarto-appendix" class="default"><section class="quarto-appendix-contents" role="doc-bibliography"><h2 class="anchored quarto-appendix-heading">References</h2><div id="refs" class="references csl-bib-body hanging-indent" role="list">
 <div id="ref-bussonnier2018jupyterhub" class="csl-entry" role="listitem">
 Bussonnier, Matthias. 2018. <span>“<span class="nocase">Jupyter and HPC: Current state and future roadmap</span>.”</span> <em>Exascale Computing Project</em>. <a href="https://www.exascaleproject.org/event/jupyter/">https://www.exascaleproject.org/event/jupyter/</a>.
 </div>
@@ -558,14 +520,14 @@ Mendez, Kevin M et al. 2019. <span>“<span class="nocase">Toward collaborative 
 <div id="ref-perkel2018jupyter" class="csl-entry" role="listitem">
 Perkel, Jeffrey M. 2018. <span>“<span class="nocase">Why Jupyter is data scientists’ computational notebook of choice</span>.”</span> <em>Nature</em> 563 (7732): 145–47.
 </div>
-</div></section><aside id="footnotes" class="footnotes footnotes-end-of-document" role="doc-endnotes"><h2 class="anchored quarto-appendix-heading">Footnotes</h2>
+</div></section><section id="footnotes" class="footnotes footnotes-end-of-document" role="doc-endnotes"><h2 class="anchored quarto-appendix-heading">Footnotes</h2>
 
 <ol>
 <li id="fn1"><p>JSON: JavaScript Object Notation<a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
 <li id="fn2"><p>REPL: read–eval–print loop<a href="#fnref2" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
 <li id="fn3"><p>WETL: write-eval-think-loop<a href="#fnref3" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
 </ol>
-</aside></div></main> <!-- /main -->
+</section></div></main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
 window.document.addEventListener("DOMContentLoaded", function (event) {
   const toggleBodyColorMode = (bsSheetEl) => {
@@ -645,9 +607,10 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
     // clear code selection
     e.clearSelection();
   });
-  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+  function tippyHover(el, contentFn) {
     const config = {
       allowHTML: true,
+      content: contentFn,
       maxWidth: 500,
       delay: 100,
       arrow: false,
@@ -657,17 +620,8 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       interactive: true,
       interactiveBorder: 10,
       theme: 'quarto',
-      placement: 'bottom-start',
+      placement: 'bottom-start'
     };
-    if (contentFn) {
-      config.content = contentFn;
-    }
-    if (onTriggerFn) {
-      config.onTrigger = onTriggerFn;
-    }
-    if (onUntriggerFn) {
-      config.onUntrigger = onUntriggerFn;
-    }
     window.tippy(el, config); 
   }
   const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
@@ -680,135 +634,6 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       const id = href.replace(/^#\/?/, "");
       const note = window.document.getElementById(id);
       return note.innerHTML;
-    });
-  }
-  const xrefs = window.document.querySelectorAll('a.quarto-xref');
-  const processXRef = (id, note) => {
-    // Strip column container classes
-    const stripColumnClz = (el) => {
-      el.classList.remove("page-full", "page-columns");
-      if (el.children) {
-        for (const child of el.children) {
-          stripColumnClz(child);
-        }
-      }
-    }
-    stripColumnClz(note)
-    const typesetMath = (el) => {
-      if (window.MathJax) {
-        // MathJax Typeset
-        window.MathJax.typeset([el]);
-      } else if (window.katex) {
-        // KaTeX Render
-        var mathElements = el.getElementsByClassName("math");
-        var macros = [];
-        for (var i = 0; i < mathElements.length; i++) {
-          var texText = mathElements[i].firstChild;
-          if (mathElements[i].tagName == "SPAN") {
-            window.katex.render(texText.data, mathElements[i], {
-              displayMode: mathElements[i].classList.contains('display'),
-              throwOnError: false,
-              macros: macros,
-              fleqn: false
-            });
-          }
-        }
-      }
-    }
-    if (id === null || id.startsWith('sec-')) {
-      // Special case sections, only their first couple elements
-      const container = document.createElement("div");
-      if (note.children && note.children.length > 2) {
-        container.appendChild(note.children[0].cloneNode(true));
-        for (let i = 1; i < note.children.length; i++) {
-          const child = note.children[i];
-          if (child.tagName === "P" && child.innerText === "") {
-            continue;
-          } else {
-            container.appendChild(child.cloneNode(true));
-            break;
-          }
-        }
-        typesetMath(container);
-        return container.innerHTML
-      } else {
-        typesetMath(note);
-        return note.innerHTML;
-      }
-    } else {
-      // Remove any anchor links if they are present
-      const anchorLink = note.querySelector('a.anchorjs-link');
-      if (anchorLink) {
-        anchorLink.remove();
-      }
-      typesetMath(note);
-      return note.innerHTML;
-    }
-  }
-  for (var i=0; i<xrefs.length; i++) {
-    const xref = xrefs[i];
-    tippyHover(xref, undefined, function(instance) {
-      instance.disable();
-      let url = xref.getAttribute('href');
-      let hash = undefined; 
-      if (url.startsWith('#')) {
-        hash = url;
-      } else {
-        try { hash = new URL(url).hash; } catch {}
-      }
-      if (hash) {
-        const id = hash.replace(/^#\/?/, "");
-        const note = window.document.getElementById(id);
-        if (note !== null) {
-          try {
-            const html = processXRef(id, note.cloneNode(true));
-            instance.setContent(html);
-          } finally {
-            instance.enable();
-            instance.show();
-          }
-        } else {
-          // See if we can fetch this
-          fetch(url.split('#')[0])
-          .then(res => res.text())
-          .then(html => {
-            const parser = new DOMParser();
-            const htmlDoc = parser.parseFromString(html, "text/html");
-            const note = htmlDoc.getElementById(id);
-            if (note !== null) {
-              const html = processXRef(id, note);
-              instance.setContent(html);
-            } 
-          }).finally(() => {
-            instance.enable();
-            instance.show();
-          });
-        }
-      } else {
-        // See if we can fetch a full url (with no hash to target)
-        // This is a special case and we should probably do some content thinning / targeting
-        fetch(url)
-        .then(res => res.text())
-        .then(html => {
-          const parser = new DOMParser();
-          const htmlDoc = parser.parseFromString(html, "text/html");
-          const note = htmlDoc.querySelector('main.content');
-          if (note !== null) {
-            // This should only happen for chapter cross references
-            // (since there is no id in the URL)
-            // remove the first header
-            if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
-              note.children[0].remove();
-            }
-            const html = processXRef(null, note);
-            instance.setContent(html);
-          } 
-        }).finally(() => {
-          instance.enable();
-          instance.show();
-        });
-      }
-    }, function(instance) {
     });
   }
       let selectedAnnoteEl;
@@ -852,7 +677,6 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
             }
             div.style.top = top - 2 + "px";
             div.style.height = height + 4 + "px";
-            div.style.left = 0;
             let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
             if (gutterDiv === null) {
               gutterDiv = window.document.createElement("div");
@@ -878,32 +702,6 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
         });
         selectedAnnoteEl = undefined;
       };
-        // Handle positioning of the toggle
-    window.addEventListener(
-      "resize",
-      throttle(() => {
-        elRect = undefined;
-        if (selectedAnnoteEl) {
-          selectCodeLines(selectedAnnoteEl);
-        }
-      }, 10)
-    );
-    function throttle(fn, ms) {
-    let throttle = false;
-    let timer;
-      return (...args) => {
-        if(!throttle) { // first call gets through
-            fn.apply(this, args);
-            throttle = true;
-        } else { // all the others get throttled
-            if(timer) clearTimeout(timer); // cancel #2
-            timer = setTimeout(() => {
-              fn.apply(this, args);
-              timer = throttle = false;
-            }, ms);
-        }
-      };
-    }
       // Attach click handler to the DT
       const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
       for (const annoteDlNode of annoteDls) {
@@ -965,23 +763,18 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 </script>
 <script src="https://giscus.app/client.js" data-repo="gcerar/gcerar.github.io" data-repo-id="" data-category="General" data-category-id="" data-mapping="title" data-reactions-enabled="1" data-emit-metadata="0" data-input-position="top" data-theme="light" data-lang="en" crossorigin="anonymous" async="">
 </script>
-<input type="hidden" id="giscus-base-theme" value="light">
-<input type="hidden" id="giscus-alt-theme" value="dark">
 </div> <!-- /content -->
 <footer class="footer">
   <div class="nav-footer">
     <div class="nav-footer-left">
       &nbsp;
     </div>   
-    <div class="nav-footer-center">
-<p>© Copyright 2021, Gregor Cerar</p>
-</div>
+    <div class="nav-footer-center">© Copyright 2021, Gregor Cerar</div>
     <div class="nav-footer-right">
       &nbsp;
     </div>
   </div>
 </footer>
-
 
 
 
