@@ -1,0 +1,1167 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en-us" xml:lang="en-us"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.4.510">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="Gregor Cerar">
+<meta name="dcterms.date" content="2023-09-15">
+
+<title>Greg’s blog - Neural Style Transfer</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+/* CSS for citations */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+  margin-bottom: 0em;
+}
+.hanging-indent div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}</style>
+
+
+<script src="../../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../../">
+<script src="../../site_libs/quarto-html/quarto.js"></script>
+<script src="../../site_libs/quarto-html/popper.min.js"></script>
+<script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../../site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+<script async="" src="https://www.googletagmanager.com/gtag/js?id=G-FB81SP2FX7"></script>
+
+<script type="text/javascript">
+
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+gtag('config', 'G-FB81SP2FX7', { 'anonymize_ip': true});
+</script>
+<style>html{ scroll-behavior: smooth; }</style>
+
+  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<meta property="og:title" content="Greg’s blog - Neural Style Transfer">
+<meta property="og:description" content="Neural Style Transfer (NST) was a breakthrough deep learning approach that can transfer artistic style from one image to another. Eager to learn how it works, I’ve implemented the original approach from scratch.">
+<meta property="og:image" content="gcerar.github.io/posts/2023-09-15-neural-style-transfer/examples/bridge+walking-in-the-rain.webp">
+<meta property="og:site_name" content="Greg's blog">
+<meta property="og:locale" content="en_US">
+</head>
+
+<body class="nav-fixed">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a class="navbar-brand" href="../../index.html">
+    <span class="navbar-title">Greg’s blog</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Search"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll me-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="../../index.html"> <i class="bi bi-house-door" role="img">
+</i> 
+<span class="menu-text">Home</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../../posts.html"> <i class="bi bi-file-richtext" role="img">
+</i> 
+<span class="menu-text">Blog</span></a>
+  </li>  
+</ul>
+            <ul class="navbar-nav navbar-nav-scroll ms-auto">
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://github.com/gcerar"> <i class="bi bi-github" role="img">
+</i> 
+<span class="menu-text"></span></a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://linkedin.com/in/gcerar"> <i class="bi bi-linkedin" role="img">
+</i> 
+<span class="menu-text"></span></a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="../../index.xml"> <i class="bi bi-rss" role="img">
+</i> 
+<span class="menu-text"></span></a>
+  </li>  
+</ul>
+          </div> <!-- /navcollapse -->
+          <div class="quarto-navbar-tools">
+</div>
+      </div> <!-- /container-fluid -->
+    </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active" data-toc-expanded="99">
+    <h2 id="toc-title">Table of Contents</h2>
+   
+  <ul>
+  <li><a href="#introduction" id="toc-introduction" class="nav-link active" data-scroll-target="#introduction">Introduction</a></li>
+  <li><a href="#prerequisites" id="toc-prerequisites" class="nav-link" data-scroll-target="#prerequisites">Prerequisites</a></li>
+  <li><a href="#implementation" id="toc-implementation" class="nav-link" data-scroll-target="#implementation">Implementation</a>
+  <ul class="collapse">
+  <li><a href="#loss-metrics" id="toc-loss-metrics" class="nav-link" data-scroll-target="#loss-metrics">Loss metrics</a>
+  <ul class="collapse">
+  <li><a href="#content-loss-metric" id="toc-content-loss-metric" class="nav-link" data-scroll-target="#content-loss-metric">Content loss metric</a></li>
+  <li><a href="#style-loss" id="toc-style-loss" class="nav-link" data-scroll-target="#style-loss">Style loss</a></li>
+  <li><a href="#total-variation-loss" id="toc-total-variation-loss" class="nav-link" data-scroll-target="#total-variation-loss">Total Variation Loss</a></li>
+  <li><a href="#total-loss" id="toc-total-loss" class="nav-link" data-scroll-target="#total-loss">Total Loss</a></li>
+  </ul></li>
+  <li><a href="#input-preparation" id="toc-input-preparation" class="nav-link" data-scroll-target="#input-preparation">Input preparation</a></li>
+  <li><a href="#neural-style-transfer-process" id="toc-neural-style-transfer-process" class="nav-link" data-scroll-target="#neural-style-transfer-process">Neural Style Transfer Process</a></li>
+  </ul></li>
+  <li><a href="#conclusions" id="toc-conclusions" class="nav-link" data-scroll-target="#conclusions">Conclusions</a></li>
+  <li><a href="#acknowledgements" id="toc-acknowledgements" class="nav-link" data-scroll-target="#acknowledgements">Acknowledgements</a></li>
+  <li><a href="#appendix" id="toc-appendix" class="nav-link" data-scroll-target="#appendix">Appendix</a>
+  <ul class="collapse">
+  <li><a href="#examples" id="toc-examples" class="nav-link" data-scroll-target="#examples">Examples</a></li>
+  </ul></li>
+  </ul>
+<div class="quarto-alternate-formats"><h2>Other Formats</h2><ul><li><a href="index.out.ipynb" download="index.out.ipynb"><i class="bi bi-journal-code"></i>Jupyter</a></li></ul></div></nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Neural Style Transfer</h1>
+  <div class="quarto-categories">
+    <div class="quarto-category">pytorch</div>
+    <div class="quarto-category">NST</div>
+  </div>
+  </div>
+
+
+
+<div class="quarto-title-meta">
+
+    <div>
+    <div class="quarto-title-meta-heading">Author</div>
+    <div class="quarto-title-meta-contents">
+             <p>Gregor Cerar </p>
+          </div>
+  </div>
+    
+    <div>
+    <div class="quarto-title-meta-heading">Published</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date">September 15, 2023</p>
+    </div>
+  </div>
+  
+    <div>
+    <div class="quarto-title-meta-heading">Modified</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date-modified">November 14, 2023</p>
+    </div>
+  </div>
+    
+  </div>
+  
+<div>
+  <div class="abstract">
+    <div class="block-title">Abstract</div>
+    <p>Neural Style Transfer (NST) was a breakthrough deep learning approach that can transfer <strong>artistic style</strong> from one image to another. Eager to learn how it works, I’ve implemented the original approach from scratch.</p>
+  </div>
+</div>
+
+
+</header>
+
+
+<section id="introduction" class="level1">
+<h1>Introduction</h1>
+<p><a href="https://en.wikipedia.org/wiki/Neural_style_transfer">Neural Style Transfer</a> (NST) is a deep learning technique that combines the <strong>content</strong> of one image with the <strong>style</strong> of another, like giving your photo a Van Gogh-esque makeover.</p>
+<p>Using convolutional neural networks, NST examines both images’ features and creates a new image that merges the content’s structure with the style’s attributes. This technique became a hit due to its novel outcomes, leading to its adoption in various apps and platforms and highlighting deep learning’s prowess in image transformation.</p>
+<p>Introduced initially in “<a href="https://arxiv.org/abs/1508.06576">A Neural Algorithm of Artistic Style</a>” <span class="citation" data-cites="gatys2015neural">(<a href="#ref-gatys2015neural" role="doc-biblioref">Gatys, Ecker, and Bethge 2015</a>)</span>, this method transfers art styles between images. Eager to learn how it works, I’ve implemented the original approach from scratch and presented a few cherry-picked transformed examples.</p>
+</section>
+<section id="prerequisites" class="level1">
+<h1>Prerequisites</h1>
+<p>Before we get started, we need to install <a href="https://numpy.org/">NumPy</a>, <a href="https://matplotlib.org/">Matplotlib</a>, <a href="https://pytorch.org/">PyTorch</a> deep learning framework, and finally, <a href="https://pytorch.org/vision/stable/index.html">Torchvision</a> library.</p>
+<div id="cell-3" class="cell" data-execution_count="1">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> pathlib <span class="im">import</span> Path</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> typing <span class="im">import</span> List, Union</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> matplotlib <span class="im">import</span> pyplot <span class="im">as</span> plt</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="op">%</span>config InlineBackend.figure_formats <span class="op">=</span> {<span class="st">'retina'</span>, <span class="st">'png'</span>}</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> torch</span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> PIL <span class="im">import</span> Image</span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> torch <span class="im">import</span> Tensor, nn, optim</span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> torch.nn <span class="im">import</span> functional <span class="im">as</span> F</span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> torchvision <span class="im">import</span> models, transforms <span class="im">as</span> T</span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> torchvision.transforms <span class="im">import</span> functional <span class="im">as</span> VF</span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> torchvision.utils <span class="im">import</span> make_grid</span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> tqdm <span class="im">import</span> tqdm</span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a><span class="co"># Random seed for reproducibility</span></span>
+<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a>SEED <span class="op">=</span> <span class="dv">42</span></span>
+<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a><span class="co"># Size of the output image</span></span>
+<span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a>IMG_SIZE <span class="op">=</span> <span class="dv">512</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Although it is possible to run neural networks on a CPU, using compute accelerators, such as GPU, will do transformation much faster. Here, I utilize my NVIDIA RTX 3090, where I also took advantage of available tensor cores and reduced precision data type <a href="https://en.wikipedia.org/wiki/Bfloat16_floating-point_format">bfloat16</a> for faster transformation.</p>
+<div id="cell-5" class="cell" data-execution_count="2">
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>AMP_ENABLED <span class="op">=</span> <span class="va">False</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>device <span class="op">=</span> torch.device(<span class="st">"cuda"</span> <span class="cf">if</span> torch.cuda.is_available() <span class="cf">else</span> <span class="st">"cpu"</span>)</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> torch.cuda.is_available():</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Allow CuDNN internal benchmarking for architecture-specific optimizations</span></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>    torch.backends.cudnn.benchmark <span class="op">=</span> <span class="va">True</span></span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Enable bfloat16 if supported</span></span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> torch.cuda.is_bf16_supported():</span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>        AMP_ENABLED <span class="op">=</span> <span class="va">True</span></span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>        torch.set_float32_matmul_precision(<span class="st">'medium'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="implementation" class="level1">
+<h1>Implementation</h1>
+<div id="fig-architecture" class="quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-architecture-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="./figures/neural-style-transfer.png" class="img-fluid figure-img">
+</div>
+<figcaption class="figure quarto-float-caption quarto-float-fig" id="fig-architecture-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;1: The Neural Style Transfer framework introduced by Gatys <em>et al.</em> distinguishes style and content features from designated layers.
+</figcaption>
+</figure>
+</div>
+<p>Implementing NST was initially confusing since it does not follow the typical boilerplate used in deep learning. In the following sections, I’ll delve into its implementation step by step and often refer back to <a href="#fig-architecture" class="quarto-xref">Figure&nbsp;1</a>. The steps are as follows:</p>
+<ul>
+<li>Prepare the content, style, and target images.</li>
+<li>Prepare a pre-trained VGG neural network and prevent changes to its weights.</li>
+<li>Introduce three unique loss metrics.</li>
+<li>Adjust the neural network to extract features during forward-backward passes, applying gradient modifications to the target image. The neural network stays unchanged in the process.</li>
+<li>Iterate through this process.</li>
+</ul>
+<div id="cell-7" class="cell" data-execution_count="3">
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Weights for different features (were these used by original authors?)</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>STYLE_LAYERS_DEFAULT <span class="op">=</span> {</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>    <span class="st">"conv1_1"</span>: <span class="fl">0.75</span>,</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>    <span class="st">"conv2_1"</span>: <span class="fl">0.5</span>,</span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>    <span class="st">"conv3_1"</span>: <span class="fl">0.2</span>,</span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>    <span class="st">"conv4_1"</span>: <span class="fl">0.2</span>,</span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>    <span class="st">"conv5_1"</span>: <span class="fl">0.2</span>,</span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>CONTENT_LAYERS_DEFAULT <span class="op">=</span> (<span class="st">"conv5_2"</span>,)</span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>CONTENT_WEIGHT <span class="op">=</span> <span class="dv">8</span>  <span class="co"># "alpha" in the literature (default: 8)</span></span>
+<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a>STYLE_WEIGHT <span class="op">=</span> <span class="dv">70</span>  <span class="co"># "beta" in the literature (default: 70)</span></span>
+<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a>TV_WEIGHT <span class="op">=</span> <span class="dv">10</span>  <span class="co"># "gamma" in the literature (default: 10)</span></span>
+<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-17"><a href="#cb3-17" aria-hidden="true" tabindex="-1"></a>LEARNING_RATE <span class="op">=</span> <span class="fl">0.004</span></span>
+<span id="cb3-18"><a href="#cb3-18" aria-hidden="true" tabindex="-1"></a>N_EPOCHS <span class="op">=</span> <span class="dv">5_000</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<section id="loss-metrics" class="level2">
+<h2 class="anchored" data-anchor-id="loss-metrics">Loss metrics</h2>
+<p>To effectively implement Neural Style Transfer, we need to quantify how well the generated image matches both the <strong>content</strong> and <strong>style</strong> of our source images. This is done using loss metrics. Let’s delve into the specifics of these metrics and how they drive the NST process.</p>
+<section id="content-loss-metric" class="level3">
+<h3 class="anchored" data-anchor-id="content-loss-metric">Content loss metric</h3>
+<p>Content loss is calculated through Euclidean distance (<em>i.e.,</em> mean squared error) between the respective intermediate higher-level feature representation <span class="math inline">\(F^l\)</span> and <span class="math inline">\(P^l\)</span> of original input image <span class="math inline">\(\vec{x}\)</span> and the content image <span class="math inline">\(\vec{p}\)</span> at layer <span class="math inline">\(l\)</span>.</p>
+<p>Hence, a given input image <span class="math inline">\(\vec{x}\)</span> is encoded in each layer of the CNN by the filter responses to that image. A layer with <span class="math inline">\(N_l\)</span> distinct filters has <span class="math inline">\(N_l\)</span> feature maps of size <span class="math inline">\(M_l\)</span>, where <span class="math inline">\(M_l\)</span> is the height times the width of the feature map. So the response in a layer <span class="math inline">\(l\)</span> can be stored in a matrix <span class="math inline">\(F^l \in \mathcal{R}^{N_l \times M_l}\)</span> where <span class="math inline">\(F_{ij}^{l}\)</span> is the activation of the <span class="math inline">\(i^{th}\)</span> filter at position <span class="math inline">\(j\)</span> in layer <span class="math inline">\(l\)</span>.</p>
+<p><span class="math display">\[
+\mathcal{L}_{content}(\vec{p}, \vec{x}, l) = \frac{1}{2}\sum_{i,j} (F^{l}_{ij} - P^{l}_{ij})^2
+\]</span></p>
+<div id="cell-10" class="cell" data-execution_count="4">
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> content_loss_func(target_features, precomputed_content_features):</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""Calculate content loss metric for give layers."""</span></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>    content_loss <span class="op">=</span> <span class="fl">0.0</span></span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> layer <span class="kw">in</span> precomputed_content_features:</span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>        target_feature <span class="op">=</span> target_features[layer]</span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>        content_feature <span class="op">=</span> precomputed_content_features[layer]</span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>        content_layer_loss <span class="op">=</span> F.mse_loss(target_feature, content_feature)</span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>        content_loss <span class="op">+=</span> content_layer_loss</span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> content_loss</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="style-loss" class="level3">
+<h3 class="anchored" data-anchor-id="style-loss">Style loss</h3>
+<p>The style loss is more convolved than the content loss. We compute it by comparing the Gram matrices of the feature maps from the style image and the generated image.</p>
+<p>First, let’s understand the <a href="https://en.wikipedia.org/wiki/Gram_matrix">Gram matrix</a>. Given the feature map <span class="math inline">\(F\)</span> of size <span class="math inline">\(C \times (H \times W)\)</span>, where <span class="math inline">\(C\)</span> is the number of channels and <span class="math inline">\(H \times W\)</span> are the spatial dimensions, the Gram matrix <span class="math inline">\(G\)</span> is of size <span class="math inline">\(C \times C\)</span> and is computed as</p>
+<p><span class="math display">\[
+G^l_{ij} = \sum_k F^l_{ik} F^l_{jk}
+\]</span></p>
+<p>where <span class="math inline">\(G_{ij}\)</span> is the inner product between vectorized feature maps <span class="math inline">\(i\)</span> and <span class="math inline">\(j\)</span>. This results in a matrix that captures the correlation between different feature maps and, thus, the style information.</p>
+<div id="cell-12" class="cell" data-execution_count="5">
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> gram_matrix(<span class="bu">input</span>: Tensor) <span class="op">-&gt;</span> Tensor:</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>    (b, c, h, w) <span class="op">=</span> <span class="bu">input</span>.size()</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>    <span class="co"># reshape into (C x (H x W))</span></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>    features <span class="op">=</span> <span class="bu">input</span>.view(b <span class="op">*</span> c, h <span class="op">*</span> w)</span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>    <span class="co"># compute the gram product</span></span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>    gram <span class="op">=</span> torch.mm(features, features.t())</span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> gram</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>The style loss between the Gram matrix of the generated image <span class="math inline">\(G\)</span> and that of style image <span class="math inline">\(A\)</span> (at a specific layer <span class="math inline">\(l\)</span>) is:</p>
+<p><span class="math display">\[
+E_l = \frac{1}{4 N^{2}_{l} M^{2}_{l}} \sum_{i,j}(G^l_{ij} - A^l_{ij})^2
+\]</span></p>
+<p>Where <span class="math inline">\(E_l\)</span> is the style loss for layer <span class="math inline">\(l\)</span>, <span class="math inline">\(N_l\)</span> and <span class="math inline">\(M_l\)</span> are the numbers of channels and height times width in the feature representation of layer <span class="math inline">\(l\)</span>, respectively. <span class="math inline">\(G_{ij}^l\)</span> and <span class="math inline">\(A_{ij}^l\)</span> are the gram matrices of the intermediate representation of the style image <span class="math inline">\(\vec{a}\)</span> and the input base image <span class="math inline">\(\vec{x}\)</span> respectively.</p>
+<p>The total style loss is:</p>
+<p><span class="math display">\[
+\mathcal{L}_{style}(\vec{a}, \vec{x}) = \sum_{l=0}^{L} w_l E_l
+\]</span></p>
+<div id="cell-14" class="cell" data-execution_count="6">
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> style_loss_func(target_features, style_features, precomputed_style_grams):</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>    style_loss <span class="op">=</span> <span class="fl">0.0</span></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> layer <span class="kw">in</span> style_features:</span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>        target_feature <span class="op">=</span> target_features[layer]</span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>        target_gram <span class="op">=</span> gram_matrix(target_feature)</span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>        style_gram <span class="op">=</span> precomputed_style_grams[layer]</span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a>        _, c, h, w <span class="op">=</span> target_feature.shape</span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a>        weight <span class="op">=</span> STYLE_LAYERS_DEFAULT[layer]</span>
+<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a>        layer_style_loss <span class="op">=</span> weight <span class="op">*</span> F.mse_loss(target_gram, style_gram) <span class="op">/</span> (c <span class="op">*</span> h <span class="op">*</span> w)</span>
+<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a>        style_loss <span class="op">+=</span> layer_style_loss</span>
+<span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-15"><a href="#cb6-15" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> style_loss</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="total-variation-loss" class="level3">
+<h3 class="anchored" data-anchor-id="total-variation-loss">Total Variation Loss</h3>
+<p>Total Variation (TV) loss, also known as Total Variation Regularization, is commonly added to the Neural Style Transfer objective to encourage spatial smoothness in the generated image. Without it, the output might exhibit noise or oscillations, particularly in regions where the content and style objectives don’t offer much guidance.</p>
+<p>Given an image <span class="math inline">\(\vec{x}\)</span> of size <span class="math inline">\(H \times W \times C\)</span> (height, width, channels), the Total Variation loss is defined as the sum of the absolute differences between neighboring pixel values:</p>
+<p><span class="math display">\[
+\mathcal{L}_{TV}(\vec{x}) = \sum_{i,j} ((x_{i,j+1} - x_{i,j})^2 + (x_{i+1,j} - x_{i,j})^2)
+\]</span></p>
+<p>where <span class="math inline">\(x_{i,j}\)</span> is the pixel value at position <span class="math inline">\((i,j)\)</span>.</p>
+<p>In simple terms, this loss penalizes abrupt changes in pixel values from one to its neighbors. By minimizing this loss, the generated image becomes smoother, reducing artifacts and unwanted noise. When combined with content and style losses, the TV loss ensures that the resulting image not only captures the content and style of the source images but also looks visually coherent and smooth.</p>
+<div id="cell-16" class="cell" data-execution_count="7">
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> total_variance_loss_func(target: Tensor):</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>    tv_loss <span class="op">=</span> F.l1_loss(target[:, :, :, :<span class="op">-</span><span class="dv">1</span>], target[:, :, :, <span class="dv">1</span>:]) <span class="op">\</span></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>            <span class="op">+</span> F.l1_loss(target[:, :, :<span class="op">-</span><span class="dv">1</span>, :], target[:, :, <span class="dv">1</span>:, :])</span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> tv_loss</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="total-loss" class="level3">
+<h3 class="anchored" data-anchor-id="total-loss">Total Loss</h3>
+<p>The total loss combines three loss metric components, each targeting a specific aspect of the image generation process. Let’s recap the components:</p>
+<ol type="1">
+<li><strong>Content Loss</strong>: Ensures the generated image resembles the content image’s content.</li>
+<li><strong>Style Loss</strong>: Ensures the generated image captures the stylistic features of the style image.</li>
+<li><strong>Total Variation Loss</strong>: Encourages spatial smoothness in the generated image, reducing artifacts and noise.</li>
+</ol>
+<p>Given the above components, the total loss <span class="math inline">\(\mathcal{L}_{total}\)</span> for Neural Style Transfer can be formulated as:</p>
+<p><span class="math display">\[
+\mathcal{L}_{total}(\vec{p},\vec{a},\vec{x}) = \alpha\mathcal{L}_{content}(\vec{p},\vec{x}) + \beta\mathcal{L}_{style}(\vec{a},\vec{x}) + \gamma\mathcal{L}_{TV}(\vec{x})
+\]</span></p>
+<p><span class="math inline">\(\alpha\)</span>, <span class="math inline">\(\beta\)</span>, and <span class="math inline">\(\gamma\)</span> are weight factors that determine the relative importance of the content, style, and the total variation losses, respectively. By adjusting these weights, one can control the balance between content preservation, style transfer intensity, and the smoothness of the generated image. The algorithm aims to adjust the generated image to minimize the total loss.</p>
+</section>
+</section>
+<section id="input-preparation" class="level2">
+<h2 class="anchored" data-anchor-id="input-preparation">Input preparation</h2>
+<p>Here we specify path to content and style images:</p>
+<div id="cell-20" class="cell" data-execution_count="8">
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>content_path <span class="op">=</span> <span class="st">"./bridge.jpg"</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>style_path <span class="op">=</span> <span class="st">"./walking-in-the-rain.jpg"</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="neural-style-transfer-process" class="level2">
+<h2 class="anchored" data-anchor-id="neural-style-transfer-process">Neural Style Transfer Process</h2>
+<p>For feature extraction, we’ll leverage <a href="https://arxiv.org/abs/1409.1556">VGG19</a>, pre-trained on <a href="https://www.image-net.org/">ImageNet</a>, same as the original authors. Note that we set the model to evaluation mode, ensuring we only use VGG19 to extract features without altering its weights. We also transfer the neural network (NN) to a chosen device, ideally a GPU, for optimal performance.</p>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Note
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>An intriguing choice by Gatys <em>et al.</em> was to modify VGG-19, replacing max pooling with average pooling, aiming for visually superior results. However, a challenge arises: our NN was initially trained with <code>MaxPool2d</code> layers. Substituting them can affect activations due to reduced output values. To counteract this, we’ve introduced a custom <code>ScaledAvgPool2d</code>.</p>
+</div>
+</div>
+<div id="cell-22" class="cell" data-execution_count="9">
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="co"># We will use a frozen pre-trained VGG neural network for feature extraction.</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="co"># In the original paper, authors have used VGG19 (without batch normalization)</span></span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>model <span class="op">=</span> models.vgg19(weights<span class="op">=</span>models.VGG19_Weights.IMAGENET1K_V1).features</span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Authors in the original paper suggested using AvgPool instead of MaxPool</span></span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a><span class="co"># for more pleasing results. However, changing the pooling also affects</span></span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a><span class="co"># activation, so the input needs to be scaled (can't find the original source).</span></span>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> ScaledAvgPool2d(nn.Module):</span>
+<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> <span class="fu">__init__</span>(<span class="va">self</span>, kernel_size, stride, padding<span class="op">=</span><span class="dv">0</span>, scale_factor<span class="op">=</span><span class="fl">2.0</span>):</span>
+<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a>        <span class="bu">super</span>().<span class="fu">__init__</span>()</span>
+<span id="cb9-11"><a href="#cb9-11" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.avgpool <span class="op">=</span> torch.nn.AvgPool2d(kernel_size, stride, padding)</span>
+<span id="cb9-12"><a href="#cb9-12" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.scale_factor <span class="op">=</span> scale_factor</span>
+<span id="cb9-13"><a href="#cb9-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-14"><a href="#cb9-14" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> forward(<span class="va">self</span>, x):</span>
+<span id="cb9-15"><a href="#cb9-15" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> <span class="va">self</span>.avgpool(x) <span class="op">*</span> <span class="va">self</span>.scale_factor</span>
+<span id="cb9-16"><a href="#cb9-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-17"><a href="#cb9-17" aria-hidden="true" tabindex="-1"></a><span class="co"># (OPTIONAL) Replace max-pooling layers with custom average pooling layers</span></span>
+<span id="cb9-18"><a href="#cb9-18" aria-hidden="true" tabindex="-1"></a><span class="co">#for i, layer in enumerate(model):</span></span>
+<span id="cb9-19"><a href="#cb9-19" aria-hidden="true" tabindex="-1"></a><span class="co">#   if isinstance(layer, torch.nn.MaxPool2d):</span></span>
+<span id="cb9-20"><a href="#cb9-20" aria-hidden="true" tabindex="-1"></a><span class="co">#       model[i] = ScaledAvgPool2d(kernel_size=2, stride=2, padding=0)</span></span>
+<span id="cb9-21"><a href="#cb9-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-22"><a href="#cb9-22" aria-hidden="true" tabindex="-1"></a>model <span class="op">=</span> model.<span class="bu">eval</span>().requires_grad_(<span class="va">False</span>).to(device)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>The pretrained VGG model used normalized ImageNet samples for better performance. For effective style transfer, we’ll follow suit to improve feature extraction. Though images will appear altered post-normalization, they are reverted to their original state after the NST process. Next, we’ll transform the content and style images by:</p>
+<ul>
+<li>Loading them from storage.</li>
+<li>Resizing while maintaining aspect ratio.</li>
+<li>Converting to tensors.</li>
+<li>Normalizing using ImageNet weights.</li>
+</ul>
+<div id="cell-24" class="cell" data-execution_count="10">
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="co"># ImageNet normalization weights per channel</span></span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>IMAGENET_MEAN <span class="op">=</span> (<span class="fl">0.485</span>, <span class="fl">0.456</span>, <span class="fl">0.406</span>)</span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>IMAGENET_STD <span class="op">=</span> (<span class="fl">0.229</span>, <span class="fl">0.224</span>, <span class="fl">0.225</span>)</span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>transform <span class="op">=</span> T.Compose([</span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Shorter edge of the image will be matched to `IMG_SIZE`</span></span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a>    T.Resize(IMG_SIZE),</span>
+<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a>    T.ToTensor(),</span>
+<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a>    T.Normalize(IMAGENET_MEAN, IMAGENET_STD),</span>
+<span id="cb10-10"><a href="#cb10-10" aria-hidden="true" tabindex="-1"></a>])</span>
+<span id="cb10-11"><a href="#cb10-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-12"><a href="#cb10-12" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> load_image(path: Union[<span class="bu">str</span>, Path]) <span class="op">-&gt;</span> Tensor:</span>
+<span id="cb10-13"><a href="#cb10-13" aria-hidden="true" tabindex="-1"></a>    image <span class="op">=</span> Image.<span class="bu">open</span>(path).convert(<span class="st">"RGB"</span>)</span>
+<span id="cb10-14"><a href="#cb10-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-15"><a href="#cb10-15" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Transform images into tensors</span></span>
+<span id="cb10-16"><a href="#cb10-16" aria-hidden="true" tabindex="-1"></a>    image <span class="op">=</span> transform(image)</span>
+<span id="cb10-17"><a href="#cb10-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-18"><a href="#cb10-18" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Add dimension to imitate batch size equal to 1: (C,H,W) -&gt; (B,C,H,W)</span></span>
+<span id="cb10-19"><a href="#cb10-19" aria-hidden="true" tabindex="-1"></a>    image <span class="op">=</span> image.unsqueeze(<span class="dv">0</span>)</span>
+<span id="cb10-20"><a href="#cb10-20" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> image</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>The following code will prepares content <span class="math inline">\(\vec{p}\)</span>, style <span class="math inline">\(\vec{a}\)</span>, and target <span class="math inline">\(\vec{x}\)</span> images. The target image is a clone of the content image and we enable computation of gradients on it.</p>
+<div id="cell-26" class="cell" data-execution_count="11">
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="co"># The "style" image from which we obtain style</span></span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>style <span class="op">=</span> load_image(style_path).to(device)</span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a><span class="co"># The "content" image on which we apply style</span></span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>content <span class="op">=</span> load_image(content_path).to(device)</span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a><span class="co"># The "target" image to store the outcome</span></span>
+<span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a>target <span class="op">=</span> content.clone().requires_grad_(<span class="va">True</span>).to(device)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>The function below retrieves feature maps from designated layers. As shown in <a href="#fig-architecture" class="quarto-xref">Figure&nbsp;1</a>:</p>
+<ul>
+<li>Content feature map comes from <code>relu5_2</code>.</li>
+<li>Style feature maps are sourced from <code>relu1_1</code>, <code>relu2_1</code>, <code>relu3_1</code>, <code>relu4_1</code>, and <code>relu5_1</code>.</li>
+</ul>
+<div id="cell-28" class="cell" data-execution_count="12">
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> get_features(image: Tensor, model: nn.Module, layers<span class="op">=</span><span class="va">None</span>):</span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> layers <span class="kw">is</span> <span class="va">None</span>:</span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>        layers <span class="op">=</span> <span class="bu">tuple</span>(STYLE_LAYERS_DEFAULT) <span class="op">+</span> CONTENT_LAYERS_DEFAULT</span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>    features <span class="op">=</span> {}</span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a>    block_num <span class="op">=</span> <span class="dv">1</span></span>
+<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a>    conv_num <span class="op">=</span> <span class="dv">0</span></span>
+<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-9"><a href="#cb12-9" aria-hidden="true" tabindex="-1"></a>    x <span class="op">=</span> image</span>
+<span id="cb12-10"><a href="#cb12-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-11"><a href="#cb12-11" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> layer <span class="kw">in</span> model:</span>
+<span id="cb12-12"><a href="#cb12-12" aria-hidden="true" tabindex="-1"></a>        x <span class="op">=</span> layer(x)</span>
+<span id="cb12-13"><a href="#cb12-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-14"><a href="#cb12-14" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> <span class="bu">isinstance</span>(layer, nn.Conv2d):</span>
+<span id="cb12-15"><a href="#cb12-15" aria-hidden="true" tabindex="-1"></a>            <span class="co"># produce layer name to find matching convolutions from the paper</span></span>
+<span id="cb12-16"><a href="#cb12-16" aria-hidden="true" tabindex="-1"></a>            <span class="co"># and store their output for further processing.</span></span>
+<span id="cb12-17"><a href="#cb12-17" aria-hidden="true" tabindex="-1"></a>            conv_num <span class="op">+=</span> <span class="dv">1</span></span>
+<span id="cb12-18"><a href="#cb12-18" aria-hidden="true" tabindex="-1"></a>            name <span class="op">=</span> <span class="ss">f"conv</span><span class="sc">{</span>block_num<span class="sc">}</span><span class="ss">_</span><span class="sc">{</span>conv_num<span class="sc">}</span><span class="ss">"</span></span>
+<span id="cb12-19"><a href="#cb12-19" aria-hidden="true" tabindex="-1"></a>            <span class="cf">if</span> name <span class="kw">in</span> layers:</span>
+<span id="cb12-20"><a href="#cb12-20" aria-hidden="true" tabindex="-1"></a>                features[name] <span class="op">=</span> x</span>
+<span id="cb12-21"><a href="#cb12-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-22"><a href="#cb12-22" aria-hidden="true" tabindex="-1"></a>        <span class="cf">elif</span> <span class="bu">isinstance</span>(layer, (nn.MaxPool2d, nn.AvgPool2d, ScaledAvgPool2d)):</span>
+<span id="cb12-23"><a href="#cb12-23" aria-hidden="true" tabindex="-1"></a>            <span class="co"># In VGG, each block ends with max/avg pooling layer.</span></span>
+<span id="cb12-24"><a href="#cb12-24" aria-hidden="true" tabindex="-1"></a>            block_num <span class="op">+=</span> <span class="dv">1</span></span>
+<span id="cb12-25"><a href="#cb12-25" aria-hidden="true" tabindex="-1"></a>            conv_num <span class="op">=</span> <span class="dv">0</span></span>
+<span id="cb12-26"><a href="#cb12-26" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-27"><a href="#cb12-27" aria-hidden="true" tabindex="-1"></a>        <span class="cf">elif</span> <span class="bu">isinstance</span>(layer, (nn.BatchNorm2d, nn.ReLU)):</span>
+<span id="cb12-28"><a href="#cb12-28" aria-hidden="true" tabindex="-1"></a>            <span class="cf">pass</span></span>
+<span id="cb12-29"><a href="#cb12-29" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-30"><a href="#cb12-30" aria-hidden="true" tabindex="-1"></a>        <span class="cf">else</span>:</span>
+<span id="cb12-31"><a href="#cb12-31" aria-hidden="true" tabindex="-1"></a>            <span class="cf">raise</span> <span class="pp">Exception</span>(<span class="ss">f"Unknown layer: </span><span class="sc">{</span>layer<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb12-32"><a href="#cb12-32" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-33"><a href="#cb12-33" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> features</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Since content and style images never change, we can precompute their feature maps and grams to speed up the NST process.</p>
+<div id="cell-30" class="cell" data-execution_count="13">
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Precompute content features, style features, and style gram matrices.</span></span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>content_features <span class="op">=</span> get_features(content, model, CONTENT_LAYERS_DEFAULT)</span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>style_features <span class="op">=</span> get_features(style, model, STYLE_LAYERS_DEFAULT)</span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>style_grams <span class="op">=</span> {layer: gram_matrix(style_features[layer]) <span class="cf">for</span> layer <span class="kw">in</span> style_features}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Next, we will use <a href="https://pytorch.org/docs/stable/generated/torch.optim.Adam.html">Adam</a> optimizer, where we specify that only target image <span class="math inline">\(\vec{x}\)</span> is considered for optimization.</p>
+<div id="cell-32" class="cell" data-execution_count="14">
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>optimizer <span class="op">=</span> optim.Adam([target], lr<span class="op">=</span>LEARNING_RATE)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>The final step of NST is to transfer style using everything we’ve implemented. We extract feature maps, compute total loss, perform steps using gradient descent, and repeat the process <code>N_EPOCHS</code> times. Gradient changes will apply only to the target image.</p>
+<p>To notably enhance NST speed, I utilized mixed precision with the unique <code>bfloat16</code> found in newer hardware. Traditional half-precision float16 doesn’t yield the same results. I’ve tested it. Probably because of the issue with gradient scaling.</p>
+<div id="cell-34" class="cell" data-execution_count="15">
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>pbar <span class="op">=</span> tqdm(<span class="bu">range</span>(N_EPOCHS))</span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> step <span class="kw">in</span> pbar:</span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>    <span class="cf">with</span> torch.autocast(<span class="st">'cuda'</span>, dtype<span class="op">=</span>torch.bfloat16, enabled<span class="op">=</span>AMP_ENABLED):</span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a>        target_features <span class="op">=</span> get_features(target, model)</span>
+<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a>        content_loss <span class="op">=</span> CONTENT_WEIGHT <span class="op">*</span> content_loss_func(target_features, content_features)</span>
+<span id="cb15-8"><a href="#cb15-8" aria-hidden="true" tabindex="-1"></a>        style_loss <span class="op">=</span> STYLE_WEIGHT <span class="op">*</span> style_loss_func(target_features, style_features, style_grams)</span>
+<span id="cb15-9"><a href="#cb15-9" aria-hidden="true" tabindex="-1"></a>        tv_loss <span class="op">=</span> TV_WEIGHT <span class="op">*</span> total_variance_loss_func(target)</span>
+<span id="cb15-10"><a href="#cb15-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-11"><a href="#cb15-11" aria-hidden="true" tabindex="-1"></a>        total_loss <span class="op">=</span> content_loss <span class="op">+</span> style_loss <span class="op">+</span> tv_loss</span>
+<span id="cb15-12"><a href="#cb15-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-13"><a href="#cb15-13" aria-hidden="true" tabindex="-1"></a>    optimizer.zero_grad(set_to_none<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb15-14"><a href="#cb15-14" aria-hidden="true" tabindex="-1"></a>    total_loss.backward()  <span class="co"># do I need to `retain_graph=True`?</span></span>
+<span id="cb15-15"><a href="#cb15-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-16"><a href="#cb15-16" aria-hidden="true" tabindex="-1"></a>    optimizer.step()</span>
+<span id="cb15-17"><a href="#cb15-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-18"><a href="#cb15-18" aria-hidden="true" tabindex="-1"></a>    pbar.set_postfix_str(</span>
+<span id="cb15-19"><a href="#cb15-19" aria-hidden="true" tabindex="-1"></a>        <span class="ss">f"total_loss=</span><span class="sc">{</span>total_loss<span class="sc">.</span>item()<span class="sc">:.2f}</span><span class="ss"> "</span></span>
+<span id="cb15-20"><a href="#cb15-20" aria-hidden="true" tabindex="-1"></a>        <span class="ss">f"content_loss=</span><span class="sc">{</span>content_loss<span class="sc">.</span>item()<span class="sc">:.2f}</span><span class="ss"> "</span></span>
+<span id="cb15-21"><a href="#cb15-21" aria-hidden="true" tabindex="-1"></a>        <span class="ss">f"style_loss=</span><span class="sc">{</span>style_loss<span class="sc">.</span>item()<span class="sc">:.2f}</span><span class="ss"> "</span></span>
+<span id="cb15-22"><a href="#cb15-22" aria-hidden="true" tabindex="-1"></a>        <span class="ss">f"tv_loss=</span><span class="sc">{</span>tv_loss<span class="sc">.</span>item()<span class="sc">:.2f}</span><span class="ss"> "</span></span>
+<span id="cb15-23"><a href="#cb15-23" aria-hidden="true" tabindex="-1"></a>    )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>100%|███████████████| 5000/5000 [01:30&lt;00:00, 55.25it/s, total_loss=43.89 content_loss=8.71 style_loss=29.08 tv_loss=6.10 ]</code></pre>
+</div>
+</div>
+<p>As mentioned before, images need to be denormalized (<em>i.e.</em> reverted back) to correct colors. After that we compare content, style and target images side-by-side.</p>
+<div id="cell-36" class="cell" data-execution_count="16">
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> InverseNormalize(<span class="bu">object</span>):</span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> <span class="fu">__init__</span>(<span class="va">self</span>, mean, std):</span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.mean <span class="op">=</span> mean</span>
+<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.std <span class="op">=</span> std</span>
+<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> <span class="fu">__call__</span>(<span class="va">self</span>, x: Tensor) <span class="op">-&gt;</span> Tensor:</span>
+<span id="cb17-7"><a href="#cb17-7" aria-hidden="true" tabindex="-1"></a>        <span class="cf">for</span> t, m, s <span class="kw">in</span> <span class="bu">zip</span>(x, <span class="va">self</span>.mean, <span class="va">self</span>.std):</span>
+<span id="cb17-8"><a href="#cb17-8" aria-hidden="true" tabindex="-1"></a>            t.mul_(s).add_(m)</span>
+<span id="cb17-9"><a href="#cb17-9" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> x</span>
+<span id="cb17-10"><a href="#cb17-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-11"><a href="#cb17-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-12"><a href="#cb17-12" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> Clip(<span class="bu">object</span>):</span>
+<span id="cb17-13"><a href="#cb17-13" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> <span class="fu">__init__</span>(<span class="va">self</span>, vmin: <span class="bu">float</span> <span class="op">=</span> <span class="fl">0.0</span>, vmax: <span class="bu">float</span> <span class="op">=</span> <span class="fl">1.0</span>):</span>
+<span id="cb17-14"><a href="#cb17-14" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.vmin <span class="op">=</span> vmin</span>
+<span id="cb17-15"><a href="#cb17-15" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.vmax <span class="op">=</span> vmax</span>
+<span id="cb17-16"><a href="#cb17-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-17"><a href="#cb17-17" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> <span class="fu">__call__</span>(<span class="va">self</span>, x):</span>
+<span id="cb17-18"><a href="#cb17-18" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> torch.clamp(x, <span class="va">self</span>.vmin, <span class="va">self</span>.vmax)</span>
+<span id="cb17-19"><a href="#cb17-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-20"><a href="#cb17-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-21"><a href="#cb17-21" aria-hidden="true" tabindex="-1"></a>inv_transform_preview <span class="op">=</span> T.Compose([</span>
+<span id="cb17-22"><a href="#cb17-22" aria-hidden="true" tabindex="-1"></a>    InverseNormalize(IMAGENET_MEAN, IMAGENET_STD),</span>
+<span id="cb17-23"><a href="#cb17-23" aria-hidden="true" tabindex="-1"></a>    T.Resize(IMG_SIZE, antialias<span class="op">=</span><span class="va">True</span>),</span>
+<span id="cb17-24"><a href="#cb17-24" aria-hidden="true" tabindex="-1"></a>    T.CenterCrop((IMG_SIZE, IMG_SIZE)),</span>
+<span id="cb17-25"><a href="#cb17-25" aria-hidden="true" tabindex="-1"></a>    Clip(),</span>
+<span id="cb17-26"><a href="#cb17-26" aria-hidden="true" tabindex="-1"></a>])</span>
+<span id="cb17-27"><a href="#cb17-27" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-28"><a href="#cb17-28" aria-hidden="true" tabindex="-1"></a>imgs <span class="op">=</span> [</span>
+<span id="cb17-29"><a href="#cb17-29" aria-hidden="true" tabindex="-1"></a>    inv_transform_preview(i.detach().squeeze().cpu())</span>
+<span id="cb17-30"><a href="#cb17-30" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> i <span class="kw">in</span> (content, style, target)</span>
+<span id="cb17-31"><a href="#cb17-31" aria-hidden="true" tabindex="-1"></a>]</span>
+<span id="cb17-32"><a href="#cb17-32" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-33"><a href="#cb17-33" aria-hidden="true" tabindex="-1"></a>grid <span class="op">=</span> make_grid(imgs)</span>
+<span id="cb17-34"><a href="#cb17-34" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-35"><a href="#cb17-35" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> show(imgs):</span>
+<span id="cb17-36"><a href="#cb17-36" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> <span class="kw">not</span> <span class="bu">isinstance</span>(imgs, <span class="bu">list</span>):</span>
+<span id="cb17-37"><a href="#cb17-37" aria-hidden="true" tabindex="-1"></a>        imgs <span class="op">=</span> [imgs]</span>
+<span id="cb17-38"><a href="#cb17-38" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-39"><a href="#cb17-39" aria-hidden="true" tabindex="-1"></a>    fig, axs <span class="op">=</span> plt.subplots(ncols<span class="op">=</span><span class="bu">len</span>(imgs), figsize<span class="op">=</span>(<span class="dv">21</span>, <span class="dv">7</span>), squeeze<span class="op">=</span><span class="va">False</span>, dpi<span class="op">=</span><span class="dv">92</span>, tight_layout<span class="op">=</span><span class="va">True</span>, frameon<span class="op">=</span><span class="va">False</span>)</span>
+<span id="cb17-40"><a href="#cb17-40" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> i, img <span class="kw">in</span> <span class="bu">enumerate</span>(imgs):</span>
+<span id="cb17-41"><a href="#cb17-41" aria-hidden="true" tabindex="-1"></a>        img <span class="op">=</span> img.detach()</span>
+<span id="cb17-42"><a href="#cb17-42" aria-hidden="true" tabindex="-1"></a>        img <span class="op">=</span> VF.to_pil_image(img)</span>
+<span id="cb17-43"><a href="#cb17-43" aria-hidden="true" tabindex="-1"></a>        axs[<span class="dv">0</span>, i].imshow(np.asarray(img))</span>
+<span id="cb17-44"><a href="#cb17-44" aria-hidden="true" tabindex="-1"></a>        axs[<span class="dv">0</span>, i].<span class="bu">set</span>(xticklabels<span class="op">=</span>[], yticklabels<span class="op">=</span>[], xticks<span class="op">=</span>[], yticks<span class="op">=</span>[])</span>
+<span id="cb17-45"><a href="#cb17-45" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-46"><a href="#cb17-46" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-47"><a href="#cb17-47" aria-hidden="true" tabindex="-1"></a>show(grid)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="index_files/figure-html/cell-17-output-1.png" class="img-fluid figure-img"></p>
+<figcaption>Successfuly applied neural style transfer. The <strong>content</strong> image (left), the <strong>style</strong> image (center), and final <strong>target</strong> image (right).</figcaption>
+</figure>
+</div>
+</div>
+</div>
+</section>
+</section>
+<section id="conclusions" class="level1">
+<h1>Conclusions</h1>
+<p>Neural Style Transfer (NST) was a breakthrough deep learning approach that can transfer <strong>artistic style</strong> from one image to another. The key takeaway from my experience is the incredible potential of neural networks in merging art and tech, seamlessly blending the styles of different artworks with original images.</p>
+<p>What stood out was the use of a pre-trained neural network for feature extraction, extracting feature maps from particular layers, and then the ability to balance the content and style weight parameters to maintain the essence of the original image while effectively imitating the artistic style.</p>
+<p>Although the NST achieves pleasing results, it was soon overshadowed by faster and more advanced methods, such as <a href="https://en.wikipedia.org/wiki/DALL-E">DALL-E</a>, <a href="https://en.wikipedia.org/wiki/Stable_Diffusion">Stable Diffusion</a>, and <a href="https://en.wikipedia.org/wiki/Midjourney">Midjourney</a>. However, it represented a significant milestone toward artistic AI and generative AI models.</p>
+</section>
+<section id="acknowledgements" class="level1">
+<h1>Acknowledgements</h1>
+<p>Helpful articles and code repositories while writing my implementation:</p>
+<ul>
+<li>Gregor Koehler <em>et al.</em> <a href="https://nextjournal.com/gkoehler/pytorch-neural-style-transfer">gkoehler/pytorch-neural-style-transfer</a> (best resource in my opinion)</li>
+<li>Ritul’s <a href="https://medium.com/udacity-pytorch-challengers/style-transfer-using-deep-nural-network-and-pytorch-3fae1c2dd73e">Medium article</a> (good resource)</li>
+<li>Pragati Baheti <a href="https://www.v7labs.com/blog/neural-style-transfer">blog</a> visually present style extraction</li>
+<li>Aleksa Gordić (<a href="https://github.com/gordicaleksa/pytorch-neural-style-transfer">gordicaleksa/pytorch-neural-style-transfer</a>)</li>
+<li><a href="https://github.com/ProGamerGov/neural-style-pt/blob/master/neural_style.py">ProGamerGov/neural-style-pt</a></li>
+<li>Katherine Crowson (<a href="https://github.com/crowsonkb/style-transfer-pytorch/blob/master/style_transfer/style_transfer.py">rowsonkb/style-transfer-pytorch</a>)</li>
+<li>Derrick Mwiti’s <a href="https://heartbeat.comet.ml/neural-style-transfer-with-pytorch-49e7c1fe3bea">Medium article</a></li>
+<li>Aman Kumar Mallik’s <a href="https://towardsdatascience.com/implementing-neural-style-transfer-using-pytorch-fd8d43fb7bfa">Medium article</a></li>
+</ul>
+<p>I want to acknowledge the following artworks:</p>
+<ul>
+<li>“Gray Bridge and Trees” by Martin Damboldt</li>
+<li>“Walking in the Rain” by Leonid Afremov</li>
+<li>“The Starry Night” by Vincent van Gogh</li>
+</ul>
+<p>For a complete list of acknowledgments, please visit my GitHub repository:</p>
+<ul>
+<li><a href="https://github.com/gcerar/pytorch-neural-style-transfer/#acknowledgment">gcerar/pytorch-neural-style-transfer</a></li>
+</ul>
+</section>
+<section id="appendix" class="level1">
+<h1>Appendix</h1>
+<section id="examples" class="level2">
+<h2 class="anchored" data-anchor-id="examples">Examples</h2>
+<p>A few cherry-picked examples of style transfer:</p>
+<p><img src="./examples/bridge+walking-in-the-rain.webp" class="img-fluid" alt="bridge + Walking in the Rain"> <img src="./examples/walking-in-the-rain+bridge.webp" class="img-fluid" alt="Walking in the Rain + bridge"> <img src="./examples/bridge+starry-night-crop.webp" class="img-fluid" alt="bridge + Starry Night"> <img src="./examples/bridge+colorful-whirlpool.webp" class="img-fluid" alt="bridge + colorful whirlpool"></p>
+
+
+
+</section>
+</section>
+
+<div id="quarto-appendix" class="default"><section class="quarto-appendix-contents" role="doc-bibliography"><h2 class="anchored quarto-appendix-heading">References</h2><div id="refs" class="references csl-bib-body hanging-indent" data-entry-spacing="0" role="list">
+<div id="ref-gatys2015neural" class="csl-entry" role="listitem">
+Gatys, Leon A, Alexander S Ecker, and Matthias Bethge. 2015. <span>“A Neural Algorithm of Artistic Style.”</span> <em>arXiv Preprint arXiv:1508.06576</em>.
+</div>
+</div></section></div></main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    text: function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+    const config = {
+      allowHTML: true,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start',
+    };
+    if (contentFn) {
+      config.content = contentFn;
+    }
+    if (onTriggerFn) {
+      config.onTrigger = onTriggerFn;
+    }
+    if (onUntriggerFn) {
+      config.onUntrigger = onUntriggerFn;
+    }
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+  const xrefs = window.document.querySelectorAll('a.quarto-xref');
+  const processXRef = (id, note) => {
+    // Strip column container classes
+    const stripColumnClz = (el) => {
+      el.classList.remove("page-full", "page-columns");
+      if (el.children) {
+        for (const child of el.children) {
+          stripColumnClz(child);
+        }
+      }
+    }
+    stripColumnClz(note)
+    const typesetMath = (el) => {
+      if (window.MathJax) {
+        // MathJax Typeset
+        window.MathJax.typeset([el]);
+      } else if (window.katex) {
+        // KaTeX Render
+        var mathElements = el.getElementsByClassName("math");
+        var macros = [];
+        for (var i = 0; i < mathElements.length; i++) {
+          var texText = mathElements[i].firstChild;
+          if (mathElements[i].tagName == "SPAN") {
+            window.katex.render(texText.data, mathElements[i], {
+              displayMode: mathElements[i].classList.contains('display'),
+              throwOnError: false,
+              macros: macros,
+              fleqn: false
+            });
+          }
+        }
+      }
+    }
+    if (id === null || id.startsWith('sec-')) {
+      // Special case sections, only their first couple elements
+      const container = document.createElement("div");
+      if (note.children && note.children.length > 2) {
+        container.appendChild(note.children[0].cloneNode(true));
+        for (let i = 1; i < note.children.length; i++) {
+          const child = note.children[i];
+          if (child.tagName === "P" && child.innerText === "") {
+            continue;
+          } else {
+            container.appendChild(child.cloneNode(true));
+            break;
+          }
+        }
+        typesetMath(container);
+        return container.innerHTML
+      } else {
+        typesetMath(note);
+        return note.innerHTML;
+      }
+    } else {
+      // Remove any anchor links if they are present
+      const anchorLink = note.querySelector('a.anchorjs-link');
+      if (anchorLink) {
+        anchorLink.remove();
+      }
+      typesetMath(note);
+      return note.innerHTML;
+    }
+  }
+  for (var i=0; i<xrefs.length; i++) {
+    const xref = xrefs[i];
+    tippyHover(xref, undefined, function(instance) {
+      instance.disable();
+      let url = xref.getAttribute('href');
+      let hash = undefined; 
+      if (url.startsWith('#')) {
+        hash = url;
+      } else {
+        try { hash = new URL(url).hash; } catch {}
+      }
+      if (hash) {
+        const id = hash.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note !== null) {
+          try {
+            const html = processXRef(id, note.cloneNode(true));
+            instance.setContent(html);
+          } finally {
+            instance.enable();
+            instance.show();
+          }
+        } else {
+          // See if we can fetch this
+          fetch(url.split('#')[0])
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.getElementById(id);
+            if (note !== null) {
+              const html = processXRef(id, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      } else {
+        // See if we can fetch a full url (with no hash to target)
+        // This is a special case and we should probably do some content thinning / targeting
+        fetch(url)
+        .then(res => res.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const htmlDoc = parser.parseFromString(html, "text/html");
+          const note = htmlDoc.querySelector('main.content');
+          if (note !== null) {
+            // This should only happen for chapter cross references
+            // (since there is no id in the URL)
+            // remove the first header
+            if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+              note.children[0].remove();
+            }
+            const html = processXRef(null, note);
+            instance.setContent(html);
+          } 
+        }).finally(() => {
+          instance.enable();
+          instance.show();
+        });
+      }
+    }, function(instance) {
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            div.style.left = 0;
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+        // Handle positioning of the toggle
+    window.addEventListener(
+      "resize",
+      throttle(() => {
+        elRect = undefined;
+        if (selectedAnnoteEl) {
+          selectCodeLines(selectedAnnoteEl);
+        }
+      }, 10)
+    );
+    function throttle(fn, ms) {
+    let throttle = false;
+    let timer;
+      return (...args) => {
+        if(!throttle) { // first call gets through
+            fn.apply(this, args);
+            throttle = true;
+        } else { // all the others get throttled
+            if(timer) clearTimeout(timer); // cancel #2
+            timer = setTimeout(() => {
+              fn.apply(this, args);
+              timer = throttle = false;
+            }, ms);
+        }
+      };
+    }
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+<script src="https://giscus.app/client.js" data-repo="gcerar/gcerar.github.io" data-repo-id="" data-category="General" data-category-id="" data-mapping="title" data-reactions-enabled="1" data-emit-metadata="0" data-input-position="top" data-theme="light" data-lang="en" crossorigin="anonymous" async="">
+</script>
+<input type="hidden" id="giscus-base-theme" value="light">
+<input type="hidden" id="giscus-alt-theme" value="dark">
+</div> <!-- /content -->
+<footer class="footer">
+  <div class="nav-footer">
+    <div class="nav-footer-left">
+      &nbsp;
+    </div>   
+    <div class="nav-footer-center">
+<p>© Copyright 2021, Gregor Cerar</p>
+</div>
+    <div class="nav-footer-right">
+      &nbsp;
+    </div>
+  </div>
+</footer>
+
+
+
+
+<script src="../../site_libs/quarto-html/zenscroll-min.js"></script>
+</body></html>

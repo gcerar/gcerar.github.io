@@ -1,8 +1,8 @@
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en-us" xml:lang="en-us"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.4.420">
+<meta name="generator" content="quarto-1.4.510">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
@@ -73,11 +73,12 @@ function gtag(){dataLayer.push(arguments);}
 gtag('js', new Date());
 gtag('config', 'G-FB81SP2FX7', { 'anonymize_ip': true});
 </script>
+<style>html{ scroll-behavior: smooth; }</style>
 
 
 <meta property="og:title" content="Greg’s blog - Gregor Cerar, PhD">
-<meta property="og:description" content="">
-<meta property="og:image" content="gcerar.jpg">
+<meta property="og:description" content="Greg’s personal blog">
+<meta property="og:image" content="gcerar.github.io/gcerar.jpg">
 <meta property="og:site_name" content="Greg's blog">
 <meta property="og:locale" content="en_US">
 </head>
@@ -86,7 +87,7 @@ gtag('config', 'G-FB81SP2FX7', { 'anonymize_ip': true});
 
 <div id="quarto-search-results"></div>
   <header id="quarto-header" class="headroom fixed-top">
-    <nav class="navbar navbar-expand-lg navbar-dark ">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
       <div class="navbar-container container-fluid">
       <div class="navbar-brand-container mx-auto">
     <a class="navbar-brand" href="./index.html">
@@ -116,6 +117,16 @@ gtag('config', 'G-FB81SP2FX7', { 'anonymize_ip': true});
 </i> 
 <span class="menu-text"></span></a>
   </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://linkedin.com/in/gcerar"> <i class="bi bi-linkedin" role="img">
+</i> 
+<span class="menu-text"></span></a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="./index.xml"> <i class="bi bi-rss" role="img">
+</i> 
+<span class="menu-text"></span></a>
+  </li>  
 </ul>
           </div> <!-- /navcollapse -->
           <div class="quarto-navbar-tools">
@@ -139,8 +150,9 @@ gtag('config', 'G-FB81SP2FX7', { 'anonymize_ip': true});
 <div class="quarto-title-meta">
   </div>
 </header><main class="content" id="quarto-document-content">
-<p>Hi 🖐️! I’m Gregor (Greg for short). I’m currently a postdoc at <a href="https://sensorlab.ijs.si">SensorLab</a>, Jozef Stefan Institute, and a data scientist at <a href="https://comsensus.eu">Comsensus</a>. Most of my work revolves around AI applications in smart infrastructure and time series data. My main research interest is in applications of self-supervised learning in wireless communications.</p>
-<p>I’m an introvert who usually stays away from the spotlight, deeply enjoys the quiet corners of research and writing elegant code. I work mostly in Python. I enjoy hiking, playing chess and “Uno!” card game.</p>
+<p>Hi 🖐️! I’m Gregor (Greg for short). I’m currently a postdoc at <a href="https://sensorlab.ijs.si">SensorLab</a>, Jožef Stefan Institute, and concurrently a data scientist at <a href="https://comsensus.eu">Comsensus</a>.</p>
+<p>Most of my work revolves around AI applications in smart infrastructure and time series data. My main research interest is in applications of self-supervised learning in wireless communications.</p>
+<p>On a personal note, I’m an introvert who usually stays away from the spotlight and deeply enjoys the quiet corners of research and writing elegant code, mainly in Python. Beyond the screens and algorithms, I enjoy hiking, playing chess, and the “Uno!” card game.</p>
 
 
 </main> 
@@ -311,8 +323,15 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       // Special case sections, only their first couple elements
       const container = document.createElement("div");
       if (note.children && note.children.length > 2) {
-        for (let i = 0; i < 2; i++) {
-          container.appendChild(note.children[i].cloneNode(true));
+        container.appendChild(note.children[0].cloneNode(true));
+        for (let i = 1; i < note.children.length; i++) {
+          const child = note.children[i];
+          if (child.tagName === "P" && child.innerText === "") {
+            continue;
+          } else {
+            container.appendChild(child.cloneNode(true));
+            break;
+          }
         }
         typesetMath(container);
         return container.innerHTML
@@ -552,11 +571,11 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 <footer class="footer">
   <div class="nav-footer">
     <div class="nav-footer-left">
-<p>Copyright 2021, Gregor Cerar</p>
-</div>   
-    <div class="nav-footer-center">
       &nbsp;
-    </div>
+    </div>   
+    <div class="nav-footer-center">
+<p>© Copyright 2021, Gregor Cerar</p>
+</div>
     <div class="nav-footer-right">
       &nbsp;
     </div>
@@ -566,4 +585,5 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 
 
 
+<script src="site_libs/quarto-html/zenscroll-min.js"></script>
 </body></html>
