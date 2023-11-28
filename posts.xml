@@ -3494,7 +3494,7 @@ background-color: null;
 font-style: inherit;"> "</span></span>
 <span id="cb15-23">    )</span></code></pre></div>
 <div class="cell-output cell-output-stderr">
-<pre><code>100%|███████████████| 5000/5000 [01:30&lt;00:00, 55.25it/s, total_loss=43.89 content_loss=8.71 style_loss=29.08 tv_loss=6.10 ]</code></pre>
+<pre><code>100%|██████████| 5000/5000 [01:30&lt;00:00, 55.36it/s, total_loss=43.90 content_loss=8.71 style_loss=29.08 tv_loss=6.11 ]     </code></pre>
 </div>
 </div>
 <p>As mentioned before, images need to be denormalized (<em>i.e.</em> reverted back) to correct colors. After that we compare content, style and target images side-by-side.</p>
@@ -3766,7 +3766,7 @@ Gatys, Leon A, Alexander S Ecker, and Matthias Bethge. 2015. <span>“A Neural A
   <category>NST</category>
   <guid>gcerar.github.io/posts/2023-09-15-neural-style-transfer/index.html</guid>
   <pubDate>Fri, 15 Sep 2023 00:00:00 GMT</pubDate>
-  <media:content url="gcerar.github.io/posts/2023-09-15-neural-style-transfer/examples/bridge+walking-in-the-rain.webp" medium="image" type="image/webp"/>
+  <media:content url="gcerar.github.io/posts/2023-09-15-neural-style-transfer/featured.webp" medium="image" type="image/webp"/>
 </item>
 </channel>
 </rss>
