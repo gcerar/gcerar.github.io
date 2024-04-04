@@ -340,7 +340,7 @@ Perkel, Jeffrey M. 2018. <span>“<span class="nocase">Why Jupyter is data scien
 <li id="fn2"><p>REPL: read–eval–print loop↩︎</p></li>
 <li id="fn3"><p>WETL: write-eval-think-loop↩︎</p></li>
 </ol>
-</section></div> ]]></description>
+</section><section class="quarto-appendix-contents" id="quarto-reuse"><h2 class="anchored quarto-appendix-heading">Reuse</h2><div class="quarto-appendix-contents"><div><a rel="license" href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.en_us">CC BY-NC-SA 4.0</a></div></div></section></div> ]]></description>
   <category>compute</category>
   <category>infrastructure</category>
   <guid>gcerar.github.io/posts/2023-11-20-research-compute-infrastructure/</guid>
@@ -2570,7 +2570,7 @@ font-style: inherit;">True</span>)</span>
 <div id="ref-goodfellow2014generative" class="csl-entry">
 Goodfellow, Ian J., Jean Pouget-Abadie, Mehdi Mirza, Bing Xu, David Warde-Farley, Sherjil Ozair, Aaron Courville, and Yoshua Bengio. 2014. <span>“Generative Adversarial Networks.”</span> <a href="https://arxiv.org/abs/1406.2661">https://arxiv.org/abs/1406.2661</a>.
 </div>
-</div></section></div> ]]></description>
+</div></section><section class="quarto-appendix-contents" id="quarto-reuse"><h2 class="anchored quarto-appendix-heading">Reuse</h2><div class="quarto-appendix-contents"><div><a rel="license" href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.en_us">CC BY-NC-SA 4.0</a></div></div></section></div> ]]></description>
   <category>pytorch</category>
   <category>GAN</category>
   <guid>gcerar.github.io/posts/2023-10-10-vanilla-GANs/</guid>
@@ -3804,7 +3804,7 @@ font-style: inherit;">=</span>[])</span>
 <div id="ref-gatys2015neural" class="csl-entry">
 Gatys, Leon A, Alexander S Ecker, and Matthias Bethge. 2015. <span>“A Neural Algorithm of Artistic Style.”</span> <em>arXiv Preprint arXiv:1508.06576</em>.
 </div>
-</div></section></div> ]]></description>
+</div></section><section class="quarto-appendix-contents" id="quarto-reuse"><h2 class="anchored quarto-appendix-heading">Reuse</h2><div class="quarto-appendix-contents"><div><a rel="license" href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.en_us">CC BY-NC-SA 4.0</a></div></div></section></div> ]]></description>
   <category>pytorch</category>
   <category>NST</category>
   <guid>gcerar.github.io/posts/2023-09-15-neural-style-transfer/</guid>
