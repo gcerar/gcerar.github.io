@@ -2,14 +2,14 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en-us" xml:lang="en-us"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.4.553">
+<meta name="generator" content="quarto-1.5.55">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 <meta name="author" content="Gregor Cerar">
 <meta name="dcterms.date" content="2023-11-20">
 
-<title>Greg’s blog - Research Compute Infrastructure</title>
+<title>Research Compute Infrastructure – Greg’s blog</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -99,7 +99,7 @@ gtag('config', 'G-FB81SP2FX7', { 'anonymize_ip': true});
 </script>
 <style>html{ scroll-behavior: smooth; }</style>
 
-  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
   <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
 
 <script type="text/javascript">
@@ -129,7 +129,7 @@ window.Quarto = {
 };
 </script>
 
-<meta property="og:title" content="Greg’s blog - Research Compute Infrastructure">
+<meta property="og:title" content="Research Compute Infrastructure – Greg’s blog">
 <meta property="og:description" content="Our research lab needed a more scalable approach to sharing computing resources among researchers. To address this, we built a scalable computing infrastructure on Kubernetes. Researchers can request resources from the pool and use a familiar workflow with Jupyter notebooks. Resources are returned to the pool once a task is complete or idle for too long.">
 <meta property="og:site_name" content="Greg's blog">
 <meta property="og:locale" content="en_US">
@@ -147,7 +147,7 @@ window.Quarto = {
     </a>
   </div>
             <div id="quarto-search" class="" title="Search"></div>
-          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
   <span class="navbar-toggler-icon"></span>
 </button>
           <div class="collapse navbar-collapse" id="navbarCollapse">
@@ -186,7 +186,7 @@ window.Quarto = {
   </li>  
 </ul>
           </div> <!-- /navcollapse -->
-          <div class="quarto-navbar-tools">
+            <div class="quarto-navbar-tools">
 </div>
       </div> <!-- /container-fluid -->
     </nav>
@@ -308,13 +308,13 @@ window.Quarto = {
 <section id="architecture" class="level1">
 <h1>Architecture</h1>
 <p>We decided to base our private cloud on the Kubernetes platform to meet system scalability and resource management requirements, aiming to enhance the functionality, accessibility, and sharing of Jupyter notebooks <span class="citation" data-cites="bussonnier2018jupyterhub">(<a href="#ref-bussonnier2018jupyterhub" role="doc-biblioref">Bussonnier 2018</a>)</span> within the Kubernetes private cloud. In this section, will delve deeper into the system’s architecture that integrates services and elaborate on the design decisions. Subsequently, we describe the individual services within our infrastructure.</p>
-<div id="tbl-stack" class="hover quarto-float anchored">
+<div id="tbl-stack" class="hover quarto-float quarto-figure quarto-figure-center anchored">
 <figure class="quarto-float quarto-float-tbl figure">
 <figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-stack-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 Table&nbsp;1: Services and Used Technologies.
 </figcaption>
 <div aria-describedby="tbl-stack-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<table class="table-hover table">
+<table class="table-hover caption-top table">
 <thead>
 <tr class="header">
 <th>Service</th>
@@ -392,7 +392,7 @@ Table&nbsp;1: Services and Used Technologies.
 </figure>
 </div>
 <p><a href="#tbl-stack" class="quarto-xref">Table&nbsp;1</a>, in its first column, lists all the services required for system operation. The second column lists the open-source solutions that can provide these services. Bolded services indicate those selected and used in our private cloud. We made our choices based on specific criteria. We first surveyed technologies and solutions utilized in related projects. We further narrowed our selection to open-source solutions tested in private clouds on native infrastructure. A significant factor in our decision-making was also an insight into the popularity of the projects, gauged by the number of stars in repositories, the number of forks of the project, and the level of development activity on GitHub/GitLab. In our decision-making process, we didn’t follow a single empirical metric but took multiple factors into account to ensure a comprehensive assessment of solutions.</p>
-<div id="fig-architecture" class="quarto-figure quarto-figure-center quarto-float anchored">
+<div id="fig-architecture" class="quarto-float quarto-figure quarto-figure-center anchored">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-architecture-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <img src="./figures/over10k-arch.png" class="img-fluid figure-img">
@@ -453,13 +453,13 @@ Figure&nbsp;1: A three-tier logical infrastructure diagram. At the bottom is the
 <p>In this section, we’ll present how we deployed our computing infrastructure. First, I’ll summarize the hardware decisions, caveats, and finally, the user experience with some screenshots.</p>
 <section id="hardware" class="level2">
 <h2 class="anchored" data-anchor-id="hardware">Hardware</h2>
-<div id="tbl-hardware" class="hover quarto-float anchored">
+<div id="tbl-hardware" class="hover quarto-float quarto-figure quarto-figure-center anchored">
 <figure class="quarto-float quarto-float-tbl figure">
 <figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-hardware-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 Table&nbsp;2: Hardware specifications of Computing node.
 </figcaption>
 <div aria-describedby="tbl-hardware-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<table class="table-hover table">
+<table class="table-hover caption-top table">
 <thead>
 <tr class="header">
 <th>Hardware</th>
@@ -501,7 +501,7 @@ Table&nbsp;2: Hardware specifications of Computing node.
 <p>We chose two NVMe drives configured in the mirror configuration (RAID-1) for the system drive. We selected six 8TB SSD SATA drives configured in ZFS RAID-Z1 for data storage, which has one drive redundancy. We also chose two A100 GPUs as accelerators.</p>
 <p>NVIDIA A100 GPUs come in two form factors: PCI-E and SXM4. The SXM4 proprietary form factor has a higher TDP and high-bandwidth NVLink interconnections between every GPU through NVSwitch hardware. The downside of SXM4 is that it will only support Ampere generation GPUs and require a special motherboard. The PCI-E variant has a lower TDP, and NVLink can only be across two GPUs. However, we decided against vendor lock-in, limiting ourselves to one brand and generation, and went with the PCI-E variant.</p>
 <p>We considered the most likely workflow scenarios. We expected most communication to be CPU-to-GPU, with GPUs sliced into several instances. Once GPU slicing is enabled, the NVIDIA drivers disable NVLink, rendering NVLink connections useless. We can change GPU slicing strategy freely.</p>
-<div id="fig-hardware" class="quarto-figure quarto-figure-center quarto-float anchored">
+<div id="fig-hardware" class="quarto-float quarto-figure quarto-figure-center anchored">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-hardware-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <img src="./figures/hardware-top-view-resize.jpg" class="img-fluid figure-img">
@@ -521,7 +521,7 @@ Figure&nbsp;2: The computing node on my desk underwent final checks before being
 <section id="jupyterhub" class="level3">
 <h3 class="anchored" data-anchor-id="jupyterhub">JupyterHub</h3>
 <p>JupyterHub has become a crucial component of our research infrastructure, enhancing our workflow significantly. Its smooth integration was largely due to the interface and functionality of JupyterHub, which closely resemble the tools our researchers and students were familiar with. This similarity played a key role in its quick adoption and high user satisfaction.</p>
-<div id="fig-jhub-profiles" class="quarto-figure quarto-figure-center quarto-float anchored">
+<div id="fig-jhub-profiles" class="quarto-float quarto-figure quarto-figure-center anchored">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-jhub-profiles-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <img src="./figures/jhub-profiles.png" class="img-fluid figure-img">
@@ -538,7 +538,7 @@ Figure&nbsp;3: JupyterHub offers a list of predefined containers, where some of 
 <li>A selection of containers offering GPU instances.</li>
 </ul>
 <p>The development environment greets users with a layout similar to modern IDEs, featuring a file explorer on the left and code editor tabs on the right (see <a href="#fig-jhub-workspace" class="quarto-xref">Figure&nbsp;4</a>).</p>
-<div id="fig-jhub-workspace" class="quarto-figure quarto-figure-center quarto-float anchored">
+<div id="fig-jhub-workspace" class="quarto-float quarto-figure quarto-figure-center anchored">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-jhub-workspace-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <img src="./figures/jhub-workspace.png" class="img-fluid figure-img">
@@ -553,7 +553,7 @@ Figure&nbsp;4: JupyterLab workspace with familiar layout: a file explorer on the
 <h3 class="anchored" data-anchor-id="grafana">Grafana</h3>
 <p>For transparent insight into infrastructure availability, the user has read-only access to the Grafana dashboard (Figure~<span class="math inline">\(\ref{fig:grafana:dashboard}\)</span>). Here, they can observe most of the infrastructure metrics.</p>
 <p>For transparent insight into infrastructure availability, the user has read-only access to the Grafana dashboard. Dashboard visualizes computing resource utilization including metrics like total and per-container CPU usage, memory usage per container, GPU utilization, temperature readings, and storage I/O (see <a href="#fig-grafana-dashboard" class="quarto-xref">Figure&nbsp;5</a>).</p>
-<div id="fig-grafana-dashboard" class="quarto-figure quarto-figure-center quarto-float anchored">
+<div id="fig-grafana-dashboard" class="quarto-float quarto-figure quarto-figure-center anchored">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-grafana-dashboard-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <img src="./figures/grafana-censored.png" class="img-fluid figure-img">
@@ -634,18 +634,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
     }
     return false;
   }
-  const clipboard = new window.ClipboardJS('.code-copy-button', {
-    text: function(trigger) {
-      const codeEl = trigger.previousElementSibling.cloneNode(true);
-      for (const childEl of codeEl.children) {
-        if (isCodeAnnotation(childEl)) {
-          childEl.remove();
-        }
-      }
-      return codeEl.innerText;
-    }
-  });
-  clipboard.on('success', function(e) {
+  const onCopySuccess = function(e) {
     // button target
     const button = e.trigger;
     // don't keep focus
@@ -677,7 +666,29 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
     }, 1000);
     // clear code selection
     e.clearSelection();
+  }
+  const getTextToCopy = function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+    text: getTextToCopy
   });
+  clipboard.on('success', onCopySuccess);
+  if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+    // For code content inside modals, clipBoardJS needs to be initialized with a container option
+    // TODO: Check when it could be a function (https://github.com/zenorocha/clipboard.js/issues/860)
+    const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+      text: getTextToCopy,
+      container: window.document.getElementById('quarto-embedded-source-code-modal')
+    });
+    clipboardModal.on('success', onCopySuccess);
+  }
     var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
     var mailtoRegex = new RegExp(/^mailto:/);
       var filterRegex = new RegExp("gcerar\.github\.io");
@@ -685,7 +696,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
         return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
     }
     // Inspect non-navigation links and adorn them if external
- 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool)');
+ 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
     for (var i=0; i<links.length; i++) {
       const link = links[i];
       if (!isInternal(link.href)) {
