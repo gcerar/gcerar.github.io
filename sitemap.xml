@@ -1,20 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
+    <loc>gcerar.github.io/posts/2023-10-10-vanilla-GANs/index.html</loc>
+    <lastmod>2024-07-30T08:13:29.073Z</lastmod>
+  </url>
+  <url>
     <loc>gcerar.github.io/snippets.html</loc>
-    <lastmod>2023-10-12T19:33:05.123Z</lastmod>
+    <lastmod>2024-07-30T05:44:58.670Z</lastmod>
   </url>
   <url>
     <loc>gcerar.github.io/index.html</loc>
     <lastmod>2023-11-28T15:26:35.381Z</lastmod>
-  </url>
-  <url>
-    <loc>gcerar.github.io/posts/2023-10-10-vanilla-GANs/index.html</loc>
-    <lastmod>2023-12-11T19:58:06.308Z</lastmod>
-  </url>
-  <url>
-    <loc>gcerar.github.io/posts/2023-09-15-neural-style-transfer/index.html</loc>
-    <lastmod>2023-11-28T16:00:40.962Z</lastmod>
   </url>
   <url>
     <loc>gcerar.github.io/about.html</loc>
@@ -22,6 +18,10 @@
   </url>
   <url>
     <loc>gcerar.github.io/posts/2023-11-20-research-compute-infrastructure/index.html</loc>
-    <lastmod>2024-04-04T08:29:26.861Z</lastmod>
+    <lastmod>2024-07-30T06:00:22.898Z</lastmod>
+  </url>
+  <url>
+    <loc>gcerar.github.io/posts/2023-09-15-neural-style-transfer/index.html</loc>
+    <lastmod>2024-07-30T08:13:27.893Z</lastmod>
   </url>
 </urlset>
