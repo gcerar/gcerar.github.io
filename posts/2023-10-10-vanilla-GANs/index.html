@@ -312,7 +312,7 @@ window.Quarto = {
     <div>
     <div class="quarto-title-meta-heading">Modified</div>
     <div class="quarto-title-meta-contents">
-      <p class="date-modified">July 30, 2024</p>
+      <p class="date-modified">August 1, 2024</p>
     </div>
   </div>
     
@@ -474,11 +474,11 @@ Figure&nbsp;1: GAN architecture
 <span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.model <span class="op">=</span> nn.Sequential(</span>
 <span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a>            nn.Linear(nz, ngf),</span>
 <span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a>            nn.LeakyReLU(alpha, inplace<span class="op">=</span><span class="va">True</span>),</span>
-<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a>            nn.Linear(ngf, ngf <span class="op">*</span> <span class="dv">2</span>),</span>
+<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a>            nn.Linear(ngf, <span class="dv">2</span> <span class="op">*</span> ngf),</span>
 <span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a>            nn.LeakyReLU(alpha, inplace<span class="op">=</span><span class="va">True</span>),</span>
-<span id="cb4-16"><a href="#cb4-16" aria-hidden="true" tabindex="-1"></a>            nn.Linear(ngf <span class="op">*</span> <span class="dv">2</span>, ngf <span class="op">*</span> <span class="dv">4</span>),</span>
+<span id="cb4-16"><a href="#cb4-16" aria-hidden="true" tabindex="-1"></a>            nn.Linear(<span class="dv">2</span> <span class="op">*</span> ngf, <span class="dv">2</span> <span class="op">*</span> ngf),</span>
 <span id="cb4-17"><a href="#cb4-17" aria-hidden="true" tabindex="-1"></a>            nn.LeakyReLU(alpha, inplace<span class="op">=</span><span class="va">True</span>),</span>
-<span id="cb4-18"><a href="#cb4-18" aria-hidden="true" tabindex="-1"></a>            nn.Linear(ngf <span class="op">*</span> <span class="dv">4</span>, <span class="bu">int</span>(np.prod(<span class="va">self</span>.out_dim))),</span>
+<span id="cb4-18"><a href="#cb4-18" aria-hidden="true" tabindex="-1"></a>            nn.Linear(<span class="dv">4</span> <span class="op">*</span> ngf, <span class="bu">int</span>(np.prod(<span class="va">self</span>.out_dim))),</span>
 <span id="cb4-19"><a href="#cb4-19" aria-hidden="true" tabindex="-1"></a>            nn.Tanh(),</span>
 <span id="cb4-20"><a href="#cb4-20" aria-hidden="true" tabindex="-1"></a>        )</span>
 <span id="cb4-21"><a href="#cb4-21" aria-hidden="true" tabindex="-1"></a></span>
@@ -531,13 +531,13 @@ Estimated Total Size (MB): 8.63
 <span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> <span class="fu">__init__</span>(<span class="va">self</span>, input_dim: Sequence[<span class="bu">int</span>], ndf: <span class="bu">int</span> <span class="op">=</span> <span class="dv">128</span>, alpha: <span class="bu">float</span> <span class="op">=</span> <span class="fl">0.2</span>):</span>
 <span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>        <span class="bu">super</span>().<span class="fu">__init__</span>()</span>
 <span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.model <span class="op">=</span> nn.Sequential(</span>
-<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>            nn.Linear(<span class="bu">int</span>(np.prod(input_dim)), ndf <span class="op">*</span> <span class="dv">4</span>),</span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>            nn.Linear(<span class="bu">int</span>(np.prod(input_dim)), <span class="dv">4</span> <span class="op">*</span> ndf),</span>
 <span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>            nn.LeakyReLU(alpha, inplace<span class="op">=</span><span class="va">True</span>),</span>
 <span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>            nn.Dropout(<span class="fl">0.3</span>),</span>
-<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>            nn.Linear(ndf <span class="op">*</span> <span class="dv">4</span>, ndf <span class="op">*</span> <span class="dv">2</span>),</span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>            nn.Linear(<span class="dv">4</span> <span class="op">*</span> ndf, <span class="dv">2</span> <span class="op">*</span> ndf),</span>
 <span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a>            nn.LeakyReLU(alpha, inplace<span class="op">=</span><span class="va">True</span>),</span>
 <span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a>            nn.Dropout(<span class="fl">0.3</span>),</span>
-<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a>            nn.Linear(ndf <span class="op">*</span> <span class="dv">2</span>, ndf),</span>
+<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a>            nn.Linear(<span class="dv">2</span> <span class="op">*</span> ndf, ndf),</span>
 <span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a>            nn.LeakyReLU(alpha, inplace<span class="op">=</span><span class="va">True</span>),</span>
 <span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a>            nn.Dropout(<span class="fl">0.3</span>),</span>
 <span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a>            nn.Linear(ndf, <span class="dv">1</span>),</span>
@@ -874,13 +874,13 @@ Note
 <span id="cb21-7"><a href="#cb21-7" aria-hidden="true" tabindex="-1"></a><span class="co">        """</span></span>
 <span id="cb21-8"><a href="#cb21-8" aria-hidden="true" tabindex="-1"></a>        <span class="bu">super</span>().<span class="fu">__init__</span>()</span>
 <span id="cb21-9"><a href="#cb21-9" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.layers <span class="op">=</span> nn.Sequential(</span>
-<span id="cb21-10"><a href="#cb21-10" aria-hidden="true" tabindex="-1"></a>            nn.ConvTranspose2d(nz, ngf <span class="op">*</span> <span class="dv">4</span>, <span class="dv">4</span>, <span class="dv">1</span>, <span class="dv">0</span>, bias<span class="op">=</span><span class="va">False</span>),</span>
-<span id="cb21-11"><a href="#cb21-11" aria-hidden="true" tabindex="-1"></a>            nn.BatchNorm2d(ngf <span class="op">*</span> <span class="dv">4</span>),</span>
+<span id="cb21-10"><a href="#cb21-10" aria-hidden="true" tabindex="-1"></a>            nn.ConvTranspose2d(nz, <span class="dv">4</span> <span class="op">*</span> ngf, <span class="dv">4</span>, <span class="dv">1</span>, <span class="dv">0</span>, bias<span class="op">=</span><span class="va">False</span>),</span>
+<span id="cb21-11"><a href="#cb21-11" aria-hidden="true" tabindex="-1"></a>            nn.BatchNorm2d(<span class="dv">4</span> <span class="op">*</span> ngf),</span>
 <span id="cb21-12"><a href="#cb21-12" aria-hidden="true" tabindex="-1"></a>            nn.ReLU(inplace<span class="op">=</span><span class="va">True</span>),</span>
-<span id="cb21-13"><a href="#cb21-13" aria-hidden="true" tabindex="-1"></a>            nn.ConvTranspose2d(ngf <span class="op">*</span> <span class="dv">4</span>, ngf <span class="op">*</span> <span class="dv">2</span>, <span class="dv">3</span>, <span class="dv">2</span>, <span class="dv">1</span>, bias<span class="op">=</span><span class="va">False</span>),</span>
-<span id="cb21-14"><a href="#cb21-14" aria-hidden="true" tabindex="-1"></a>            nn.BatchNorm2d(ngf <span class="op">*</span> <span class="dv">2</span>),</span>
+<span id="cb21-13"><a href="#cb21-13" aria-hidden="true" tabindex="-1"></a>            nn.ConvTranspose2d(<span class="dv">4</span> <span class="op">*</span> ngf, <span class="dv">2</span> <span class="op">*</span> ngf, <span class="dv">3</span>, <span class="dv">2</span>, <span class="dv">1</span>, bias<span class="op">=</span><span class="va">False</span>),</span>
+<span id="cb21-14"><a href="#cb21-14" aria-hidden="true" tabindex="-1"></a>            nn.BatchNorm2d(<span class="dv">2</span> <span class="op">*</span> ngf),</span>
 <span id="cb21-15"><a href="#cb21-15" aria-hidden="true" tabindex="-1"></a>            nn.ReLU(inplace<span class="op">=</span><span class="va">True</span>),</span>
-<span id="cb21-16"><a href="#cb21-16" aria-hidden="true" tabindex="-1"></a>            nn.ConvTranspose2d(ngf <span class="op">*</span> <span class="dv">2</span>, ngf, <span class="dv">4</span>, <span class="dv">2</span>, <span class="dv">1</span>, bias<span class="op">=</span><span class="va">False</span>),</span>
+<span id="cb21-16"><a href="#cb21-16" aria-hidden="true" tabindex="-1"></a>            nn.ConvTranspose2d(<span class="dv">2</span> <span class="op">*</span> ngf, ngf, <span class="dv">4</span>, <span class="dv">2</span>, <span class="dv">1</span>, bias<span class="op">=</span><span class="va">False</span>),</span>
 <span id="cb21-17"><a href="#cb21-17" aria-hidden="true" tabindex="-1"></a>            nn.BatchNorm2d(ngf),</span>
 <span id="cb21-18"><a href="#cb21-18" aria-hidden="true" tabindex="-1"></a>            nn.ReLU(inplace<span class="op">=</span><span class="va">True</span>),</span>
 <span id="cb21-19"><a href="#cb21-19" aria-hidden="true" tabindex="-1"></a>            nn.ConvTranspose2d(ngf, nc, <span class="dv">4</span>, <span class="dv">2</span>, <span class="dv">1</span>, bias<span class="op">=</span><span class="va">False</span>),</span>
@@ -934,13 +934,13 @@ Estimated Total Size (MB): 25.56
 <span id="cb23-5"><a href="#cb23-5" aria-hidden="true" tabindex="-1"></a>            nn.Conv2d(nc, ndf, <span class="dv">4</span>, <span class="dv">2</span>, <span class="dv">1</span>, bias<span class="op">=</span><span class="va">False</span>),</span>
 <span id="cb23-6"><a href="#cb23-6" aria-hidden="true" tabindex="-1"></a>            nn.BatchNorm2d(ndf),</span>
 <span id="cb23-7"><a href="#cb23-7" aria-hidden="true" tabindex="-1"></a>            nn.LeakyReLU(alpha, inplace<span class="op">=</span><span class="va">True</span>),</span>
-<span id="cb23-8"><a href="#cb23-8" aria-hidden="true" tabindex="-1"></a>            nn.Conv2d(ndf, ndf <span class="op">*</span> <span class="dv">2</span>, <span class="dv">4</span>, <span class="dv">2</span>, <span class="dv">1</span>, bias<span class="op">=</span><span class="va">False</span>),</span>
-<span id="cb23-9"><a href="#cb23-9" aria-hidden="true" tabindex="-1"></a>            nn.BatchNorm2d(ndf <span class="op">*</span> <span class="dv">2</span>),</span>
+<span id="cb23-8"><a href="#cb23-8" aria-hidden="true" tabindex="-1"></a>            nn.Conv2d(ndf, <span class="dv">2</span> <span class="op">*</span> ndf, <span class="dv">4</span>, <span class="dv">2</span>, <span class="dv">1</span>, bias<span class="op">=</span><span class="va">False</span>),</span>
+<span id="cb23-9"><a href="#cb23-9" aria-hidden="true" tabindex="-1"></a>            nn.BatchNorm2d(<span class="dv">2</span> <span class="op">*</span> ndf),</span>
 <span id="cb23-10"><a href="#cb23-10" aria-hidden="true" tabindex="-1"></a>            nn.LeakyReLU(alpha, inplace<span class="op">=</span><span class="va">True</span>),</span>
-<span id="cb23-11"><a href="#cb23-11" aria-hidden="true" tabindex="-1"></a>            nn.Conv2d(ndf <span class="op">*</span> <span class="dv">2</span>, ndf <span class="op">*</span> <span class="dv">4</span>, <span class="dv">3</span>, <span class="dv">2</span>, <span class="dv">1</span>, bias<span class="op">=</span><span class="va">False</span>),</span>
+<span id="cb23-11"><a href="#cb23-11" aria-hidden="true" tabindex="-1"></a>            nn.Conv2d(<span class="dv">2</span> <span class="op">*</span> ndf, <span class="dv">4</span> <span class="op">*</span> ndf, <span class="dv">3</span>, <span class="dv">2</span>, <span class="dv">1</span>, bias<span class="op">=</span><span class="va">False</span>),</span>
 <span id="cb23-12"><a href="#cb23-12" aria-hidden="true" tabindex="-1"></a>            nn.BatchNorm2d(ndf <span class="op">*</span> <span class="dv">4</span>),</span>
 <span id="cb23-13"><a href="#cb23-13" aria-hidden="true" tabindex="-1"></a>            nn.LeakyReLU(alpha, inplace<span class="op">=</span><span class="va">True</span>),</span>
-<span id="cb23-14"><a href="#cb23-14" aria-hidden="true" tabindex="-1"></a>            nn.Conv2d(ndf <span class="op">*</span> <span class="dv">4</span>, <span class="dv">1</span>, <span class="dv">4</span>, <span class="dv">1</span>, <span class="dv">0</span>, bias<span class="op">=</span><span class="va">False</span>),</span>
+<span id="cb23-14"><a href="#cb23-14" aria-hidden="true" tabindex="-1"></a>            nn.Conv2d(<span class="dv">4</span> <span class="op">*</span> ndf, <span class="dv">1</span>, <span class="dv">4</span>, <span class="dv">1</span>, <span class="dv">0</span>, bias<span class="op">=</span><span class="va">False</span>),</span>
 <span id="cb23-15"><a href="#cb23-15" aria-hidden="true" tabindex="-1"></a>            nn.Sigmoid(),</span>
 <span id="cb23-16"><a href="#cb23-16" aria-hidden="true" tabindex="-1"></a>        )</span>
 <span id="cb23-17"><a href="#cb23-17" aria-hidden="true" tabindex="-1"></a></span>
@@ -1033,7 +1033,7 @@ Estimated Total Size (MB): 24.30
 <div class="sourceCode cell-code" id="cb26"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a>animation <span class="op">=</span> []</span>
 <span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a>g_losses, d_losses <span class="op">=</span> [], []</span>
-<span id="cb26-4"><a href="#cb26-4" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> epoch <span class="kw">in</span> tqdm(<span class="bu">range</span>(N_EPOCHS), unit<span class="op">=</span><span class="st">"epochs"</span>):</span>
+<span id="cb26-4"><a href="#cb26-4" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> _ <span class="kw">in</span> tqdm(<span class="bu">range</span>(N_EPOCHS), unit<span class="op">=</span><span class="st">"epochs"</span>):</span>
 <span id="cb26-5"><a href="#cb26-5" aria-hidden="true" tabindex="-1"></a>    generator.train()</span>
 <span id="cb26-6"><a href="#cb26-6" aria-hidden="true" tabindex="-1"></a>    discriminator.train()</span>
 <span id="cb26-7"><a href="#cb26-7" aria-hidden="true" tabindex="-1"></a></span>
@@ -1110,7 +1110,7 @@ Estimated Total Size (MB): 24.30
 <div class="sourceCode cell-code" id="cb29"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a>animation <span class="op">=</span> []</span>
 <span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb29-3"><a href="#cb29-3" aria-hidden="true" tabindex="-1"></a>g_losses, d_losses <span class="op">=</span> [], []</span>
-<span id="cb29-4"><a href="#cb29-4" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> epoch <span class="kw">in</span> tqdm(<span class="bu">range</span>(N_EPOCHS), unit<span class="op">=</span><span class="st">"epochs"</span>):</span>
+<span id="cb29-4"><a href="#cb29-4" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> _ <span class="kw">in</span> tqdm(<span class="bu">range</span>(N_EPOCHS), unit<span class="op">=</span><span class="st">"epochs"</span>):</span>
 <span id="cb29-5"><a href="#cb29-5" aria-hidden="true" tabindex="-1"></a>    generator.train()</span>
 <span id="cb29-6"><a href="#cb29-6" aria-hidden="true" tabindex="-1"></a>    discriminator.train()</span>
 <span id="cb29-7"><a href="#cb29-7" aria-hidden="true" tabindex="-1"></a></span>

@@ -294,7 +294,7 @@ window.Quarto = {
     <div>
     <div class="quarto-title-meta-heading">Modified</div>
     <div class="quarto-title-meta-contents">
-      <p class="date-modified">July 30, 2024</p>
+      <p class="date-modified">August 1, 2024</p>
     </div>
   </div>
     
@@ -653,7 +653,7 @@ Note
 <div id="cell-34" class="cell" data-execution_count="15">
 <div class="sourceCode cell-code" id="cb15"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>pbar <span class="op">=</span> tqdm(<span class="bu">range</span>(N_EPOCHS))</span>
 <span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> step <span class="kw">in</span> pbar:</span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> _ <span class="kw">in</span> pbar:</span>
 <span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>    <span class="cf">with</span> torch.autocast(<span class="st">"cuda"</span>, dtype<span class="op">=</span>torch.bfloat16, enabled<span class="op">=</span>AMP_ENABLED):</span>
 <span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a>        target_features <span class="op">=</span> get_features(target, model)</span>
 <span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a></span>
@@ -681,7 +681,7 @@ Note
 <span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.std <span class="op">=</span> std</span>
 <span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> <span class="fu">__call__</span>(<span class="va">self</span>, x: Tensor) <span class="op">-&gt;</span> Tensor:</span>
-<span id="cb17-7"><a href="#cb17-7" aria-hidden="true" tabindex="-1"></a>        <span class="cf">for</span> t, m, s <span class="kw">in</span> <span class="bu">zip</span>(x, <span class="va">self</span>.mean, <span class="va">self</span>.std):</span>
+<span id="cb17-7"><a href="#cb17-7" aria-hidden="true" tabindex="-1"></a>        <span class="cf">for</span> t, m, s <span class="kw">in</span> <span class="bu">zip</span>(x, <span class="va">self</span>.mean, <span class="va">self</span>.std, strict<span class="op">=</span><span class="va">True</span>):</span>
 <span id="cb17-8"><a href="#cb17-8" aria-hidden="true" tabindex="-1"></a>            t.mul_(s).add_(m)</span>
 <span id="cb17-9"><a href="#cb17-9" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> x</span>
 <span id="cb17-10"><a href="#cb17-10" aria-hidden="true" tabindex="-1"></a></span>

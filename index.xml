@@ -714,35 +714,35 @@ background-color: null;
 font-style: inherit;">=</span><span class="va" style="color: #111111;
 background-color: null;
 font-style: inherit;">True</span>),</span>
-<span id="cb4-14">            nn.Linear(ngf, ngf <span class="op" style="color: #5E5E5E;
+<span id="cb4-14">            nn.Linear(ngf, <span class="dv" style="color: #AD0000;
 background-color: null;
-font-style: inherit;">*</span> <span class="dv" style="color: #AD0000;
+font-style: inherit;">2</span> <span class="op" style="color: #5E5E5E;
 background-color: null;
-font-style: inherit;">2</span>),</span>
+font-style: inherit;">*</span> ngf),</span>
 <span id="cb4-15">            nn.LeakyReLU(alpha, inplace<span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">=</span><span class="va" style="color: #111111;
 background-color: null;
 font-style: inherit;">True</span>),</span>
-<span id="cb4-16">            nn.Linear(ngf <span class="op" style="color: #5E5E5E;
+<span id="cb4-16">            nn.Linear(<span class="dv" style="color: #AD0000;
 background-color: null;
-font-style: inherit;">*</span> <span class="dv" style="color: #AD0000;
+font-style: inherit;">2</span> <span class="op" style="color: #5E5E5E;
 background-color: null;
-font-style: inherit;">2</span>, ngf <span class="op" style="color: #5E5E5E;
+font-style: inherit;">*</span> ngf, <span class="dv" style="color: #AD0000;
 background-color: null;
-font-style: inherit;">*</span> <span class="dv" style="color: #AD0000;
+font-style: inherit;">2</span> <span class="op" style="color: #5E5E5E;
 background-color: null;
-font-style: inherit;">4</span>),</span>
+font-style: inherit;">*</span> ngf),</span>
 <span id="cb4-17">            nn.LeakyReLU(alpha, inplace<span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">=</span><span class="va" style="color: #111111;
 background-color: null;
 font-style: inherit;">True</span>),</span>
-<span id="cb4-18">            nn.Linear(ngf <span class="op" style="color: #5E5E5E;
+<span id="cb4-18">            nn.Linear(<span class="dv" style="color: #AD0000;
 background-color: null;
-font-style: inherit;">*</span> <span class="dv" style="color: #AD0000;
+font-style: inherit;">4</span> <span class="op" style="color: #5E5E5E;
 background-color: null;
-font-style: inherit;">4</span>, <span class="bu" style="color: null;
+font-style: inherit;">*</span> ngf, <span class="bu" style="color: null;
 background-color: null;
 font-style: inherit;">int</span>(np.prod(<span class="va" style="color: #111111;
 background-color: null;
@@ -865,11 +865,11 @@ background-color: null;
 font-style: inherit;">=</span> nn.Sequential(</span>
 <span id="cb6-5">            nn.Linear(<span class="bu" style="color: null;
 background-color: null;
-font-style: inherit;">int</span>(np.prod(input_dim)), ndf <span class="op" style="color: #5E5E5E;
+font-style: inherit;">int</span>(np.prod(input_dim)), <span class="dv" style="color: #AD0000;
 background-color: null;
-font-style: inherit;">*</span> <span class="dv" style="color: #AD0000;
+font-style: inherit;">4</span> <span class="op" style="color: #5E5E5E;
 background-color: null;
-font-style: inherit;">4</span>),</span>
+font-style: inherit;">*</span> ndf),</span>
 <span id="cb6-6">            nn.LeakyReLU(alpha, inplace<span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">=</span><span class="va" style="color: #111111;
@@ -878,15 +878,15 @@ font-style: inherit;">True</span>),</span>
 <span id="cb6-7">            nn.Dropout(<span class="fl" style="color: #AD0000;
 background-color: null;
 font-style: inherit;">0.3</span>),</span>
-<span id="cb6-8">            nn.Linear(ndf <span class="op" style="color: #5E5E5E;
+<span id="cb6-8">            nn.Linear(<span class="dv" style="color: #AD0000;
 background-color: null;
-font-style: inherit;">*</span> <span class="dv" style="color: #AD0000;
+font-style: inherit;">4</span> <span class="op" style="color: #5E5E5E;
 background-color: null;
-font-style: inherit;">4</span>, ndf <span class="op" style="color: #5E5E5E;
+font-style: inherit;">*</span> ndf, <span class="dv" style="color: #AD0000;
 background-color: null;
-font-style: inherit;">*</span> <span class="dv" style="color: #AD0000;
+font-style: inherit;">2</span> <span class="op" style="color: #5E5E5E;
 background-color: null;
-font-style: inherit;">2</span>),</span>
+font-style: inherit;">*</span> ndf),</span>
 <span id="cb6-9">            nn.LeakyReLU(alpha, inplace<span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">=</span><span class="va" style="color: #111111;
@@ -895,11 +895,11 @@ font-style: inherit;">True</span>),</span>
 <span id="cb6-10">            nn.Dropout(<span class="fl" style="color: #AD0000;
 background-color: null;
 font-style: inherit;">0.3</span>),</span>
-<span id="cb6-11">            nn.Linear(ndf <span class="op" style="color: #5E5E5E;
+<span id="cb6-11">            nn.Linear(<span class="dv" style="color: #AD0000;
 background-color: null;
-font-style: inherit;">*</span> <span class="dv" style="color: #AD0000;
+font-style: inherit;">2</span> <span class="op" style="color: #5E5E5E;
 background-color: null;
-font-style: inherit;">2</span>, ndf),</span>
+font-style: inherit;">*</span> ndf, ndf),</span>
 <span id="cb6-12">            nn.LeakyReLU(alpha, inplace<span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">=</span><span class="va" style="color: #111111;
@@ -1766,11 +1766,11 @@ background-color: null;
 font-style: inherit;">self</span>.layers <span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">=</span> nn.Sequential(</span>
-<span id="cb21-10">            nn.ConvTranspose2d(nz, ngf <span class="op" style="color: #5E5E5E;
+<span id="cb21-10">            nn.ConvTranspose2d(nz, <span class="dv" style="color: #AD0000;
 background-color: null;
-font-style: inherit;">*</span> <span class="dv" style="color: #AD0000;
+font-style: inherit;">4</span> <span class="op" style="color: #5E5E5E;
 background-color: null;
-font-style: inherit;">4</span>, <span class="dv" style="color: #AD0000;
+font-style: inherit;">*</span> ngf, <span class="dv" style="color: #AD0000;
 background-color: null;
 font-style: inherit;">4</span>, <span class="dv" style="color: #AD0000;
 background-color: null;
@@ -1781,25 +1781,25 @@ background-color: null;
 font-style: inherit;">=</span><span class="va" style="color: #111111;
 background-color: null;
 font-style: inherit;">False</span>),</span>
-<span id="cb21-11">            nn.BatchNorm2d(ngf <span class="op" style="color: #5E5E5E;
+<span id="cb21-11">            nn.BatchNorm2d(<span class="dv" style="color: #AD0000;
 background-color: null;
-font-style: inherit;">*</span> <span class="dv" style="color: #AD0000;
+font-style: inherit;">4</span> <span class="op" style="color: #5E5E5E;
 background-color: null;
-font-style: inherit;">4</span>),</span>
+font-style: inherit;">*</span> ngf),</span>
 <span id="cb21-12">            nn.ReLU(inplace<span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">=</span><span class="va" style="color: #111111;
 background-color: null;
 font-style: inherit;">True</span>),</span>
-<span id="cb21-13">            nn.ConvTranspose2d(ngf <span class="op" style="color: #5E5E5E;
+<span id="cb21-13">            nn.ConvTranspose2d(<span class="dv" style="color: #AD0000;
 background-color: null;
-font-style: inherit;">*</span> <span class="dv" style="color: #AD0000;
+font-style: inherit;">4</span> <span class="op" style="color: #5E5E5E;
 background-color: null;
-font-style: inherit;">4</span>, ngf <span class="op" style="color: #5E5E5E;
+font-style: inherit;">*</span> ngf, <span class="dv" style="color: #AD0000;
 background-color: null;
-font-style: inherit;">*</span> <span class="dv" style="color: #AD0000;
+font-style: inherit;">2</span> <span class="op" style="color: #5E5E5E;
 background-color: null;
-font-style: inherit;">2</span>, <span class="dv" style="color: #AD0000;
+font-style: inherit;">*</span> ngf, <span class="dv" style="color: #AD0000;
 background-color: null;
 font-style: inherit;">3</span>, <span class="dv" style="color: #AD0000;
 background-color: null;
@@ -1810,21 +1810,21 @@ background-color: null;
 font-style: inherit;">=</span><span class="va" style="color: #111111;
 background-color: null;
 font-style: inherit;">False</span>),</span>
-<span id="cb21-14">            nn.BatchNorm2d(ngf <span class="op" style="color: #5E5E5E;
+<span id="cb21-14">            nn.BatchNorm2d(<span class="dv" style="color: #AD0000;
 background-color: null;
-font-style: inherit;">*</span> <span class="dv" style="color: #AD0000;
+font-style: inherit;">2</span> <span class="op" style="color: #5E5E5E;
 background-color: null;
-font-style: inherit;">2</span>),</span>
+font-style: inherit;">*</span> ngf),</span>
 <span id="cb21-15">            nn.ReLU(inplace<span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">=</span><span class="va" style="color: #111111;
 background-color: null;
 font-style: inherit;">True</span>),</span>
-<span id="cb21-16">            nn.ConvTranspose2d(ngf <span class="op" style="color: #5E5E5E;
+<span id="cb21-16">            nn.ConvTranspose2d(<span class="dv" style="color: #AD0000;
 background-color: null;
-font-style: inherit;">*</span> <span class="dv" style="color: #AD0000;
+font-style: inherit;">2</span> <span class="op" style="color: #5E5E5E;
 background-color: null;
-font-style: inherit;">2</span>, ngf, <span class="dv" style="color: #AD0000;
+font-style: inherit;">*</span> ngf, ngf, <span class="dv" style="color: #AD0000;
 background-color: null;
 font-style: inherit;">4</span>, <span class="dv" style="color: #AD0000;
 background-color: null;
@@ -1978,11 +1978,11 @@ background-color: null;
 font-style: inherit;">=</span><span class="va" style="color: #111111;
 background-color: null;
 font-style: inherit;">True</span>),</span>
-<span id="cb23-8">            nn.Conv2d(ndf, ndf <span class="op" style="color: #5E5E5E;
+<span id="cb23-8">            nn.Conv2d(ndf, <span class="dv" style="color: #AD0000;
 background-color: null;
-font-style: inherit;">*</span> <span class="dv" style="color: #AD0000;
+font-style: inherit;">2</span> <span class="op" style="color: #5E5E5E;
 background-color: null;
-font-style: inherit;">2</span>, <span class="dv" style="color: #AD0000;
+font-style: inherit;">*</span> ndf, <span class="dv" style="color: #AD0000;
 background-color: null;
 font-style: inherit;">4</span>, <span class="dv" style="color: #AD0000;
 background-color: null;
@@ -1993,25 +1993,25 @@ background-color: null;
 font-style: inherit;">=</span><span class="va" style="color: #111111;
 background-color: null;
 font-style: inherit;">False</span>),</span>
-<span id="cb23-9">            nn.BatchNorm2d(ndf <span class="op" style="color: #5E5E5E;
+<span id="cb23-9">            nn.BatchNorm2d(<span class="dv" style="color: #AD0000;
 background-color: null;
-font-style: inherit;">*</span> <span class="dv" style="color: #AD0000;
+font-style: inherit;">2</span> <span class="op" style="color: #5E5E5E;
 background-color: null;
-font-style: inherit;">2</span>),</span>
+font-style: inherit;">*</span> ndf),</span>
 <span id="cb23-10">            nn.LeakyReLU(alpha, inplace<span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">=</span><span class="va" style="color: #111111;
 background-color: null;
 font-style: inherit;">True</span>),</span>
-<span id="cb23-11">            nn.Conv2d(ndf <span class="op" style="color: #5E5E5E;
+<span id="cb23-11">            nn.Conv2d(<span class="dv" style="color: #AD0000;
 background-color: null;
-font-style: inherit;">*</span> <span class="dv" style="color: #AD0000;
+font-style: inherit;">2</span> <span class="op" style="color: #5E5E5E;
 background-color: null;
-font-style: inherit;">2</span>, ndf <span class="op" style="color: #5E5E5E;
+font-style: inherit;">*</span> ndf, <span class="dv" style="color: #AD0000;
 background-color: null;
-font-style: inherit;">*</span> <span class="dv" style="color: #AD0000;
+font-style: inherit;">4</span> <span class="op" style="color: #5E5E5E;
 background-color: null;
-font-style: inherit;">4</span>, <span class="dv" style="color: #AD0000;
+font-style: inherit;">*</span> ndf, <span class="dv" style="color: #AD0000;
 background-color: null;
 font-style: inherit;">3</span>, <span class="dv" style="color: #AD0000;
 background-color: null;
@@ -2032,11 +2032,11 @@ background-color: null;
 font-style: inherit;">=</span><span class="va" style="color: #111111;
 background-color: null;
 font-style: inherit;">True</span>),</span>
-<span id="cb23-14">            nn.Conv2d(ndf <span class="op" style="color: #5E5E5E;
+<span id="cb23-14">            nn.Conv2d(<span class="dv" style="color: #AD0000;
 background-color: null;
-font-style: inherit;">*</span> <span class="dv" style="color: #AD0000;
+font-style: inherit;">4</span> <span class="op" style="color: #5E5E5E;
 background-color: null;
-font-style: inherit;">4</span>, <span class="dv" style="color: #AD0000;
+font-style: inherit;">*</span> ndf, <span class="dv" style="color: #AD0000;
 background-color: null;
 font-style: inherit;">1</span>, <span class="dv" style="color: #AD0000;
 background-color: null;
@@ -2255,7 +2255,7 @@ background-color: null;
 font-style: inherit;">=</span> [], []</span>
 <span id="cb26-4"><span class="cf" style="color: #003B4F;
 background-color: null;
-font-style: inherit;">for</span> epoch <span class="kw" style="color: #003B4F;
+font-style: inherit;">for</span> _ <span class="kw" style="color: #003B4F;
 background-color: null;
 font-style: inherit;">in</span> tqdm(<span class="bu" style="color: null;
 background-color: null;
@@ -2452,7 +2452,7 @@ background-color: null;
 font-style: inherit;">=</span> [], []</span>
 <span id="cb29-4"><span class="cf" style="color: #003B4F;
 background-color: null;
-font-style: inherit;">for</span> epoch <span class="kw" style="color: #003B4F;
+font-style: inherit;">for</span> _ <span class="kw" style="color: #003B4F;
 background-color: null;
 font-style: inherit;">in</span> tqdm(<span class="bu" style="color: null;
 background-color: null;
@@ -3412,7 +3412,7 @@ font-style: inherit;">range</span>(N_EPOCHS))</span>
 <span id="cb15-2"></span>
 <span id="cb15-3"><span class="cf" style="color: #003B4F;
 background-color: null;
-font-style: inherit;">for</span> step <span class="kw" style="color: #003B4F;
+font-style: inherit;">for</span> _ <span class="kw" style="color: #003B4F;
 background-color: null;
 font-style: inherit;">in</span> pbar:</span>
 <span id="cb15-4">    <span class="cf" style="color: #003B4F;
@@ -3552,7 +3552,11 @@ font-style: inherit;">zip</span>(x, <span class="va" style="color: #111111;
 background-color: null;
 font-style: inherit;">self</span>.mean, <span class="va" style="color: #111111;
 background-color: null;
-font-style: inherit;">self</span>.std):</span>
+font-style: inherit;">self</span>.std, strict<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">True</span>):</span>
 <span id="cb17-8">            t.mul_(s).add_(m)</span>
 <span id="cb17-9">        <span class="cf" style="color: #003B4F;
 background-color: null;
