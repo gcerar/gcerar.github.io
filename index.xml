@@ -12,6 +12,1509 @@
 <generator>quarto-1.6.42</generator>
 <lastBuildDate>Tue, 06 May 2025 22:00:00 GMT</lastBuildDate>
 <item>
+  <title>Visualizing Feature Maps from VGG16 and ResNet50 in PyTorch</title>
+  <dc:creator>Gregor Cerar</dc:creator>
+  <link>gcerar.github.io/posts/2025-05-07-feature-maps/</link>
+  <description><![CDATA[ 
+
+
+
+
+<section id="prerequisites" class="level2">
+<h2 class="anchored" data-anchor-id="prerequisites">Prerequisites</h2>
+<p>Before we start, we need to install the following libraries: <a href="https://numpy.org/">NumPy</a>, <a href="https://matplotlib.org/">Matplotlib</a>, <a href="https://pytorch.org/">PyTorch</a>, and <a href="https://pytorch.org/vision/stable/index.html">Torchvision</a>.</p>
+<div id="e25e5496" class="cell" data-execution_count="1">
+<div class="sourceCode cell-code" id="cb1" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><span class="im" style="color: #00769E;
+background-color: null;
+font-style: inherit;">import</span> math</span>
+<span id="cb1-2"><span class="im" style="color: #00769E;
+background-color: null;
+font-style: inherit;">from</span> collections.abc <span class="im" style="color: #00769E;
+background-color: null;
+font-style: inherit;">import</span> Callable</span>
+<span id="cb1-3"><span class="im" style="color: #00769E;
+background-color: null;
+font-style: inherit;">from</span> pathlib <span class="im" style="color: #00769E;
+background-color: null;
+font-style: inherit;">import</span> Path</span>
+<span id="cb1-4"><span class="im" style="color: #00769E;
+background-color: null;
+font-style: inherit;">from</span> typing <span class="im" style="color: #00769E;
+background-color: null;
+font-style: inherit;">import</span> Literal</span>
+<span id="cb1-5"></span>
+<span id="cb1-6"><span class="im" style="color: #00769E;
+background-color: null;
+font-style: inherit;">import</span> numpy <span class="im" style="color: #00769E;
+background-color: null;
+font-style: inherit;">as</span> np</span>
+<span id="cb1-7"><span class="im" style="color: #00769E;
+background-color: null;
+font-style: inherit;">import</span> torch</span>
+<span id="cb1-8"><span class="im" style="color: #00769E;
+background-color: null;
+font-style: inherit;">from</span> IPython.display <span class="im" style="color: #00769E;
+background-color: null;
+font-style: inherit;">import</span> Markdown</span>
+<span id="cb1-9"><span class="im" style="color: #00769E;
+background-color: null;
+font-style: inherit;">from</span> matplotlib <span class="im" style="color: #00769E;
+background-color: null;
+font-style: inherit;">import</span> pyplot <span class="im" style="color: #00769E;
+background-color: null;
+font-style: inherit;">as</span> plt</span>
+<span id="cb1-10"><span class="im" style="color: #00769E;
+background-color: null;
+font-style: inherit;">from</span> sklearn.decomposition <span class="im" style="color: #00769E;
+background-color: null;
+font-style: inherit;">import</span> PCA</span>
+<span id="cb1-11"><span class="im" style="color: #00769E;
+background-color: null;
+font-style: inherit;">from</span> torch <span class="im" style="color: #00769E;
+background-color: null;
+font-style: inherit;">import</span> Tensor, nn</span>
+<span id="cb1-12"><span class="im" style="color: #00769E;
+background-color: null;
+font-style: inherit;">from</span> torchvision <span class="im" style="color: #00769E;
+background-color: null;
+font-style: inherit;">import</span> models</span>
+<span id="cb1-13"><span class="im" style="color: #00769E;
+background-color: null;
+font-style: inherit;">from</span> torchvision.io <span class="im" style="color: #00769E;
+background-color: null;
+font-style: inherit;">import</span> decode_image</span>
+<span id="cb1-14"><span class="im" style="color: #00769E;
+background-color: null;
+font-style: inherit;">from</span> torchvision.transforms <span class="im" style="color: #00769E;
+background-color: null;
+font-style: inherit;">import</span> v2 <span class="im" style="color: #00769E;
+background-color: null;
+font-style: inherit;">as</span> T</span></code></pre></div>
+</div>
+<p>In this article, we are going to use pre-trained neural networks. More specifically, weights trained on <a href="https://www.image-net.org/download.php">ImageNet-1K dataset</a>.</p>
+<p>But before that, we will prepare input images. We will size the image(s) to 224x224 and normalize it for optimal performance. The preparation step will make the pictures similar to the training dataset. See the link for more details on why this step is necessary.</p>
+<div id="f3b3920d" class="cell" data-execution_count="3">
+<div class="sourceCode cell-code" id="cb2" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># ImageNet normalization weights per channel</span></span>
+<span id="cb2-2">IMAGENET1K_MEAN <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> [<span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0.485</span>, <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0.456</span>, <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0.406</span>]</span>
+<span id="cb2-3">IMAGENET1K_STD <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> [<span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0.229</span>, <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0.224</span>, <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0.225</span>]</span>
+<span id="cb2-4"></span>
+<span id="cb2-5">transform <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> T.Compose(</span>
+<span id="cb2-6">    [</span>
+<span id="cb2-7">        T.Resize(<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">256</span>),</span>
+<span id="cb2-8">        T.CenterCrop(<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">224</span>),</span>
+<span id="cb2-9">        T.ToImage(),</span>
+<span id="cb2-10">        T.ToDtype(torch.float32, scale<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">True</span>),</span>
+<span id="cb2-11">        T.Normalize(IMAGENET1K_MEAN, IMAGENET1K_STD),</span>
+<span id="cb2-12">    ]</span>
+<span id="cb2-13">)</span>
+<span id="cb2-14"></span>
+<span id="cb2-15"></span>
+<span id="cb2-16"><span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">def</span> load_image(path: <span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">str</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">|</span> Path) <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-&gt;</span> Tensor:</span>
+<span id="cb2-17">    img <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> decode_image(<span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">str</span>(path))</span>
+<span id="cb2-18"></span>
+<span id="cb2-19">    <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Transform images into tensors</span></span>
+<span id="cb2-20">    img: Tensor <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> transform(img)</span>
+<span id="cb2-21"></span>
+<span id="cb2-22">    <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Add dimension to imitate batch size equal to 1: (C,H,W) -&gt; (B,C,H,W)</span></span>
+<span id="cb2-23">    img <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> img.unsqueeze(<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0</span>)</span>
+<span id="cb2-24">    <span class="cf" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">return</span> img</span></code></pre></div>
+</div>
+<div id="590ed8c9" class="cell" data-execution_count="4">
+<div class="sourceCode cell-code" id="cb3" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">def</span> inverse_normalize(</span>
+<span id="cb3-2">    x_norm: Tensor,</span>
+<span id="cb3-3">    mean: <span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">list</span>[<span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">float</span>] <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> IMAGENET1K_MEAN,</span>
+<span id="cb3-4">    std: <span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">list</span>[<span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">float</span>] <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> IMAGENET1K_STD,</span>
+<span id="cb3-5">) <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-&gt;</span> Tensor:</span>
+<span id="cb3-6">    <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Ensure mean and std have the correct shape</span></span>
+<span id="cb3-7">    _mean <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> torch.as_tensor(mean).to(x_norm.device).view(<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>, <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>)</span>
+<span id="cb3-8">    _std <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> torch.as_tensor(std).to(x_norm.device).view(<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>, <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>)</span>
+<span id="cb3-9">    <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Inverse normalization: x = x_normalized * std + mean</span></span>
+<span id="cb3-10">    <span class="cf" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">return</span> x_norm.mul(_std).add(_mean)</span>
+<span id="cb3-11"></span>
+<span id="cb3-12"></span>
+<span id="cb3-13">reverse_transform <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> T.Compose(</span>
+<span id="cb3-14">    [</span>
+<span id="cb3-15">        T.Lambda(inverse_normalize),</span>
+<span id="cb3-16">        T.Lambda(<span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">lambda</span> x: torch.clamp(x, <span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">min</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0.0</span>, <span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">max</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1.0</span>)),</span>
+<span id="cb3-17">    ]</span>
+<span id="cb3-18">)</span></code></pre></div>
+</div>
+<div id="1773381c" class="cell" data-execution_count="5">
+<div class="sourceCode cell-code" id="cb4" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1">sample <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> load_image(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"bridge.jpg"</span>)</span>
+<span id="cb4-2">orig_sample <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> reverse_transform(sample)</span>
+<span id="cb4-3"></span>
+<span id="cb4-4">fig, ax <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> plt.subplots(frameon<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">False</span>)</span>
+<span id="cb4-5">fig.subplots_adjust()</span>
+<span id="cb4-6">ax.imshow(orig_sample.squeeze(<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0</span>).permute(<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">2</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0</span>))</span>
+<span id="cb4-7">ax.axis(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"off"</span>)</span>
+<span id="cb4-8">plt.show()</span></code></pre></div>
+<div class="cell-output cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="gcerar.github.io/posts/2025-05-07-feature-maps/index_files/figure-html/cell-6-output-1.png" class="img-fluid figure-img"></p>
+<figcaption>Original image, resized</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<div id="4f899d6b" class="cell" data-execution_count="6">
+<div class="sourceCode cell-code" id="cb5" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">def</span> get_activation(name: <span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">str</span>, activations: <span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">dict</span>[<span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">str</span>, Tensor]) <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-&gt;</span> Callable:</span>
+<span id="cb5-2">    <span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">def</span> hook(model: nn.Module, <span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">input</span>: Tensor, output: Tensor) <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-&gt;</span> <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">None</span>:</span>
+<span id="cb5-3">        <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># map layer's `name` to layer's output value</span></span>
+<span id="cb5-4">        activations[name] <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> output.detach()</span>
+<span id="cb5-5"></span>
+<span id="cb5-6">    <span class="cf" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">return</span> hook</span>
+<span id="cb5-7"></span>
+<span id="cb5-8"></span>
+<span id="cb5-9"><span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">def</span> set_hooks(model: nn.Module, layer_ids: <span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">list</span>[<span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">str</span>], out: <span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">dict</span>[<span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">str</span>, Tensor]) <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-&gt;</span> <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">None</span>:</span>
+<span id="cb5-10">    layer_ids <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> [<span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">str</span>(i) <span class="cf" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">for</span> i <span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">in</span> layer_ids]</span>
+<span id="cb5-11">    <span class="cf" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">for</span> name, module <span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">in</span> model.named_modules():</span>
+<span id="cb5-12">        <span class="cf" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">if</span> name <span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">in</span> layer_ids:</span>
+<span id="cb5-13">            module.register_forward_hook(get_activation(name, out))</span></code></pre></div>
+</div>
+<div id="f1cdfc24" class="cell" data-execution_count="7">
+<div class="sourceCode cell-code" id="cb6" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">def</span> visualize_feature_maps(</span>
+<span id="cb6-2">    feature_map: Tensor <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">|</span> np.ndarray,</span>
+<span id="cb6-3">    max_maps: <span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">int</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">|</span> <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">None</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">None</span>,</span>
+<span id="cb6-4">    max_cols: <span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">int</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">8</span>,</span>
+<span id="cb6-5">    figsize_per_plot: <span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">float</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1.0</span>,</span>
+<span id="cb6-6">    norm: Literal[<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"linear"</span>, <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"log"</span>, <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"symlog"</span>, <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"logit"</span>, <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">None</span>] <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">None</span>,</span>
+<span id="cb6-7">    cmap: <span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">str</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"viridis"</span>,</span>
+<span id="cb6-8">):</span>
+<span id="cb6-9">    <span class="cf" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">if</span> <span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">isinstance</span>(feature_map, Tensor):</span>
+<span id="cb6-10">        feature_map <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> feature_map.cpu().numpy()</span>
+<span id="cb6-11"></span>
+<span id="cb6-12">    <span class="cf" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">if</span> feature_map.ndim <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">==</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">4</span>:</span>
+<span id="cb6-13">        feature_map <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> feature_map.squeeze(<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0</span>)  <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># remove batch dimension if present</span></span>
+<span id="cb6-14">    <span class="cf" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">assert</span> feature_map.ndim <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">==</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">3</span>, <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Expected tensor shape (C, H, W)"</span></span>
+<span id="cb6-15"></span>
+<span id="cb6-16">    C, H, W <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> feature_map.shape</span>
+<span id="cb6-17"></span>
+<span id="cb6-18">    <span class="cf" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">if</span> max_maps:</span>
+<span id="cb6-19">        C <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">min</span>(C, max_maps)</span>
+<span id="cb6-20"></span>
+<span id="cb6-21">    n_cols <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">min</span>(C, max_cols)</span>
+<span id="cb6-22">    n_rows <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> math.ceil(C <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">/</span> n_cols)</span>
+<span id="cb6-23"></span>
+<span id="cb6-24">    figsize <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> (figsize_per_plot <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">*</span> n_cols, figsize_per_plot <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">*</span> n_rows)</span>
+<span id="cb6-25"></span>
+<span id="cb6-26">    fig, axes <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> plt.subplots(nrows<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span>n_rows, ncols<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span>n_cols, figsize<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span>figsize, frameon<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">False</span>, squeeze<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">False</span>)</span>
+<span id="cb6-27">    fig.subplots_adjust(wspace<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0.03</span>, hspace<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0.03</span>)</span>
+<span id="cb6-28"></span>
+<span id="cb6-29">    <span class="cf" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">for</span> ax <span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">in</span> axes.flat:</span>
+<span id="cb6-30">        ax.axis(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"off"</span>)</span>
+<span id="cb6-31"></span>
+<span id="cb6-32">    <span class="cf" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">for</span> i <span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">in</span> <span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">range</span>(C):</span>
+<span id="cb6-33">        t <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> feature_map[i]</span>
+<span id="cb6-34">        axes.flat[i].imshow(t, cmap<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span>cmap, norm<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span>norm, aspect<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"equal"</span>, interpolation<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"none"</span>)</span>
+<span id="cb6-35"></span>
+<span id="cb6-36">    <span class="cf" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">return</span> fig, axes</span></code></pre></div>
+</div>
+<div id="e785fb60" class="cell" data-execution_count="8">
+<div class="sourceCode cell-code" id="cb7" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">def</span> minmax_scale_per_channel(arr: np.ndarray) <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-&gt;</span> np.ndarray:</span>
+<span id="cb7-2">    <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">"""Per-channel MinMax normalization. Expects (C, W, H)."""</span></span>
+<span id="cb7-3">    <span class="cf" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">assert</span> arr.ndim <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">==</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">3</span>, <span class="ss" style="color: #20794D;
+background-color: null;
+font-style: inherit;">f"</span><span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">{</span>arr<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">.</span>ndim<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">}</span><span class="ss" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"</span></span>
+<span id="cb7-4"></span>
+<span id="cb7-5">    c_min <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> arr.<span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">min</span>(axis<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span>(<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">2</span>), keepdims<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">True</span>)</span>
+<span id="cb7-6">    c_max <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> arr.<span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">max</span>(axis<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span>(<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">2</span>), keepdims<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">True</span>)</span>
+<span id="cb7-7">    eps <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1e-5</span></span>
+<span id="cb7-8">    scaled <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> (arr <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-</span> c_min) <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">/</span> (c_max <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-</span> c_min <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span> eps)  <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># avoid division by zero</span></span>
+<span id="cb7-9">    <span class="cf" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">return</span> scaled</span>
+<span id="cb7-10"></span>
+<span id="cb7-11"></span>
+<span id="cb7-12"><span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">def</span> pca_rgb(</span>
+<span id="cb7-13">    feature_map: np.ndarray <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">|</span> Tensor,</span>
+<span id="cb7-14">    n_components: Literal[<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">3</span>] <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">3</span>,</span>
+<span id="cb7-15">    normalize: <span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">bool</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">True</span>,</span>
+<span id="cb7-16">    random_state: <span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">int</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">|</span> <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">None</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">None</span>,</span>
+<span id="cb7-17">) <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-&gt;</span> np.ndarray:</span>
+<span id="cb7-18">    <span class="cf" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">if</span> <span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">isinstance</span>(feature_map, torch.Tensor):</span>
+<span id="cb7-19">        feature_map <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> feature_map.cpu().numpy()</span>
+<span id="cb7-20"></span>
+<span id="cb7-21">    <span class="cf" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">if</span> feature_map.ndim <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">==</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">4</span>:</span>
+<span id="cb7-22">        feature_map <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> feature_map.squeeze(<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0</span>)  <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># remove batch dimension if present</span></span>
+<span id="cb7-23">    <span class="cf" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">assert</span> feature_map.ndim <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">==</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">3</span>, <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Expected array shape (C, H, W)"</span></span>
+<span id="cb7-24"></span>
+<span id="cb7-25">    C, H, W <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> feature_map.shape</span>
+<span id="cb7-26">    pca <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> PCA(n_components<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span>n_components, random_state<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span>random_state)</span>
+<span id="cb7-27">    flat <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> feature_map.reshape(C, <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>).T</span>
+<span id="cb7-28">    rgb <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> pca.fit_transform(flat).T.reshape(n_components, H, W)</span>
+<span id="cb7-29"></span>
+<span id="cb7-30">    <span class="cf" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">if</span> normalize:</span>
+<span id="cb7-31">        rgb <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> minmax_scale_per_channel(rgb)</span>
+<span id="cb7-32"></span>
+<span id="cb7-33">    <span class="cf" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">return</span> rgb</span>
+<span id="cb7-34"></span>
+<span id="cb7-35"></span>
+<span id="cb7-36"><span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">def</span> visualize_feature_maps_pca(</span>
+<span id="cb7-37">    feature_maps: <span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">dict</span>[<span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">str</span>, Tensor],</span>
+<span id="cb7-38">    n_components: Literal[<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">3</span>] <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">3</span>,</span>
+<span id="cb7-39">    max_cols: <span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">int</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">4</span>,</span>
+<span id="cb7-40">    figsize_per_plot: <span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">float</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">2.0</span>,</span>
+<span id="cb7-41">    norm: Literal[<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"linear"</span>, <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"log"</span>, <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"symlog"</span>, <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"logit"</span>, <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">None</span>] <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">None</span>,</span>
+<span id="cb7-42">    subtitles: <span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">bool</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">True</span>,</span>
+<span id="cb7-43">    cmap: <span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">str</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"viridis"</span>,</span>
+<span id="cb7-44">):</span>
+<span id="cb7-45">    c <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">len</span>(feature_maps)</span>
+<span id="cb7-46">    n_cols <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">min</span>(c, max_cols)</span>
+<span id="cb7-47">    n_rows <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> math.ceil(c <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">/</span> n_cols)</span>
+<span id="cb7-48">    fig_size <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> (figsize_per_plot <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">*</span> n_cols, figsize_per_plot <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">*</span> n_rows)</span>
+<span id="cb7-49"></span>
+<span id="cb7-50">    fig, axes <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> plt.subplots(n_rows, n_cols, figsize<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span>fig_size, squeeze<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">False</span>, frameon<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">False</span>)</span>
+<span id="cb7-51">    fig.subplots_adjust(wspace<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0.03</span>, hspace<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0.20</span>, top<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0.85</span>)</span>
+<span id="cb7-52"></span>
+<span id="cb7-53">    <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># if title:</span></span>
+<span id="cb7-54">    <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">#    fig.suptitle(title, color="0.5")</span></span>
+<span id="cb7-55"></span>
+<span id="cb7-56">    <span class="cf" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">for</span> ax <span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">in</span> axes.flat:</span>
+<span id="cb7-57">        ax.axis(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"off"</span>)</span>
+<span id="cb7-58"></span>
+<span id="cb7-59">    <span class="cf" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">for</span> ax, (layer, feature_map) <span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">in</span> <span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">zip</span>(axes.flat, feature_maps.items(), strict<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">False</span>):</span>
+<span id="cb7-60">        rgb_features <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> pca_rgb(feature_map, n_components<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span>n_components)</span>
+<span id="cb7-61">        rgb_features <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> rgb_features.transpose(<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">2</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0</span>)</span>
+<span id="cb7-62">        rgb_features <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> rgb_features.squeeze()</span>
+<span id="cb7-63"></span>
+<span id="cb7-64">        ax.imshow(rgb_features, cmap<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span>cmap, norm<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span>norm, aspect<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"equal"</span>, interpolation<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"none"</span>)</span>
+<span id="cb7-65">        <span class="cf" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">if</span> subtitles:</span>
+<span id="cb7-66">            ax.set_title(layer, color<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"0.5"</span>)</span>
+<span id="cb7-67"></span>
+<span id="cb7-68">    <span class="cf" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">return</span> fig, axes</span></code></pre></div>
+</div>
+</section>
+<section id="vgg" class="level2">
+<h2 class="anchored" data-anchor-id="vgg">VGG</h2>
+<p>The <a href="https://en.wikipedia.org/wiki/VGGNet">VGG</a> are deep neural networks introduced by <span class="citation" data-cites="simonyan2014very">(Simonyan and Zisserman 2014)</span> in 2014. The VGG stacks many small 3x3 convolution filters in sequence. This simple “deeper‑is‑better” design once achieved top ImageNet performance while showing that depth and uniform layer structure can yield strong feature hierarchies, making VGG a popular baseline for vision tasks and transfer learning. Nowadays, they are considered outdated.</p>
+<div id="8b3d891d" class="cell" data-execution_count="9">
+<div class="sourceCode cell-code" id="cb8" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1">model <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> models.vgg11(weights<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span>models.VGG11_Weights.IMAGENET1K_V1).features</span>
+<span id="cb8-2"></span>
+<span id="cb8-3"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Let's inspect the VGG's feature extractor layers</span></span>
+<span id="cb8-4">model</span></code></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="9">
+<pre><code>Sequential(
+  (0): Conv2d(3, 64, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+  (1): ReLU(inplace=True)
+  (2): MaxPool2d(kernel_size=2, stride=2, padding=0, dilation=1, ceil_mode=False)
+  (3): Conv2d(64, 128, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+  (4): ReLU(inplace=True)
+  (5): MaxPool2d(kernel_size=2, stride=2, padding=0, dilation=1, ceil_mode=False)
+  (6): Conv2d(128, 256, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+  (7): ReLU(inplace=True)
+  (8): Conv2d(256, 256, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+  (9): ReLU(inplace=True)
+  (10): MaxPool2d(kernel_size=2, stride=2, padding=0, dilation=1, ceil_mode=False)
+  (11): Conv2d(256, 512, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+  (12): ReLU(inplace=True)
+  (13): Conv2d(512, 512, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+  (14): ReLU(inplace=True)
+  (15): MaxPool2d(kernel_size=2, stride=2, padding=0, dilation=1, ceil_mode=False)
+  (16): Conv2d(512, 512, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+  (17): ReLU(inplace=True)
+  (18): Conv2d(512, 512, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+  (19): ReLU(inplace=True)
+  (20): MaxPool2d(kernel_size=2, stride=2, padding=0, dilation=1, ceil_mode=False)
+)</code></pre>
+</div>
+</div>
+<div id="6f8d3ab5" class="cell" data-execution_count="10">
+<div class="sourceCode cell-code" id="cb10" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># cherry-pick layers of which outputs we want to see</span></span>
+<span id="cb10-2">selected_layers <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> [<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"0"</span>, <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"3"</span>, <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"6"</span>, <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"8"</span>, <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"11"</span>, <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"13"</span>, <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"16"</span>, <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"18"</span>]</span>
+<span id="cb10-3"></span>
+<span id="cb10-4"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># add forward hooks to the model</span></span>
+<span id="cb10-5">vgg_activations <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> {}</span>
+<span id="cb10-6">set_hooks(model, selected_layers, vgg_activations)</span>
+<span id="cb10-7"></span>
+<span id="cb10-8"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># make forward pass through NN</span></span>
+<span id="cb10-9"><span class="cf" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">with</span> torch.no_grad():</span>
+<span id="cb10-10">    model(sample)</span></code></pre></div>
+</div>
+<p>Below we visualize the feature maps generated by a few hand‑picked layers. A feature map (also called an <em>activation map</em>) is simply the tensor that a layer outputs (for example, <code>output = conv(input)</code>). During training, each convolutional layer learns a set of spatial kernels that act as filters (<em>see <a href="https://en.wikipedia.org/wiki/Kernel_(image_processing)">kernels in image processing</a></em>), allowing the network to draw ever‑richer patterns from the feature maps produced by the preceding layers.</p>
+<div id="591ee8bf" class="cell" data-execution_count="11">
+<div class="sourceCode cell-code" id="cb11" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><span class="cf" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">for</span> layer, filters <span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">in</span> vgg_activations.items():</span>
+<span id="cb11-2">    display(Markdown(<span class="ss" style="color: #20794D;
+background-color: null;
+font-style: inherit;">f"### Layer #</span><span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">{</span>layer<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">}</span><span class="ss" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"</span>))</span>
+<span id="cb11-3">    visualize_feature_maps(filters, max_maps<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">8</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">*</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">8</span>, norm<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"linear"</span>)</span>
+<span id="cb11-4">    plt.show()</span></code></pre></div>
+<section id="layer-0" class="level3 cell-output cell-output-display cell-output-markdown">
+<h3 class="anchored" data-anchor-id="layer-0">Layer #0</h3>
+</section>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="gcerar.github.io/posts/2025-05-07-feature-maps/index_files/figure-html/cell-12-output-2.png" class="img-fluid figure-img"></p>
+</figure>
+</div>
+</div>
+<section id="layer-3" class="level3 cell-output cell-output-display cell-output-markdown">
+<h3 class="anchored" data-anchor-id="layer-3">Layer #3</h3>
+</section>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="gcerar.github.io/posts/2025-05-07-feature-maps/index_files/figure-html/cell-12-output-4.png" class="img-fluid figure-img"></p>
+</figure>
+</div>
+</div>
+<section id="layer-6" class="level3 cell-output cell-output-display cell-output-markdown">
+<h3 class="anchored" data-anchor-id="layer-6">Layer #6</h3>
+</section>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="gcerar.github.io/posts/2025-05-07-feature-maps/index_files/figure-html/cell-12-output-6.png" class="img-fluid figure-img"></p>
+</figure>
+</div>
+</div>
+<section id="layer-8" class="level3 cell-output cell-output-display cell-output-markdown">
+<h3 class="anchored" data-anchor-id="layer-8">Layer #8</h3>
+</section>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="gcerar.github.io/posts/2025-05-07-feature-maps/index_files/figure-html/cell-12-output-8.png" class="img-fluid figure-img"></p>
+</figure>
+</div>
+</div>
+<section id="layer-11" class="level3 cell-output cell-output-display cell-output-markdown">
+<h3 class="anchored" data-anchor-id="layer-11">Layer #11</h3>
+</section>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="gcerar.github.io/posts/2025-05-07-feature-maps/index_files/figure-html/cell-12-output-10.png" class="img-fluid figure-img"></p>
+</figure>
+</div>
+</div>
+<section id="layer-13" class="level3 cell-output cell-output-display cell-output-markdown">
+<h3 class="anchored" data-anchor-id="layer-13">Layer #13</h3>
+</section>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="gcerar.github.io/posts/2025-05-07-feature-maps/index_files/figure-html/cell-12-output-12.png" class="img-fluid figure-img"></p>
+</figure>
+</div>
+</div>
+<section id="layer-16" class="level3 cell-output cell-output-display cell-output-markdown">
+<h3 class="anchored" data-anchor-id="layer-16">Layer #16</h3>
+</section>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="gcerar.github.io/posts/2025-05-07-feature-maps/index_files/figure-html/cell-12-output-14.png" class="img-fluid figure-img"></p>
+</figure>
+</div>
+</div>
+<section id="layer-18" class="level3 cell-output cell-output-display cell-output-markdown">
+<h3 class="anchored" data-anchor-id="layer-18">Layer #18</h3>
+</section>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="gcerar.github.io/posts/2025-05-07-feature-maps/index_files/figure-html/cell-12-output-16.png" class="img-fluid figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>Above, we noted that the number of visualizations grows with the number of filters. A large number of filters can be overwhelming when a layer produces dozens of maps. To condense this information, we can project the feature maps with principal‑component analysis (PCA). We treat each spatial position across all maps as a feature vector, run PCA, and then reconstruct the dominant components. The result is a single “average” activation image that captures the most salient variance across the entire stack of feature maps. It can be rendered in either 1‑channel (grayscale) or 3‑channel (RGB) form.</p>
+<div id="3f5e8e03" class="cell" data-execution_count="12">
+<div class="sourceCode cell-code" id="cb12" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1">visualize_feature_maps_pca(vgg_activations, max_cols<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">4</span>)</span>
+<span id="cb12-2">plt.show()</span></code></pre></div>
+<div class="cell-output cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="gcerar.github.io/posts/2025-05-07-feature-maps/index_files/figure-html/cell-13-output-1.png" class="img-fluid figure-img"></p>
+<figcaption>Principal‑component projections of the feature‑map stacks for the corresponding layers of VGG‑11.</figcaption>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="resnet" class="level2">
+<h2 class="anchored" data-anchor-id="resnet">ResNet</h2>
+<p>ResNets (Residual Networks), introduced by <span class="citation" data-cites="targ2016resnet">(Targ, Almeida, and Lyman 2016)</span>, add “skip” or residual connections that let inputs bypass one or more layers. These identity shortcuts make very deep CNNs (<em>e.g.,</em> ResNet‑50/101/152) easier to train by mitigating vanishing gradients, enabling state‑of‑the‑art accuracy with hundreds of layers. [<a href="https://en.wikipedia.org/wiki/Residual_neural_network">wiki</a>]</p>
+<div id="56cf3649" class="cell" data-execution_count="14">
+<div class="sourceCode cell-code" id="cb13" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1">model <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> models.resnet50(weights<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span>models.ResNet50_Weights.IMAGENET1K_V1)</span>
+<span id="cb13-2"></span>
+<span id="cb13-3"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># inspect layers within ResNet</span></span>
+<span id="cb13-4">model</span></code></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="14">
+<pre><code>ResNet(
+  (conv1): Conv2d(3, 64, kernel_size=(7, 7), stride=(2, 2), padding=(3, 3), bias=False)
+  (bn1): BatchNorm2d(64, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+  (relu): ReLU(inplace=True)
+  (maxpool): MaxPool2d(kernel_size=3, stride=2, padding=1, dilation=1, ceil_mode=False)
+  (layer1): Sequential(
+    (0): Bottleneck(
+      (conv1): Conv2d(64, 64, kernel_size=(1, 1), stride=(1, 1), bias=False)
+      (bn1): BatchNorm2d(64, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+      (conv2): Conv2d(64, 64, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+      (bn2): BatchNorm2d(64, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+      (conv3): Conv2d(64, 256, kernel_size=(1, 1), stride=(1, 1), bias=False)
+      (bn3): BatchNorm2d(256, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+      (relu): ReLU(inplace=True)
+      (downsample): Sequential(
+        (0): Conv2d(64, 256, kernel_size=(1, 1), stride=(1, 1), bias=False)
+        (1): BatchNorm2d(256, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+      )
+    )
+    (1): Bottleneck(
+      (conv1): Conv2d(256, 64, kernel_size=(1, 1), stride=(1, 1), bias=False)
+      (bn1): BatchNorm2d(64, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+      (conv2): Conv2d(64, 64, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+      (bn2): BatchNorm2d(64, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+      (conv3): Conv2d(64, 256, kernel_size=(1, 1), stride=(1, 1), bias=False)
+      (bn3): BatchNorm2d(256, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+      (relu): ReLU(inplace=True)
+    )
+    (2): Bottleneck(
+      (conv1): Conv2d(256, 64, kernel_size=(1, 1), stride=(1, 1), bias=False)
+      (bn1): BatchNorm2d(64, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+      (conv2): Conv2d(64, 64, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+      (bn2): BatchNorm2d(64, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+      (conv3): Conv2d(64, 256, kernel_size=(1, 1), stride=(1, 1), bias=False)
+      (bn3): BatchNorm2d(256, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+      (relu): ReLU(inplace=True)
+    )
+  )
+  (layer2): Sequential(
+    (0): Bottleneck(
+      (conv1): Conv2d(256, 128, kernel_size=(1, 1), stride=(1, 1), bias=False)
+      (bn1): BatchNorm2d(128, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+      (conv2): Conv2d(128, 128, kernel_size=(3, 3), stride=(2, 2), padding=(1, 1), bias=False)
+      (bn2): BatchNorm2d(128, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+      (conv3): Conv2d(128, 512, kernel_size=(1, 1), stride=(1, 1), bias=False)
+      (bn3): BatchNorm2d(512, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+      (relu): ReLU(inplace=True)
+      (downsample): Sequential(
+        (0): Conv2d(256, 512, kernel_size=(1, 1), stride=(2, 2), bias=False)
+        (1): BatchNorm2d(512, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+      )
+    )
+    (1): Bottleneck(
+      (conv1): Conv2d(512, 128, kernel_size=(1, 1), stride=(1, 1), bias=False)
+      (bn1): BatchNorm2d(128, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+      (conv2): Conv2d(128, 128, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+      (bn2): BatchNorm2d(128, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+      (conv3): Conv2d(128, 512, kernel_size=(1, 1), stride=(1, 1), bias=False)
+      (bn3): BatchNorm2d(512, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+      (relu): ReLU(inplace=True)
+    )
+    (2): Bottleneck(
+      (conv1): Conv2d(512, 128, kernel_size=(1, 1), stride=(1, 1), bias=False)
+      (bn1): BatchNorm2d(128, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+      (conv2): Conv2d(128, 128, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+      (bn2): BatchNorm2d(128, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+      (conv3): Conv2d(128, 512, kernel_size=(1, 1), stride=(1, 1), bias=False)
+      (bn3): BatchNorm2d(512, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+      (relu): ReLU(inplace=True)
+    )
+    (3): Bottleneck(
+      (conv1): Conv2d(512, 128, kernel_size=(1, 1), stride=(1, 1), bias=False)
+      (bn1): BatchNorm2d(128, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+      (conv2): Conv2d(128, 128, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+      (bn2): BatchNorm2d(128, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+      (conv3): Conv2d(128, 512, kernel_size=(1, 1), stride=(1, 1), bias=False)
+      (bn3): BatchNorm2d(512, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+      (relu): ReLU(inplace=True)
+    )
+  )
+  (layer3): Sequential(
+    (0): Bottleneck(
+      (conv1): Conv2d(512, 256, kernel_size=(1, 1), stride=(1, 1), bias=False)
+      (bn1): BatchNorm2d(256, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+      (conv2): Conv2d(256, 256, kernel_size=(3, 3), stride=(2, 2), padding=(1, 1), bias=False)
+      (bn2): BatchNorm2d(256, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+      (conv3): Conv2d(256, 1024, kernel_size=(1, 1), stride=(1, 1), bias=False)
+      (bn3): BatchNorm2d(1024, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+      (relu): ReLU(inplace=True)
+      (downsample): Sequential(
+        (0): Conv2d(512, 1024, kernel_size=(1, 1), stride=(2, 2), bias=False)
+        (1): BatchNorm2d(1024, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+      )
+    )
+    (1): Bottleneck(
+      (conv1): Conv2d(1024, 256, kernel_size=(1, 1), stride=(1, 1), bias=False)
+      (bn1): BatchNorm2d(256, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+      (conv2): Conv2d(256, 256, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+      (bn2): BatchNorm2d(256, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+      (conv3): Conv2d(256, 1024, kernel_size=(1, 1), stride=(1, 1), bias=False)
+      (bn3): BatchNorm2d(1024, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+      (relu): ReLU(inplace=True)
+    )
+    (2): Bottleneck(
+      (conv1): Conv2d(1024, 256, kernel_size=(1, 1), stride=(1, 1), bias=False)
+      (bn1): BatchNorm2d(256, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+      (conv2): Conv2d(256, 256, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+      (bn2): BatchNorm2d(256, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+      (conv3): Conv2d(256, 1024, kernel_size=(1, 1), stride=(1, 1), bias=False)
+      (bn3): BatchNorm2d(1024, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+      (relu): ReLU(inplace=True)
+    )
+    (3): Bottleneck(
+      (conv1): Conv2d(1024, 256, kernel_size=(1, 1), stride=(1, 1), bias=False)
+      (bn1): BatchNorm2d(256, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+      (conv2): Conv2d(256, 256, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+      (bn2): BatchNorm2d(256, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+      (conv3): Conv2d(256, 1024, kernel_size=(1, 1), stride=(1, 1), bias=False)
+      (bn3): BatchNorm2d(1024, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+      (relu): ReLU(inplace=True)
+    )
+    (4): Bottleneck(
+      (conv1): Conv2d(1024, 256, kernel_size=(1, 1), stride=(1, 1), bias=False)
+      (bn1): BatchNorm2d(256, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+      (conv2): Conv2d(256, 256, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+      (bn2): BatchNorm2d(256, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+      (conv3): Conv2d(256, 1024, kernel_size=(1, 1), stride=(1, 1), bias=False)
+      (bn3): BatchNorm2d(1024, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+      (relu): ReLU(inplace=True)
+    )
+    (5): Bottleneck(
+      (conv1): Conv2d(1024, 256, kernel_size=(1, 1), stride=(1, 1), bias=False)
+      (bn1): BatchNorm2d(256, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+      (conv2): Conv2d(256, 256, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+      (bn2): BatchNorm2d(256, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+      (conv3): Conv2d(256, 1024, kernel_size=(1, 1), stride=(1, 1), bias=False)
+      (bn3): BatchNorm2d(1024, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+      (relu): ReLU(inplace=True)
+    )
+  )
+  (layer4): Sequential(
+    (0): Bottleneck(
+      (conv1): Conv2d(1024, 512, kernel_size=(1, 1), stride=(1, 1), bias=False)
+      (bn1): BatchNorm2d(512, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+      (conv2): Conv2d(512, 512, kernel_size=(3, 3), stride=(2, 2), padding=(1, 1), bias=False)
+      (bn2): BatchNorm2d(512, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+      (conv3): Conv2d(512, 2048, kernel_size=(1, 1), stride=(1, 1), bias=False)
+      (bn3): BatchNorm2d(2048, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+      (relu): ReLU(inplace=True)
+      (downsample): Sequential(
+        (0): Conv2d(1024, 2048, kernel_size=(1, 1), stride=(2, 2), bias=False)
+        (1): BatchNorm2d(2048, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+      )
+    )
+    (1): Bottleneck(
+      (conv1): Conv2d(2048, 512, kernel_size=(1, 1), stride=(1, 1), bias=False)
+      (bn1): BatchNorm2d(512, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+      (conv2): Conv2d(512, 512, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+      (bn2): BatchNorm2d(512, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+      (conv3): Conv2d(512, 2048, kernel_size=(1, 1), stride=(1, 1), bias=False)
+      (bn3): BatchNorm2d(2048, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+      (relu): ReLU(inplace=True)
+    )
+    (2): Bottleneck(
+      (conv1): Conv2d(2048, 512, kernel_size=(1, 1), stride=(1, 1), bias=False)
+      (bn1): BatchNorm2d(512, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+      (conv2): Conv2d(512, 512, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+      (bn2): BatchNorm2d(512, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+      (conv3): Conv2d(512, 2048, kernel_size=(1, 1), stride=(1, 1), bias=False)
+      (bn3): BatchNorm2d(2048, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+      (relu): ReLU(inplace=True)
+    )
+  )
+  (avgpool): AdaptiveAvgPool2d(output_size=(1, 1))
+  (fc): Linear(in_features=2048, out_features=1000, bias=True)
+)</code></pre>
+</div>
+</div>
+<div id="6d13d56e" class="cell" data-execution_count="15">
+<div class="sourceCode cell-code" id="cb15" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb15-1">selected_layers <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> [<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"conv1"</span>, <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"layer1"</span>, <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"layer2"</span>, <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"layer3"</span>, <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"layer4"</span>]</span>
+<span id="cb15-2">resnet_feature_maps: <span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">dict</span>[<span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">str</span>, Tensor] <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> {}</span>
+<span id="cb15-3">set_hooks(model, selected_layers, resnet_feature_maps)</span>
+<span id="cb15-4"></span>
+<span id="cb15-5"><span class="cf" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">with</span> torch.no_grad():</span>
+<span id="cb15-6">    model(sample)</span></code></pre></div>
+</div>
+<div id="5fb235f2" class="cell" data-execution_count="16">
+<div class="sourceCode cell-code" id="cb16" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb16-1"><span class="cf" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">for</span> layer, filters <span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">in</span> resnet_feature_maps.items():</span>
+<span id="cb16-2">    display(Markdown(<span class="ss" style="color: #20794D;
+background-color: null;
+font-style: inherit;">f'### Layer "</span><span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">{</span>layer<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">}</span><span class="ss" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"'</span>))</span>
+<span id="cb16-3">    visualize_feature_maps(filters, max_maps<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">8</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">*</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">8</span>, norm<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"linear"</span>)</span>
+<span id="cb16-4">    plt.show()</span></code></pre></div>
+<section id="layer-conv1" class="level3 cell-output cell-output-display cell-output-markdown">
+<h3 class="anchored" data-anchor-id="layer-conv1">Layer “conv1”</h3>
+</section>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="gcerar.github.io/posts/2025-05-07-feature-maps/index_files/figure-html/cell-17-output-2.png" class="img-fluid figure-img"></p>
+</figure>
+</div>
+</div>
+<section id="layer-layer1" class="level3 cell-output cell-output-display cell-output-markdown">
+<h3 class="anchored" data-anchor-id="layer-layer1">Layer “layer1”</h3>
+</section>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="gcerar.github.io/posts/2025-05-07-feature-maps/index_files/figure-html/cell-17-output-4.png" class="img-fluid figure-img"></p>
+</figure>
+</div>
+</div>
+<section id="layer-layer2" class="level3 cell-output cell-output-display cell-output-markdown">
+<h3 class="anchored" data-anchor-id="layer-layer2">Layer “layer2”</h3>
+</section>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="gcerar.github.io/posts/2025-05-07-feature-maps/index_files/figure-html/cell-17-output-6.png" class="img-fluid figure-img"></p>
+</figure>
+</div>
+</div>
+<section id="layer-layer3" class="level3 cell-output cell-output-display cell-output-markdown">
+<h3 class="anchored" data-anchor-id="layer-layer3">Layer “layer3”</h3>
+</section>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="gcerar.github.io/posts/2025-05-07-feature-maps/index_files/figure-html/cell-17-output-8.png" class="img-fluid figure-img"></p>
+</figure>
+</div>
+</div>
+<section id="layer-layer4" class="level3 cell-output cell-output-display cell-output-markdown">
+<h3 class="anchored" data-anchor-id="layer-layer4">Layer “layer4”</h3>
+</section>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="gcerar.github.io/posts/2025-05-07-feature-maps/index_files/figure-html/cell-17-output-10.png" class="img-fluid figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+<div id="34732906" class="cell" data-execution_count="17">
+<div class="sourceCode cell-code" id="cb17" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb17-1">visualize_feature_maps_pca(resnet_feature_maps, max_cols<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">3</span>)</span>
+<span id="cb17-2">plt.show()</span></code></pre></div>
+<div class="cell-output cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="gcerar.github.io/posts/2025-05-07-feature-maps/index_files/figure-html/cell-18-output-1.png" class="img-fluid figure-img"></p>
+<figcaption>Principal‑component projections of the feature‑map stacks for the corresponding layers of ResNet-50.</figcaption>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="conclusions" class="level2">
+<h2 class="anchored" data-anchor-id="conclusions">Conclusions</h2>
+<p>This article introduced a lightweight technique for visualizing pre-selected neural network layers’ feature maps (layer‑wise outputs). These visualizations offer an intuitive window into <strong>what</strong> a convolutional network attends to at each processing stage.</p>
+<p>For deeper, production‑grade interpretability, explore the rich ecosystem of <strong>explainability libraries and frameworks</strong>, such as Captum or SHAP, and take a broader look at the rapidly growing fields of eXplainable AI (XAI) and Responsible AI.</p>
+<ul>
+<li><a href="https://captum.ai/">Captum</a></li>
+<li><a href="https://shap.readthedocs.io/en/latest/">SHAP</a></li>
+</ul>
+
+
+
+</section>
+
+<div id="quarto-appendix" class="default"><section class="quarto-appendix-contents" id="quarto-bibliography"><h2 class="anchored quarto-appendix-heading">References</h2><div id="refs" class="references csl-bib-body hanging-indent" data-entry-spacing="0">
+<div id="ref-simonyan2014very" class="csl-entry">
+Simonyan, Karen, and Andrew Zisserman. 2014. <span>“Very Deep Convolutional Networks for Large-Scale Image Recognition.”</span> <em>arXiv Preprint arXiv:1409.1556</em>.
+</div>
+<div id="ref-targ2016resnet" class="csl-entry">
+Targ, Sasha, Diogo Almeida, and Kevin Lyman. 2016. <span>“Resnet in Resnet: Generalizing Residual Architectures.”</span> <em>arXiv Preprint arXiv:1603.08029</em>.
+</div>
+</div></section><section class="quarto-appendix-contents" id="quarto-reuse"><h2 class="anchored quarto-appendix-heading">Reuse</h2><div class="quarto-appendix-contents"><div><a rel="license" href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.en_us">CC BY-NC-SA 4.0</a></div></div></section></div> ]]></description>
+  <category>pytorch</category>
+  <category>nn</category>
+  <guid>gcerar.github.io/posts/2025-05-07-feature-maps/</guid>
+  <pubDate>Tue, 06 May 2025 22:00:00 GMT</pubDate>
+  <media:content url="gcerar.github.io/posts/2025-05-07-feature-maps/featured.webp" medium="image" type="image/webp"/>
+</item>
+<item>
   <title>Building a No‑Fluff Report Template in LaTeX</title>
   <dc:creator>Gregor Cerar</dc:creator>
   <link>gcerar.github.io/posts/2025-05-07-ministate-v3/</link>
