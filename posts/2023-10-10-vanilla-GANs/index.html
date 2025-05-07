@@ -2,14 +2,14 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en-us" xml:lang="en-us"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.4.553">
+<meta name="generator" content="quarto-1.6.42">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 <meta name="author" content="Gregor Cerar">
 <meta name="dcterms.date" content="2023-10-10">
 
-<title>Greg’s blog - Generative Adversarial Networks</title>
+<title>Generative Adversarial Networks – Greg’s blog</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -35,7 +35,7 @@ div.sourceCode { overflow: auto; }
 }
 @media print {
 pre > code.sourceCode { white-space: pre-wrap; }
-pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
 }
 pre.numberSource code
   { counter-reset: source-line 0; }
@@ -91,10 +91,10 @@ div.csl-indent {
 <script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
 <script src="../../site_libs/quarto-html/anchor.min.js"></script>
 <link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="../../site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-f13734caa9e42c7ade3ac6397e4abdb3.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="../../site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<link href="../../site_libs/bootstrap/bootstrap-153260f4e1219090bfcbaf61f3f54631.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
 <script src="../../site_libs/quarto-contrib/videojs/video.min.js"></script>
 <link href="../../site_libs/quarto-contrib/videojs/video-js.css" rel="stylesheet">
 <script id="quarto-search-options" type="application/json">{
@@ -133,12 +133,11 @@ function gtag(){dataLayer.push(arguments);}
 gtag('js', new Date());
 gtag('config', 'G-FB81SP2FX7', { 'anonymize_ip': true});
 </script>
-<style>html{ scroll-behavior: smooth; }</style>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js" integrity="sha512-c3Nl8+7g4LMSTdrm621y7kf9v3SDPnhxLNhcjFJbKECVnmZHTdo+IRO05sNLTH/D3vA6u1X32ehoLC7WFVdheg==" crossorigin="anonymous"></script>
 
 <script type="application/javascript">define('jquery', [],function() {return window.jQuery;})</script>
 
-  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
   <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
 
 <script type="text/javascript">
@@ -168,14 +167,14 @@ window.Quarto = {
 };
 </script>
 
-<meta property="og:title" content="Greg’s blog - Generative Adversarial Networks">
+<meta property="og:title" content="Generative Adversarial Networks – Greg’s blog">
 <meta property="og:description" content="Generative Adversarial Networks (GANs) represent an innovative class of unsupervised neural networks that have revolutionized the field of artificial intelligence. Eager to learn how they work, I’ve implemented foundational “vanilla” GAN and its more complex counterpart, the Deep Convolutional GAN (DCGAN), from scratch. I’ve put them on a test run on MNIST Digits and Fashion toy datasets.">
 <meta property="og:image" content="gcerar.github.io/posts/2023-10-10-vanilla-GANs/featured.webp">
 <meta property="og:site_name" content="Greg's blog">
 <meta property="og:locale" content="en_US">
 </head>
 
-<body class="floating nav-fixed slimcontent">
+<body class="floating nav-fixed">
 
 <div id="quarto-search-results"></div>
   <header id="quarto-header" class="headroom fixed-top">
@@ -187,7 +186,7 @@ window.Quarto = {
     </a>
   </div>
             <div id="quarto-search" class="" title="Search"></div>
-          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
   <span class="navbar-toggler-icon"></span>
 </button>
           <div class="collapse navbar-collapse" id="navbarCollapse">
@@ -210,29 +209,29 @@ window.Quarto = {
 </ul>
             <ul class="navbar-nav navbar-nav-scroll ms-auto">
   <li class="nav-item compact">
-    <a class="nav-link" href="https://github.com/gcerar"> <i class="bi bi-github" role="img">
+    <a class="nav-link" href="https://github.com/gcerar"> <i class="bi bi-github" role="img" aria-label="GitHub">
 </i> 
 <span class="menu-text"></span></a>
   </li>  
   <li class="nav-item compact">
-    <a class="nav-link" href="https://linkedin.com/in/gcerar"> <i class="bi bi-linkedin" role="img">
+    <a class="nav-link" href="https://linkedin.com/in/gcerar"> <i class="bi bi-linkedin" role="img" aria-label="LinkedIn">
 </i> 
 <span class="menu-text"></span></a>
   </li>  
   <li class="nav-item compact">
-    <a class="nav-link" href="../../posts.xml"> <i class="bi bi-rss" role="img">
+    <a class="nav-link" href="../../posts.xml"> <i class="bi bi-rss" role="img" aria-label="RSS">
 </i> 
 <span class="menu-text"></span></a>
   </li>  
 </ul>
           </div> <!-- /navcollapse -->
-          <div class="quarto-navbar-tools">
+            <div class="quarto-navbar-tools">
 </div>
       </div> <!-- /container-fluid -->
     </nav>
 </header>
 <!-- content -->
-<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-full page-navbar">
 <!-- sidebar -->
   <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
     <nav id="TOC" role="doc-toc" class="toc-active" data-toc-expanded="99">
@@ -246,7 +245,7 @@ window.Quarto = {
   <ul class="collapse">
   <li><a href="#minimax-game-in-gans" id="toc-minimax-game-in-gans" class="nav-link" data-scroll-target="#minimax-game-in-gans">Minimax Game in GANs</a></li>
   </ul></li>
-  <li><a href="#prepare-environment" id="toc-prepare-environment" class="nav-link" data-scroll-target="#prepare-environment">Prepare Environment</a>
+  <li><a href="#prepare-components" id="toc-prepare-components" class="nav-link" data-scroll-target="#prepare-components">Prepare Components</a>
   <ul class="collapse">
   <li><a href="#generator" id="toc-generator" class="nav-link" data-scroll-target="#generator">Generator</a></li>
   <li><a href="#discriminator" id="toc-discriminator" class="nav-link" data-scroll-target="#discriminator">Discriminator</a></li>
@@ -277,10 +276,10 @@ window.Quarto = {
 </nav>
 <div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
 <!-- margin-sidebar -->
-    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar zindex-bottom">
     </div>
 <!-- main -->
-<main class="content page-columns page-full" id="quarto-document-content">
+<main class="content column-page-right" id="quarto-document-content">
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
@@ -293,7 +292,7 @@ window.Quarto = {
 
 
 
-<div class="quarto-title-meta">
+<div class="quarto-title-meta column-page-right">
 
     <div>
     <div class="quarto-title-meta-heading">Author</div>
@@ -305,14 +304,14 @@ window.Quarto = {
     <div>
     <div class="quarto-title-meta-heading">Published</div>
     <div class="quarto-title-meta-contents">
-      <p class="date">October 10, 2023</p>
+      <p class="date">2023-10-10</p>
     </div>
   </div>
   
     <div>
     <div class="quarto-title-meta-heading">Modified</div>
     <div class="quarto-title-meta-contents">
-      <p class="date-modified">August 1, 2024</p>
+      <p class="date-modified">2025-04-08</p>
     </div>
   </div>
     
@@ -334,10 +333,10 @@ window.Quarto = {
 <p>Generative Adversarial Networks (GANs) are an innovative class of unsupervised neural networks that have revolutionized the field of artificial intelligence. They were first introduced in <a href="https://arxiv.org/abs/1406.2661">Generative Adversarial Networks</a> <span class="citation" data-cites="goodfellow2014generative">(<a href="#ref-goodfellow2014generative" role="doc-biblioref">Goodfellow et al. 2014</a>)</span> and consist of two separate neural networks: the <strong>generator</strong> (creates data) and the <strong>discriminator</strong> (evaluates data authenticity). The generator aims to fool the discriminator by producing realistic data, while the discriminator tries to differentiate real from fake. Over iterations, the generator’s data becomes more convincing.</p>
 <p>As an analogy, consider two kids, one drawing counterfeit money (“Generator”) and another assessing its realism (“Discriminator”). Over time, the counterfeit drawings become increasingly convincing.</p>
 </section>
-<section id="vanilla-gan" class="level1 page-columns page-full">
+<section id="vanilla-gan" class="level1">
 <h1>Vanilla GAN</h1>
 <p>The most fundamental variant of GAN is the “vanilla” GAN, where “vanilla” signifies the model in its original and most straightforward form rather than a flavor. To better understand its mechanism, I’ve illustrated its structure on <a href="#fig-architecture" class="quarto-xref">Figure&nbsp;1</a>.</p>
-<div id="fig-architecture" class="quarto-figure quarto-figure-center quarto-float anchored">
+<div id="fig-architecture" class="quarto-float quarto-figure quarto-figure-center anchored">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-architecture-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <img src="./figures/GAN-architecture.png" class="img-fluid figure-img">
@@ -390,8 +389,8 @@ Figure&nbsp;1: GAN architecture
 <p>The iterative competition refines both, targeting a proficient Generator and a perceptive Discriminator.</p>
 </section>
 </section>
-<section id="prepare-environment" class="level2">
-<h2 class="anchored" data-anchor-id="prepare-environment">Prepare Environment</h2>
+<section id="prepare-components" class="level2">
+<h2 class="anchored" data-anchor-id="prepare-components">Prepare Components</h2>
 <p>In the upcoming sections, we’ll do the following steps to prepare the development environment:</p>
 <ul>
 <li>Import necessary libraries, primarily PyTorch and Matplotlib.</li>
@@ -400,8 +399,8 @@ Figure&nbsp;1: GAN architecture
 <li>Provide a weight initialization helper function.</li>
 </ul>
 <div id="cell-7" class="cell" data-execution_count="1">
-<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> pathlib <span class="im">import</span> Path</span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> typing <span class="im">import</span> Callable, Sequence</span>
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> collections.abc <span class="im">import</span> Callable, Sequence</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> pathlib <span class="im">import</span> Path</span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
 <span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> matplotlib <span class="im">import</span> pyplot <span class="im">as</span> plt</span>
@@ -422,26 +421,26 @@ Figure&nbsp;1: GAN architecture
 <span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a>FIGURE_PATH <span class="op">=</span> PROJECT_PATH <span class="op">/</span> <span class="st">"figures"</span></span>
 <span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a>DATASET_PATH <span class="op">=</span> Path.home() <span class="op">/</span> <span class="st">"datasets"</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div id="cell-8" class="cell" data-execution_count="2">
-<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Disable functionalities for speed-up</span></span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>torch.autograd.set_detect_anomaly(<span class="va">False</span>)</span>
-<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>torch.autograd.profiler.profile(<span class="va">False</span>)</span>
-<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>torch.autograd.profiler.emit_nvtx(<span class="va">False</span>)</span>
-<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>device <span class="op">=</span> torch.device(<span class="st">"cuda"</span> <span class="cf">if</span> torch.cuda.is_available() <span class="cf">else</span> <span class="st">"cpu"</span>)</span>
-<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> torch.cuda.is_available():</span>
-<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Allow CuDNN internal benchmarking for architecture-specific optimizations</span></span>
-<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>    torch.backends.cudnn.benchmark <span class="op">=</span> <span class="va">True</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
 <div id="cell-9" class="cell" data-execution_count="3">
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>AMP_ENABLED <span class="op">=</span> <span class="va">False</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>device <span class="op">=</span> torch.device(<span class="st">"cpu"</span>)</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> torch.cuda.is_available():</span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>    device <span class="op">=</span> torch.device(<span class="st">"cuda"</span>)</span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> torch.cuda.is_bf16_supported():</span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>        AMP_ENABLED <span class="op">=</span> <span class="va">True</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div id="cell-10" class="cell" data-execution_count="4">
 <div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> weights_init(net: nn.Module) <span class="op">-&gt;</span> <span class="va">None</span>:</span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> m <span class="kw">in</span> net.modules():</span>
-<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> <span class="bu">isinstance</span>(m, (nn.Conv2d, nn.ConvTranspose2d)):</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> <span class="bu">isinstance</span>(m, nn.Conv2d <span class="op">|</span> nn.ConvTranspose2d):</span>
 <span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>            nn.init.normal_(m.weight, <span class="fl">0.0</span>, <span class="fl">0.02</span>)</span>
 <span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>            <span class="cf">if</span> m.bias <span class="kw">is</span> <span class="kw">not</span> <span class="va">None</span>:</span>
 <span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>                nn.init.constant_(m.bias, <span class="fl">0.0</span>)</span>
 <span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>        <span class="cf">elif</span> <span class="bu">isinstance</span>(m, (nn.BatchNorm1d, nn.BatchNorm2d)):</span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>        <span class="cf">elif</span> <span class="bu">isinstance</span>(m, nn.BatchNorm1d <span class="op">|</span> nn.BatchNorm2d):</span>
 <span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>            nn.init.normal_(m.weight, <span class="fl">1.0</span>, <span class="fl">0.02</span>)</span>
 <span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>            <span class="cf">if</span> m.bias <span class="kw">is</span> <span class="kw">not</span> <span class="va">None</span>:</span>
 <span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>                nn.init.constant_(m.bias, <span class="fl">0.0</span>)</span>
@@ -460,7 +459,7 @@ Figure&nbsp;1: GAN architecture
 <li><strong>Output:</strong> Reshapes data to desired format (e.g., image). Often uses ‘tanh’ for activation.</li>
 <li><strong>Objective:</strong> Generate data indistinguishable from real by the Discriminator.</li>
 </ul>
-<div id="cell-12" class="cell" data-execution_count="5">
+<div id="cell-13" class="cell" data-execution_count="6">
 <div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> Generator(nn.Module):</span>
 <span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> <span class="fu">__init__</span>(<span class="va">self</span>, out_dim: Sequence[<span class="bu">int</span>], nz: <span class="bu">int</span> <span class="op">=</span> <span class="dv">100</span>, ngf: <span class="bu">int</span> <span class="op">=</span> <span class="dv">256</span>, alpha: <span class="bu">float</span> <span class="op">=</span> <span class="fl">0.2</span>):</span>
 <span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>        <span class="co">"""</span></span>
@@ -476,7 +475,7 @@ Figure&nbsp;1: GAN architecture
 <span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a>            nn.LeakyReLU(alpha, inplace<span class="op">=</span><span class="va">True</span>),</span>
 <span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a>            nn.Linear(ngf, <span class="dv">2</span> <span class="op">*</span> ngf),</span>
 <span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a>            nn.LeakyReLU(alpha, inplace<span class="op">=</span><span class="va">True</span>),</span>
-<span id="cb4-16"><a href="#cb4-16" aria-hidden="true" tabindex="-1"></a>            nn.Linear(<span class="dv">2</span> <span class="op">*</span> ngf, <span class="dv">2</span> <span class="op">*</span> ngf),</span>
+<span id="cb4-16"><a href="#cb4-16" aria-hidden="true" tabindex="-1"></a>            nn.Linear(<span class="dv">2</span> <span class="op">*</span> ngf, <span class="dv">4</span> <span class="op">*</span> ngf),</span>
 <span id="cb4-17"><a href="#cb4-17" aria-hidden="true" tabindex="-1"></a>            nn.LeakyReLU(alpha, inplace<span class="op">=</span><span class="va">True</span>),</span>
 <span id="cb4-18"><a href="#cb4-18" aria-hidden="true" tabindex="-1"></a>            nn.Linear(<span class="dv">4</span> <span class="op">*</span> ngf, <span class="bu">int</span>(np.prod(<span class="va">self</span>.out_dim))),</span>
 <span id="cb4-19"><a href="#cb4-19" aria-hidden="true" tabindex="-1"></a>            nn.Tanh(),</span>
@@ -489,7 +488,7 @@ Figure&nbsp;1: GAN architecture
 <span id="cb4-26"><a href="#cb4-26" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb4-27"><a href="#cb4-27" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb4-28"><a href="#cb4-28" aria-hidden="true" tabindex="-1"></a>summary(Generator(out_dim<span class="op">=</span>(<span class="dv">1</span>, <span class="dv">28</span>, <span class="dv">28</span>)), input_size<span class="op">=</span>[<span class="dv">128</span>, <span class="dv">100</span>])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-display" data-execution_count="5">
+<div class="cell-output cell-output-display" data-execution_count="6">
 <pre><code>==========================================================================================
 Layer (type:depth-idx)                   Output Shape              Param #
 ==========================================================================================
@@ -507,7 +506,7 @@ Generator                                [128, 1, 28, 28]          --
 Total params: 1,486,352
 Trainable params: 1,486,352
 Non-trainable params: 0
-Total mult-adds (M): 190.25
+Total mult-adds (Units.MEGABYTES): 190.25
 ==========================================================================================
 Input size (MB): 0.05
 Forward/backward pass size (MB): 2.64
@@ -526,7 +525,7 @@ Estimated Total Size (MB): 8.63
 <li><strong>Output:</strong> Uses a sigmoid activation, yielding a score between 0-1, reflecting the data’s authenticity.</li>
 <li><strong>Objective:</strong> Recognize real data and identify fake data from the Generator.</li>
 </ul>
-<div id="cell-14" class="cell" data-execution_count="6">
+<div id="cell-15" class="cell" data-execution_count="7">
 <div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> Discriminator(nn.Module):</span>
 <span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> <span class="fu">__init__</span>(<span class="va">self</span>, input_dim: Sequence[<span class="bu">int</span>], ndf: <span class="bu">int</span> <span class="op">=</span> <span class="dv">128</span>, alpha: <span class="bu">float</span> <span class="op">=</span> <span class="fl">0.2</span>):</span>
 <span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>        <span class="bu">super</span>().<span class="fu">__init__</span>()</span>
@@ -550,7 +549,7 @@ Estimated Total Size (MB): 8.63
 <span id="cb6-21"><a href="#cb6-21" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb6-22"><a href="#cb6-22" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb6-23"><a href="#cb6-23" aria-hidden="true" tabindex="-1"></a>summary(Discriminator(input_dim<span class="op">=</span>(<span class="dv">1</span>, <span class="dv">28</span>, <span class="dv">28</span>)), input_size<span class="op">=</span>[<span class="dv">128</span>, <span class="dv">1</span>, <span class="dv">28</span>, <span class="dv">28</span>])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-display" data-execution_count="6">
+<div class="cell-output cell-output-display" data-execution_count="7">
 <pre><code>==========================================================================================
 Layer (type:depth-idx)                   Output Shape              Param #
 ==========================================================================================
@@ -571,7 +570,7 @@ Discriminator                            [128, 1]                  --
 Total params: 566,273
 Trainable params: 566,273
 Non-trainable params: 0
-Total mult-adds (M): 72.48
+Total mult-adds (Units.MEGABYTES): 72.48
 ==========================================================================================
 Input size (MB): 0.40
 Forward/backward pass size (MB): 0.92
@@ -603,7 +602,7 @@ Note
 <p>Using <code>.eval()</code> and <code>.train()</code> modes initially seemed promising for faster training. However, they affected layers like <code>BatchNorm2d</code> and <code>Dropout</code>, making the GAN diverge. Also, switching between eval and train modes is not free of charge.</p>
 </div>
 </div>
-<div id="cell-16" class="cell" data-execution_count="7">
+<div id="cell-17" class="cell" data-execution_count="8">
 <div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> train_step(</span>
 <span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>    generator: nn.Module,</span>
 <span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>    discriminator: nn.Module,</span>
@@ -654,32 +653,36 @@ Note
 <span id="cb8-48"><a href="#cb8-48" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> loss_G.item(), loss_D.item()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
-<section id="evaluation" class="level2 page-columns page-full">
+<section id="evaluation" class="level2">
 <h2 class="anchored" data-anchor-id="evaluation">Evaluation</h2>
 <p>Before evaluation, we configured the learning rate (LR), optimizer’s <span class="math inline">\(\beta\)</span> parameters, batch size, and data loader settings for all experiments. We used the MNIST digits and MNIST fashion datasets for assessment.</p>
-<div id="cell-18" class="cell" data-execution_count="8">
+<div id="cell-19" class="cell" data-execution_count="9">
 <div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>OPTIMIZER_LR <span class="op">=</span> <span class="fl">0.0002</span></span>
 <span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>L2_NORM <span class="op">=</span> <span class="fl">1e-5</span></span>
 <span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>OPTIMIZER_BETAS <span class="op">=</span> (<span class="fl">0.5</span>, <span class="fl">0.999</span>)</span>
 <span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>N_EPOCHS <span class="op">=</span> <span class="dv">100</span></span>
 <span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>BATCH_SIZE <span class="op">=</span> <span class="dv">128</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div id="cell-19" class="cell" data-execution_count="9">
-<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>loader_kwargs <span class="op">=</span> {</span>
-<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>    <span class="st">"num_workers"</span>: <span class="dv">8</span>,</span>
-<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>    <span class="st">"pin_memory"</span>: <span class="va">True</span>,</span>
-<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>    <span class="st">"shuffle"</span>: <span class="va">True</span>,</span>
-<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>    <span class="st">"batch_size"</span>: BATCH_SIZE,</span>
-<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>    <span class="st">"prefetch_factor"</span>: <span class="dv">16</span>,</span>
-<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a>    <span class="st">"pin_memory_device"</span>: device.<span class="bu">type</span>,</span>
-<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a>    <span class="st">"persistent_workers"</span>: <span class="va">False</span>,</span>
-<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div id="cell-20" class="cell" data-execution_count="10">
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>g <span class="op">=</span> torch.Generator()</span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>g.manual_seed(SEED)</span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>loader_kwargs <span class="op">=</span> {</span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>    <span class="st">"num_workers"</span>: <span class="dv">8</span>,</span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>    <span class="st">"pin_memory"</span>: <span class="va">True</span>,</span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a>    <span class="st">"shuffle"</span>: <span class="va">True</span>,</span>
+<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a>    <span class="st">"batch_size"</span>: BATCH_SIZE,</span>
+<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a>    <span class="st">"prefetch_factor"</span>: <span class="dv">16</span>,</span>
+<span id="cb10-10"><a href="#cb10-10" aria-hidden="true" tabindex="-1"></a>    <span class="st">"persistent_workers"</span>: <span class="va">False</span>,</span>
+<span id="cb10-11"><a href="#cb10-11" aria-hidden="true" tabindex="-1"></a>    <span class="st">"worker_init_fn"</span>: seed_worker,</span>
+<span id="cb10-12"><a href="#cb10-12" aria-hidden="true" tabindex="-1"></a>    <span class="st">"generator"</span>: g,</span>
+<span id="cb10-13"><a href="#cb10-13" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<section id="mnist-digits-dataset" class="level3 page-columns page-full">
+<section id="mnist-digits-dataset" class="level3">
 <h3 class="anchored" data-anchor-id="mnist-digits-dataset">MNIST Digits Dataset</h3>
 <p>The MNIST (Modified National Institute of Standards and Technology) dataset is a well-known collection of handwritten digits, extensively used in the fields of machine learning and computer vision for training and testing purposes. Its simplicity and size make it a popular choice for introductory courses and experiments in image recognition.</p>
 <p>In total, the dataset contains 70,000 grayscale images of handwritten digits (from 0 to 9). Each image is 28x28 pixels.</p>
-<div id="cell-21" class="cell" data-execution_count="10">
+<div id="cell-22" class="cell" data-execution_count="11">
 <div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> get_minst_dataset(transform<span class="op">=</span><span class="va">None</span>) <span class="op">-&gt;</span> Dataset:</span>
 <span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>    <span class="im">from</span> torchvision.datasets <span class="im">import</span> MNIST</span>
 <span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -690,89 +693,98 @@ Note
 <span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a>    dataset <span class="op">=</span> ConcatDataset([trainset, testset])</span>
 <span id="cb11-9"><a href="#cb11-9" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> dataset</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div id="cell-23" class="cell" data-execution_count="12">
+<div id="cell-24" class="cell" data-execution_count="13">
 <div class="sourceCode cell-code" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>IMG_DIM <span class="op">=</span> (<span class="dv">1</span>, <span class="dv">28</span>, <span class="dv">28</span>)</span>
 <span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>NOISE_DIM <span class="op">=</span> <span class="dv">100</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div id="cell-24" class="cell" data-execution_count="13">
-<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>transform <span class="op">=</span> T.Compose([T.ToTensor(), T.Normalize(<span class="fl">0.5</span>, <span class="fl">0.5</span>)])</span>
-<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>data <span class="op">=</span> get_minst_dataset(transform<span class="op">=</span>transform)</span>
-<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>dataloader <span class="op">=</span> DataLoader(data, <span class="op">**</span>loader_kwargs)</span>
-<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a>torch.manual_seed(SEED)</span>
-<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a>torch.cuda.manual_seed_all(SEED)</span>
-<span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-9"><a href="#cb13-9" aria-hidden="true" tabindex="-1"></a><span class="co"># benchmark_noise is used for the animation to show how output evolve on the same vector</span></span>
-<span id="cb13-10"><a href="#cb13-10" aria-hidden="true" tabindex="-1"></a>benchmark_noise <span class="op">=</span> torch.randn(<span class="dv">16</span> <span class="op">*</span> <span class="dv">16</span>, NOISE_DIM, device<span class="op">=</span>device)</span>
-<span id="cb13-11"><a href="#cb13-11" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-12"><a href="#cb13-12" aria-hidden="true" tabindex="-1"></a>generator <span class="op">=</span> Generator(out_dim<span class="op">=</span>IMG_DIM, nz<span class="op">=</span>NOISE_DIM).to(device)</span>
-<span id="cb13-13"><a href="#cb13-13" aria-hidden="true" tabindex="-1"></a>generator.<span class="bu">apply</span>(weights_init)</span>
-<span id="cb13-14"><a href="#cb13-14" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-15"><a href="#cb13-15" aria-hidden="true" tabindex="-1"></a>discriminator <span class="op">=</span> Discriminator(input_dim<span class="op">=</span>IMG_DIM).to(device)</span>
-<span id="cb13-16"><a href="#cb13-16" aria-hidden="true" tabindex="-1"></a>discriminator.<span class="bu">apply</span>(weights_init)</span>
-<span id="cb13-17"><a href="#cb13-17" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-18"><a href="#cb13-18" aria-hidden="true" tabindex="-1"></a>optimizer_G <span class="op">=</span> optim.AdamW(</span>
-<span id="cb13-19"><a href="#cb13-19" aria-hidden="true" tabindex="-1"></a>    generator.parameters(),</span>
-<span id="cb13-20"><a href="#cb13-20" aria-hidden="true" tabindex="-1"></a>    lr<span class="op">=</span>OPTIMIZER_LR,</span>
-<span id="cb13-21"><a href="#cb13-21" aria-hidden="true" tabindex="-1"></a>    betas<span class="op">=</span>OPTIMIZER_BETAS,</span>
-<span id="cb13-22"><a href="#cb13-22" aria-hidden="true" tabindex="-1"></a>    weight_decay<span class="op">=</span>L2_NORM,</span>
-<span id="cb13-23"><a href="#cb13-23" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb13-24"><a href="#cb13-24" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-25"><a href="#cb13-25" aria-hidden="true" tabindex="-1"></a>optimizer_D <span class="op">=</span> optim.AdamW(</span>
-<span id="cb13-26"><a href="#cb13-26" aria-hidden="true" tabindex="-1"></a>    discriminator.parameters(),</span>
-<span id="cb13-27"><a href="#cb13-27" aria-hidden="true" tabindex="-1"></a>    lr<span class="op">=</span>OPTIMIZER_LR,</span>
-<span id="cb13-28"><a href="#cb13-28" aria-hidden="true" tabindex="-1"></a>    betas<span class="op">=</span>OPTIMIZER_BETAS,</span>
-<span id="cb13-29"><a href="#cb13-29" aria-hidden="true" tabindex="-1"></a>    weight_decay<span class="op">=</span>L2_NORM,</span>
-<span id="cb13-30"><a href="#cb13-30" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb13-31"><a href="#cb13-31" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-32"><a href="#cb13-32" aria-hidden="true" tabindex="-1"></a>criterion <span class="op">=</span> nn.BCELoss().to(device)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
 <div id="cell-25" class="cell" data-execution_count="14">
-<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>animation <span class="op">=</span> []</span>
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>transform <span class="op">=</span> T.Compose(</span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>    [</span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>        T.ToTensor(),</span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>        T.Normalize(<span class="fl">0.5</span>, <span class="fl">0.5</span>),</span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>    ]</span>
+<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a>data <span class="op">=</span> get_minst_dataset(transform<span class="op">=</span>transform)</span>
+<span id="cb13-9"><a href="#cb13-9" aria-hidden="true" tabindex="-1"></a>dataloader <span class="op">=</span> DataLoader(data, <span class="op">**</span>loader_kwargs)</span>
+<span id="cb13-10"><a href="#cb13-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-11"><a href="#cb13-11" aria-hidden="true" tabindex="-1"></a><span class="co"># set seed for random generators</span></span>
+<span id="cb13-12"><a href="#cb13-12" aria-hidden="true" tabindex="-1"></a>set_random_seed()</span>
+<span id="cb13-13"><a href="#cb13-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-14"><a href="#cb13-14" aria-hidden="true" tabindex="-1"></a><span class="co"># benchmark_noise is used for the animation to show how output evolve on the same vector</span></span>
+<span id="cb13-15"><a href="#cb13-15" aria-hidden="true" tabindex="-1"></a>benchmark_noise <span class="op">=</span> torch.randn(<span class="dv">16</span> <span class="op">*</span> <span class="dv">16</span>, NOISE_DIM, device<span class="op">=</span>device)</span>
+<span id="cb13-16"><a href="#cb13-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-17"><a href="#cb13-17" aria-hidden="true" tabindex="-1"></a>generator <span class="op">=</span> Generator(out_dim<span class="op">=</span>IMG_DIM, nz<span class="op">=</span>NOISE_DIM).to(device)</span>
+<span id="cb13-18"><a href="#cb13-18" aria-hidden="true" tabindex="-1"></a>generator.<span class="bu">apply</span>(weights_init)</span>
+<span id="cb13-19"><a href="#cb13-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-20"><a href="#cb13-20" aria-hidden="true" tabindex="-1"></a>discriminator <span class="op">=</span> Discriminator(input_dim<span class="op">=</span>IMG_DIM).to(device)</span>
+<span id="cb13-21"><a href="#cb13-21" aria-hidden="true" tabindex="-1"></a>discriminator.<span class="bu">apply</span>(weights_init)</span>
+<span id="cb13-22"><a href="#cb13-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-23"><a href="#cb13-23" aria-hidden="true" tabindex="-1"></a>optimizer_G <span class="op">=</span> optim.AdamW(</span>
+<span id="cb13-24"><a href="#cb13-24" aria-hidden="true" tabindex="-1"></a>    generator.parameters(),</span>
+<span id="cb13-25"><a href="#cb13-25" aria-hidden="true" tabindex="-1"></a>    lr<span class="op">=</span>OPTIMIZER_LR,</span>
+<span id="cb13-26"><a href="#cb13-26" aria-hidden="true" tabindex="-1"></a>    betas<span class="op">=</span>OPTIMIZER_BETAS,</span>
+<span id="cb13-27"><a href="#cb13-27" aria-hidden="true" tabindex="-1"></a>    weight_decay<span class="op">=</span>L2_NORM,</span>
+<span id="cb13-28"><a href="#cb13-28" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb13-29"><a href="#cb13-29" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-30"><a href="#cb13-30" aria-hidden="true" tabindex="-1"></a>optimizer_D <span class="op">=</span> optim.AdamW(</span>
+<span id="cb13-31"><a href="#cb13-31" aria-hidden="true" tabindex="-1"></a>    discriminator.parameters(),</span>
+<span id="cb13-32"><a href="#cb13-32" aria-hidden="true" tabindex="-1"></a>    lr<span class="op">=</span>OPTIMIZER_LR,</span>
+<span id="cb13-33"><a href="#cb13-33" aria-hidden="true" tabindex="-1"></a>    betas<span class="op">=</span>OPTIMIZER_BETAS,</span>
+<span id="cb13-34"><a href="#cb13-34" aria-hidden="true" tabindex="-1"></a>    weight_decay<span class="op">=</span>L2_NORM,</span>
+<span id="cb13-35"><a href="#cb13-35" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb13-36"><a href="#cb13-36" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-37"><a href="#cb13-37" aria-hidden="true" tabindex="-1"></a>criterion <span class="op">=</span> nn.BCELoss().to(device)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div id="cell-26" class="cell" data-execution_count="15">
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>animation: <span class="bu">list</span>[Tensor] <span class="op">=</span> []</span>
 <span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>g_losses, d_losses <span class="op">=</span> [], []</span>
-<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> _ <span class="kw">in</span> tqdm(<span class="bu">range</span>(N_EPOCHS), unit<span class="op">=</span><span class="st">"epochs"</span>):</span>
-<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a>    generator.train()</span>
-<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a>    discriminator.train()</span>
-<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb14-8"><a href="#cb14-8" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> samples_real, _ <span class="kw">in</span> dataloader:</span>
-<span id="cb14-9"><a href="#cb14-9" aria-hidden="true" tabindex="-1"></a>        g_loss, d_loss <span class="op">=</span> train_step(generator, discriminator, optimizer_G, optimizer_D, criterion, samples_real, NOISE_DIM, device)</span>
-<span id="cb14-10"><a href="#cb14-10" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb14-11"><a href="#cb14-11" aria-hidden="true" tabindex="-1"></a>        g_losses.append(g_loss)</span>
-<span id="cb14-12"><a href="#cb14-12" aria-hidden="true" tabindex="-1"></a>        d_losses.append(d_loss)</span>
-<span id="cb14-13"><a href="#cb14-13" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb14-14"><a href="#cb14-14" aria-hidden="true" tabindex="-1"></a>    generator.<span class="bu">eval</span>()</span>
-<span id="cb14-15"><a href="#cb14-15" aria-hidden="true" tabindex="-1"></a>    <span class="cf">with</span> torch.inference_mode():</span>
-<span id="cb14-16"><a href="#cb14-16" aria-hidden="true" tabindex="-1"></a>        images <span class="op">=</span> generator(benchmark_noise)</span>
-<span id="cb14-17"><a href="#cb14-17" aria-hidden="true" tabindex="-1"></a>        images <span class="op">=</span> images.detach().cpu()</span>
-<span id="cb14-18"><a href="#cb14-18" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb14-19"><a href="#cb14-19" aria-hidden="true" tabindex="-1"></a>        images <span class="op">=</span> make_grid(images, nrow<span class="op">=</span><span class="dv">16</span>, normalize<span class="op">=</span><span class="va">True</span>)</span>
-<span id="cb14-20"><a href="#cb14-20" aria-hidden="true" tabindex="-1"></a>        animation.append(images)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>g_losses: <span class="bu">list</span>[<span class="bu">float</span>] <span class="op">=</span> []</span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>d_losses: <span class="bu">list</span>[<span class="bu">float</span>] <span class="op">=</span> []</span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> _ <span class="kw">in</span> tqdm(<span class="bu">range</span>(N_EPOCHS), unit<span class="op">=</span><span class="st">"epochs"</span>):</span>
+<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a>    generator.train()</span>
+<span id="cb14-8"><a href="#cb14-8" aria-hidden="true" tabindex="-1"></a>    discriminator.train()</span>
+<span id="cb14-9"><a href="#cb14-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-10"><a href="#cb14-10" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> samples_real, _ <span class="kw">in</span> dataloader:</span>
+<span id="cb14-11"><a href="#cb14-11" aria-hidden="true" tabindex="-1"></a>        g_loss, d_loss <span class="op">=</span> train_step(</span>
+<span id="cb14-12"><a href="#cb14-12" aria-hidden="true" tabindex="-1"></a>            generator, discriminator, optimizer_G, optimizer_D, criterion, samples_real, NOISE_DIM, device</span>
+<span id="cb14-13"><a href="#cb14-13" aria-hidden="true" tabindex="-1"></a>        )</span>
+<span id="cb14-14"><a href="#cb14-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-15"><a href="#cb14-15" aria-hidden="true" tabindex="-1"></a>        g_losses.append(g_loss)</span>
+<span id="cb14-16"><a href="#cb14-16" aria-hidden="true" tabindex="-1"></a>        d_losses.append(d_loss)</span>
+<span id="cb14-17"><a href="#cb14-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-18"><a href="#cb14-18" aria-hidden="true" tabindex="-1"></a>    generator.<span class="bu">eval</span>()</span>
+<span id="cb14-19"><a href="#cb14-19" aria-hidden="true" tabindex="-1"></a>    <span class="cf">with</span> torch.inference_mode():</span>
+<span id="cb14-20"><a href="#cb14-20" aria-hidden="true" tabindex="-1"></a>        images <span class="op">=</span> generator(benchmark_noise)</span>
+<span id="cb14-21"><a href="#cb14-21" aria-hidden="true" tabindex="-1"></a>        images <span class="op">=</span> images.detach().cpu()</span>
+<span id="cb14-22"><a href="#cb14-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-23"><a href="#cb14-23" aria-hidden="true" tabindex="-1"></a>        images <span class="op">=</span> make_grid(images, nrow<span class="op">=</span><span class="dv">16</span>, normalize<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb14-24"><a href="#cb14-24" aria-hidden="true" tabindex="-1"></a>        animation.append(images)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stderr">
-<pre><code>100%|████████████████████████████████████████████████████████████████████████████████| 100/100 [03:43&lt;00:00,  2.23s/epochs]</code></pre>
+<pre><code>100%|██████████| 100/100 [07:44&lt;00:00,  4.64s/epochs]</code></pre>
 </div>
 </div>
-<div id="cell-26" class="cell page-columns page-full" data-execution_count="15">
-
-<div class="no-row-height column-margin column-container"><div class="cell-output cell-output-display">
+<div id="cell-27" class="cell" data-execution_count="16">
+<div class="cell-output cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="index_files/figure-html/cell-16-output-1.png" class="img-fluid figure-img"></p>
+<p><img src="index_files/figure-html/cell-17-output-1.png" width="690" height="422" class="figure-img"></p>
 <figcaption>Generator and Discriminator loss evolution over epochs using Vanilla GAN on the MNIST digit dataset.</figcaption>
 </figure>
 </div>
-</div></div></div>
+</div>
+</div>
 <div class="quarto-video"><video id="video_shortcode_videojs_video1" class="video-js vjs-default-skin vjs-fluid" controls="" preload="auto" data-setup="{}" title=""><source src="./figures/gan-mnist.mp4"></video></div>
 </section>
-<section id="mnist-fashion-dataset" class="level3 page-columns page-full">
+<section id="mnist-fashion-dataset" class="level3">
 <h3 class="anchored" data-anchor-id="mnist-fashion-dataset">MNIST Fashion Dataset</h3>
 <p>The Fashion MNIST dataset is a collection of grayscale images of 10 different categories of clothing items, designed as a more challenging alternative to the classic MNIST dataset of handwritten digits. Each image in the dataset is 28x28 pixels. The 10 categories include items like t-shirts/tops, trousers, pullovers, dresses, coats, sandals, and more. With 70,000 images, Fashion MNIST is commonly used for benchmarking machine learning algorithms, especially in image classification tasks.</p>
-<div id="cell-30" class="cell" data-execution_count="17">
+<div id="cell-31" class="cell" data-execution_count="18">
 <div class="sourceCode cell-code" id="cb16"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>IMG_DIM <span class="op">=</span> (<span class="dv">1</span>, <span class="dv">28</span>, <span class="dv">28</span>)</span>
 <span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>NOISE_DIM <span class="op">=</span> <span class="dv">100</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div id="cell-31" class="cell" data-execution_count="18">
+<div id="cell-32" class="cell" data-execution_count="19">
 <div class="sourceCode cell-code" id="cb17"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> get_mnist_fashion_dataset(transform<span class="op">=</span><span class="va">None</span>):</span>
 <span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>    <span class="im">from</span> torchvision.datasets <span class="im">import</span> FashionMNIST</span>
 <span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -783,14 +795,14 @@ Note
 <span id="cb17-8"><a href="#cb17-8" aria-hidden="true" tabindex="-1"></a>    dataset <span class="op">=</span> ConcatDataset([trainset, testset])</span>
 <span id="cb17-9"><a href="#cb17-9" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> dataset</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div id="cell-32" class="cell" data-execution_count="20">
+<div id="cell-33" class="cell" data-execution_count="20">
 <div class="sourceCode cell-code" id="cb18"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>transform <span class="op">=</span> T.Compose([T.ToTensor(), T.Normalize(<span class="fl">0.5</span>, <span class="fl">0.5</span>)])</span>
 <span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>data <span class="op">=</span> get_mnist_fashion_dataset(transform<span class="op">=</span>transform)</span>
 <span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a>dataloader <span class="op">=</span> DataLoader(data, <span class="op">**</span>loader_kwargs)</span>
 <span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a>torch.manual_seed(SEED)</span>
-<span id="cb18-7"><a href="#cb18-7" aria-hidden="true" tabindex="-1"></a>torch.cuda.manual_seed_all(SEED)</span>
+<span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a><span class="co"># set seed for random generators</span></span>
+<span id="cb18-7"><a href="#cb18-7" aria-hidden="true" tabindex="-1"></a>set_random_seed()</span>
 <span id="cb18-8"><a href="#cb18-8" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb18-9"><a href="#cb18-9" aria-hidden="true" tabindex="-1"></a><span class="co"># benchmark_noise is used for the animation to show how output evolve on same vector</span></span>
 <span id="cb18-10"><a href="#cb18-10" aria-hidden="true" tabindex="-1"></a>benchmark_noise <span class="op">=</span> torch.randn(<span class="dv">16</span> <span class="op">*</span> <span class="dv">16</span>, NOISE_DIM, device<span class="op">=</span>device)</span>
@@ -817,7 +829,7 @@ Note
 <span id="cb18-31"><a href="#cb18-31" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb18-32"><a href="#cb18-32" aria-hidden="true" tabindex="-1"></a>criterion <span class="op">=</span> nn.BCELoss().to(device)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div id="cell-33" class="cell" data-execution_count="21">
+<div id="cell-34" class="cell" data-execution_count="21">
 <div class="sourceCode cell-code" id="cb19"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>animation <span class="op">=</span> []</span>
 <span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a>g_losses, d_losses <span class="op">=</span> [], []</span>
@@ -826,45 +838,47 @@ Note
 <span id="cb19-6"><a href="#cb19-6" aria-hidden="true" tabindex="-1"></a>    discriminator.train()</span>
 <span id="cb19-7"><a href="#cb19-7" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb19-8"><a href="#cb19-8" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> samples_real, _ <span class="kw">in</span> dataloader:</span>
-<span id="cb19-9"><a href="#cb19-9" aria-hidden="true" tabindex="-1"></a>        g_loss, d_loss <span class="op">=</span> train_step(generator, discriminator, optimizer_G, optimizer_D, criterion, samples_real, NOISE_DIM, device)</span>
-<span id="cb19-10"><a href="#cb19-10" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb19-11"><a href="#cb19-11" aria-hidden="true" tabindex="-1"></a>        g_losses.append(g_loss)</span>
-<span id="cb19-12"><a href="#cb19-12" aria-hidden="true" tabindex="-1"></a>        d_losses.append(d_loss)</span>
-<span id="cb19-13"><a href="#cb19-13" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb19-14"><a href="#cb19-14" aria-hidden="true" tabindex="-1"></a>    generator.<span class="bu">eval</span>()</span>
-<span id="cb19-15"><a href="#cb19-15" aria-hidden="true" tabindex="-1"></a>    <span class="cf">with</span> torch.inference_mode():</span>
-<span id="cb19-16"><a href="#cb19-16" aria-hidden="true" tabindex="-1"></a>        images <span class="op">=</span> generator(benchmark_noise)</span>
-<span id="cb19-17"><a href="#cb19-17" aria-hidden="true" tabindex="-1"></a>        images <span class="op">=</span> images.detach().cpu()</span>
-<span id="cb19-18"><a href="#cb19-18" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb19-19"><a href="#cb19-19" aria-hidden="true" tabindex="-1"></a>        images <span class="op">=</span> make_grid(images, nrow<span class="op">=</span><span class="dv">16</span>, normalize<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb19-9"><a href="#cb19-9" aria-hidden="true" tabindex="-1"></a>        g_loss, d_loss <span class="op">=</span> train_step(</span>
+<span id="cb19-10"><a href="#cb19-10" aria-hidden="true" tabindex="-1"></a>            generator, discriminator, optimizer_G, optimizer_D, criterion, samples_real, NOISE_DIM, device</span>
+<span id="cb19-11"><a href="#cb19-11" aria-hidden="true" tabindex="-1"></a>        )</span>
+<span id="cb19-12"><a href="#cb19-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-13"><a href="#cb19-13" aria-hidden="true" tabindex="-1"></a>        g_losses.append(g_loss)</span>
+<span id="cb19-14"><a href="#cb19-14" aria-hidden="true" tabindex="-1"></a>        d_losses.append(d_loss)</span>
+<span id="cb19-15"><a href="#cb19-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-16"><a href="#cb19-16" aria-hidden="true" tabindex="-1"></a>    generator.<span class="bu">eval</span>()</span>
+<span id="cb19-17"><a href="#cb19-17" aria-hidden="true" tabindex="-1"></a>    <span class="cf">with</span> torch.inference_mode():</span>
+<span id="cb19-18"><a href="#cb19-18" aria-hidden="true" tabindex="-1"></a>        images <span class="op">=</span> generator(benchmark_noise)</span>
+<span id="cb19-19"><a href="#cb19-19" aria-hidden="true" tabindex="-1"></a>        images <span class="op">=</span> images.detach().cpu()</span>
 <span id="cb19-20"><a href="#cb19-20" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb19-21"><a href="#cb19-21" aria-hidden="true" tabindex="-1"></a>        animation.append(images)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb19-21"><a href="#cb19-21" aria-hidden="true" tabindex="-1"></a>        images <span class="op">=</span> make_grid(images, nrow<span class="op">=</span><span class="dv">16</span>, normalize<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb19-22"><a href="#cb19-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-23"><a href="#cb19-23" aria-hidden="true" tabindex="-1"></a>        animation.append(images)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stderr">
-<pre><code>100%|████████████████████████████████████████████████████████████████████████████████| 100/100 [03:49&lt;00:00,  2.30s/epochs]</code></pre>
+<pre><code>100%|██████████| 100/100 [07:46&lt;00:00,  4.67s/epochs]</code></pre>
 </div>
 </div>
-<div id="cell-34" class="cell page-columns page-full" data-execution_count="22">
-
-<div class="no-row-height column-margin column-container"><div class="cell-output cell-output-display">
+<div id="cell-35" class="cell" data-execution_count="22">
+<div class="cell-output cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="index_files/figure-html/cell-22-output-1.png" class="img-fluid figure-img"></p>
+<p><img src="index_files/figure-html/cell-23-output-1.png" width="690" height="422" class="figure-img"></p>
 <figcaption>Generator and Discriminator loss evolution over epochs using Vanilla GAN on the MNIST fashion dataset.</figcaption>
 </figure>
 </div>
-</div></div></div>
+</div>
+</div>
 <div class="quarto-video"><video id="video_shortcode_videojs_video2" class="video-js vjs-default-skin vjs-fluid" controls="" preload="auto" data-setup="{}" title=""><source src="./figures/gan-fashion.mp4"></video></div>
 </section>
 </section>
 </section>
-<section id="dcgan" class="level1 page-columns page-full">
+<section id="dcgan" class="level1">
 <h1>DCGAN</h1>
 <p>DCGAN, short for Deep Convolutional Generative Adversarial Network, differs from vanilla GAN by using convolutional layers. This design makes DCGAN better for image data. With specific architectural guidelines, DCGAN trains more consistently and generates clearer images than vanilla GANs across various hyperparameters.</p>
 <section id="setting-up-dcgans" class="level2">
 <h2 class="anchored" data-anchor-id="setting-up-dcgans">Setting Up DCGANs</h2>
 <section id="generator-1" class="level3">
 <h3 class="anchored" data-anchor-id="generator-1">Generator</h3>
-<div id="cell-40" class="cell" data-execution_count="24">
+<div id="cell-41" class="cell" data-execution_count="24">
 <div class="sourceCode cell-code" id="cb21"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> Generator(nn.Module):</span>
 <span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> <span class="fu">__init__</span>(<span class="va">self</span>, nz: <span class="bu">int</span> <span class="op">=</span> <span class="dv">100</span>, ngf: <span class="bu">int</span> <span class="op">=</span> <span class="dv">32</span>, nc: <span class="bu">int</span> <span class="op">=</span> <span class="dv">1</span>):</span>
 <span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a>        <span class="co">"""</span></span>
@@ -914,19 +928,19 @@ Generator                                [128, 1, 28, 28]          --
 Total params: 312,256
 Trainable params: 312,256
 Non-trainable params: 0
-Total mult-adds (G): 1.76
+Total mult-adds (Units.GIGABYTES): 1.76
 ==========================================================================================
 Input size (MB): 0.05
 Forward/backward pass size (MB): 24.26
 Params size (MB): 1.25
-Estimated Total Size (MB): 25.56
+Estimated Total Size (MB): 25.57
 ==========================================================================================</code></pre>
 </div>
 </div>
 </section>
 <section id="discriminator-1" class="level3">
 <h3 class="anchored" data-anchor-id="discriminator-1">Discriminator</h3>
-<div id="cell-42" class="cell" data-execution_count="25">
+<div id="cell-43" class="cell" data-execution_count="25">
 <div class="sourceCode cell-code" id="cb23"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> Discriminator(nn.Module):</span>
 <span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> <span class="fu">__init__</span>(<span class="va">self</span>, ndf: <span class="bu">int</span> <span class="op">=</span> <span class="dv">32</span>, nc: <span class="bu">int</span> <span class="op">=</span> <span class="dv">1</span>, alpha: <span class="bu">float</span> <span class="op">=</span> <span class="fl">0.2</span>):</span>
 <span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a>        <span class="bu">super</span>().<span class="fu">__init__</span>()</span>
@@ -972,7 +986,7 @@ Discriminator                            [128, 1]                  --
 Total params: 109,504
 Trainable params: 109,504
 Non-trainable params: 0
-Total mult-adds (M): 369.68
+Total mult-adds (Units.MEGABYTES): 369.68
 ==========================================================================================
 Input size (MB): 0.40
 Forward/backward pass size (MB): 23.46
@@ -983,11 +997,11 @@ Estimated Total Size (MB): 24.30
 </div>
 </section>
 </section>
-<section id="evaluation-1" class="level2 page-columns page-full">
+<section id="evaluation-1" class="level2">
 <h2 class="anchored" data-anchor-id="evaluation-1">Evaluation</h2>
-<section id="mnist-digits-dataset-1" class="level3 page-columns page-full">
+<section id="mnist-digits-dataset-1" class="level3">
 <h3 class="anchored" data-anchor-id="mnist-digits-dataset-1">MNIST Digits Dataset</h3>
-<div id="cell-45" class="cell" data-execution_count="26">
+<div id="cell-46" class="cell" data-execution_count="26">
 <div class="sourceCode cell-code" id="cb25"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a>IMG_DIM <span class="op">=</span> (<span class="dv">1</span>, <span class="dv">28</span>, <span class="dv">28</span>)</span>
 <span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a>NOISE_DIM <span class="op">=</span> <span class="dv">128</span></span>
 <span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -1001,8 +1015,8 @@ Estimated Total Size (MB): 24.30
 <span id="cb25-11"><a href="#cb25-11" aria-hidden="true" tabindex="-1"></a>data <span class="op">=</span> get_minst_dataset(transform)</span>
 <span id="cb25-12"><a href="#cb25-12" aria-hidden="true" tabindex="-1"></a>dataloader <span class="op">=</span> DataLoader(data, <span class="op">**</span>loader_kwargs)</span>
 <span id="cb25-13"><a href="#cb25-13" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb25-14"><a href="#cb25-14" aria-hidden="true" tabindex="-1"></a>torch.manual_seed(SEED)</span>
-<span id="cb25-15"><a href="#cb25-15" aria-hidden="true" tabindex="-1"></a>torch.cuda.manual_seed_all(SEED)</span>
+<span id="cb25-14"><a href="#cb25-14" aria-hidden="true" tabindex="-1"></a><span class="co"># set seed for random generators</span></span>
+<span id="cb25-15"><a href="#cb25-15" aria-hidden="true" tabindex="-1"></a>set_random_seed()</span>
 <span id="cb25-16"><a href="#cb25-16" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb25-17"><a href="#cb25-17" aria-hidden="true" tabindex="-1"></a><span class="co"># benchmark_noise is used for the animation to show how output evolve on same vector</span></span>
 <span id="cb25-18"><a href="#cb25-18" aria-hidden="true" tabindex="-1"></a>benchmark_noise <span class="op">=</span> torch.randn(<span class="dv">16</span> <span class="op">*</span> <span class="dv">16</span>, NOISE_DIM, device<span class="op">=</span>device)</span>
@@ -1029,7 +1043,7 @@ Estimated Total Size (MB): 24.30
 <span id="cb25-39"><a href="#cb25-39" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb25-40"><a href="#cb25-40" aria-hidden="true" tabindex="-1"></a>criterion <span class="op">=</span> nn.BCELoss().to(device)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div id="cell-46" class="cell" data-execution_count="27">
+<div id="cell-47" class="cell" data-execution_count="27">
 <div class="sourceCode cell-code" id="cb26"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a>animation <span class="op">=</span> []</span>
 <span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a>g_losses, d_losses <span class="op">=</span> [], []</span>
@@ -1038,38 +1052,40 @@ Estimated Total Size (MB): 24.30
 <span id="cb26-6"><a href="#cb26-6" aria-hidden="true" tabindex="-1"></a>    discriminator.train()</span>
 <span id="cb26-7"><a href="#cb26-7" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb26-8"><a href="#cb26-8" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> samples_real, _ <span class="kw">in</span> dataloader:</span>
-<span id="cb26-9"><a href="#cb26-9" aria-hidden="true" tabindex="-1"></a>        g_loss, d_loss <span class="op">=</span> train_step(generator, discriminator, optimizer_G, optimizer_D, criterion, samples_real, NOISE_DIM, device)</span>
-<span id="cb26-10"><a href="#cb26-10" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb26-11"><a href="#cb26-11" aria-hidden="true" tabindex="-1"></a>        g_losses.append(g_loss)</span>
-<span id="cb26-12"><a href="#cb26-12" aria-hidden="true" tabindex="-1"></a>        d_losses.append(d_loss)</span>
-<span id="cb26-13"><a href="#cb26-13" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb26-14"><a href="#cb26-14" aria-hidden="true" tabindex="-1"></a>    generator.<span class="bu">eval</span>()</span>
-<span id="cb26-15"><a href="#cb26-15" aria-hidden="true" tabindex="-1"></a>    <span class="cf">with</span> torch.inference_mode():</span>
-<span id="cb26-16"><a href="#cb26-16" aria-hidden="true" tabindex="-1"></a>        images <span class="op">=</span> generator(benchmark_noise)</span>
-<span id="cb26-17"><a href="#cb26-17" aria-hidden="true" tabindex="-1"></a>        images <span class="op">=</span> images.detach().cpu()</span>
-<span id="cb26-18"><a href="#cb26-18" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb26-19"><a href="#cb26-19" aria-hidden="true" tabindex="-1"></a>        images <span class="op">=</span> make_grid(images, nrow<span class="op">=</span><span class="dv">16</span>, normalize<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb26-9"><a href="#cb26-9" aria-hidden="true" tabindex="-1"></a>        g_loss, d_loss <span class="op">=</span> train_step(</span>
+<span id="cb26-10"><a href="#cb26-10" aria-hidden="true" tabindex="-1"></a>            generator, discriminator, optimizer_G, optimizer_D, criterion, samples_real, NOISE_DIM, device</span>
+<span id="cb26-11"><a href="#cb26-11" aria-hidden="true" tabindex="-1"></a>        )</span>
+<span id="cb26-12"><a href="#cb26-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-13"><a href="#cb26-13" aria-hidden="true" tabindex="-1"></a>        g_losses.append(g_loss)</span>
+<span id="cb26-14"><a href="#cb26-14" aria-hidden="true" tabindex="-1"></a>        d_losses.append(d_loss)</span>
+<span id="cb26-15"><a href="#cb26-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-16"><a href="#cb26-16" aria-hidden="true" tabindex="-1"></a>    generator.<span class="bu">eval</span>()</span>
+<span id="cb26-17"><a href="#cb26-17" aria-hidden="true" tabindex="-1"></a>    <span class="cf">with</span> torch.inference_mode():</span>
+<span id="cb26-18"><a href="#cb26-18" aria-hidden="true" tabindex="-1"></a>        images <span class="op">=</span> generator(benchmark_noise)</span>
+<span id="cb26-19"><a href="#cb26-19" aria-hidden="true" tabindex="-1"></a>        images <span class="op">=</span> images.detach().cpu()</span>
 <span id="cb26-20"><a href="#cb26-20" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb26-21"><a href="#cb26-21" aria-hidden="true" tabindex="-1"></a>        animation.append(images)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb26-21"><a href="#cb26-21" aria-hidden="true" tabindex="-1"></a>        images <span class="op">=</span> make_grid(images, nrow<span class="op">=</span><span class="dv">16</span>, normalize<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb26-22"><a href="#cb26-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-23"><a href="#cb26-23" aria-hidden="true" tabindex="-1"></a>        animation.append(images)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stderr">
-<pre><code>100%|████████████████████████████████████████████████████████████████████████████████| 100/100 [04:54&lt;00:00,  2.94s/epochs]</code></pre>
+<pre><code>100%|██████████| 100/100 [05:22&lt;00:00,  3.22s/epochs]</code></pre>
 </div>
 </div>
-<div id="cell-47" class="cell page-columns page-full" data-execution_count="28">
-
-<div class="no-row-height column-margin column-container"><div class="cell-output cell-output-display">
+<div id="cell-48" class="cell" data-execution_count="28">
+<div class="cell-output cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="index_files/figure-html/cell-28-output-1.png" class="img-fluid figure-img"></p>
+<p><img src="index_files/figure-html/cell-29-output-1.png" width="690" height="422" class="figure-img"></p>
 <figcaption>Generator and Discriminator loss evolution over epochs using DCGAN on the MNIST digit dataset.</figcaption>
 </figure>
 </div>
-</div></div></div>
+</div>
+</div>
 <div class="quarto-video"><video id="video_shortcode_videojs_video3" class="video-js vjs-default-skin vjs-fluid" controls="" preload="auto" data-setup="{}" title=""><source src="./figures/dcgan-mnist.mp4"></video></div>
 </section>
-<section id="mnist-fashion-dataset-1" class="level3 page-columns page-full">
+<section id="mnist-fashion-dataset-1" class="level3">
 <h3 class="anchored" data-anchor-id="mnist-fashion-dataset-1">MNIST Fashion Dataset</h3>
-<div id="cell-51" class="cell" data-execution_count="30">
+<div id="cell-52" class="cell" data-execution_count="30">
 <div class="sourceCode cell-code" id="cb28"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a>IMG_DIM <span class="op">=</span> (<span class="dv">1</span>, <span class="dv">28</span>, <span class="dv">28</span>)</span>
 <span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a>NOISE_DIM <span class="op">=</span> <span class="dv">128</span></span>
 <span id="cb28-3"><a href="#cb28-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -1083,8 +1099,8 @@ Estimated Total Size (MB): 24.30
 <span id="cb28-11"><a href="#cb28-11" aria-hidden="true" tabindex="-1"></a>data <span class="op">=</span> get_mnist_fashion_dataset(transform)</span>
 <span id="cb28-12"><a href="#cb28-12" aria-hidden="true" tabindex="-1"></a>dataloader <span class="op">=</span> DataLoader(data, <span class="op">**</span>loader_kwargs)</span>
 <span id="cb28-13"><a href="#cb28-13" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb28-14"><a href="#cb28-14" aria-hidden="true" tabindex="-1"></a>torch.manual_seed(SEED)</span>
-<span id="cb28-15"><a href="#cb28-15" aria-hidden="true" tabindex="-1"></a>torch.cuda.manual_seed_all(SEED)</span>
+<span id="cb28-14"><a href="#cb28-14" aria-hidden="true" tabindex="-1"></a><span class="co"># set seed for random generators</span></span>
+<span id="cb28-15"><a href="#cb28-15" aria-hidden="true" tabindex="-1"></a>set_random_seed()</span>
 <span id="cb28-16"><a href="#cb28-16" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb28-17"><a href="#cb28-17" aria-hidden="true" tabindex="-1"></a><span class="co"># benchmark_noise is used for the animation to show how output evolve on same vector</span></span>
 <span id="cb28-18"><a href="#cb28-18" aria-hidden="true" tabindex="-1"></a>benchmark_noise <span class="op">=</span> torch.randn(<span class="dv">16</span> <span class="op">*</span> <span class="dv">16</span>, NOISE_DIM, device<span class="op">=</span>device)</span>
@@ -1106,7 +1122,7 @@ Estimated Total Size (MB): 24.30
 <span id="cb28-34"><a href="#cb28-34" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb28-35"><a href="#cb28-35" aria-hidden="true" tabindex="-1"></a>criterion <span class="op">=</span> nn.BCELoss().to(device)  <span class="co"># F.binary_cross_entropy_with_logits #nn.BCELoss().to(device)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div id="cell-52" class="cell" data-execution_count="31">
+<div id="cell-53" class="cell" data-execution_count="31">
 <div class="sourceCode cell-code" id="cb29"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a>animation <span class="op">=</span> []</span>
 <span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb29-3"><a href="#cb29-3" aria-hidden="true" tabindex="-1"></a>g_losses, d_losses <span class="op">=</span> [], []</span>
@@ -1115,33 +1131,35 @@ Estimated Total Size (MB): 24.30
 <span id="cb29-6"><a href="#cb29-6" aria-hidden="true" tabindex="-1"></a>    discriminator.train()</span>
 <span id="cb29-7"><a href="#cb29-7" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb29-8"><a href="#cb29-8" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> samples_real, _ <span class="kw">in</span> dataloader:</span>
-<span id="cb29-9"><a href="#cb29-9" aria-hidden="true" tabindex="-1"></a>        g_loss, d_loss <span class="op">=</span> train_step(generator, discriminator, optimizer_G, optimizer_D, criterion, samples_real, NOISE_DIM, device)</span>
-<span id="cb29-10"><a href="#cb29-10" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb29-11"><a href="#cb29-11" aria-hidden="true" tabindex="-1"></a>        g_losses.append(g_loss)</span>
-<span id="cb29-12"><a href="#cb29-12" aria-hidden="true" tabindex="-1"></a>        d_losses.append(d_loss)</span>
-<span id="cb29-13"><a href="#cb29-13" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb29-14"><a href="#cb29-14" aria-hidden="true" tabindex="-1"></a>    generator.<span class="bu">eval</span>()</span>
-<span id="cb29-15"><a href="#cb29-15" aria-hidden="true" tabindex="-1"></a>    <span class="cf">with</span> torch.inference_mode():</span>
-<span id="cb29-16"><a href="#cb29-16" aria-hidden="true" tabindex="-1"></a>        images <span class="op">=</span> generator(benchmark_noise)</span>
-<span id="cb29-17"><a href="#cb29-17" aria-hidden="true" tabindex="-1"></a>        images <span class="op">=</span> images.detach().cpu()</span>
-<span id="cb29-18"><a href="#cb29-18" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb29-19"><a href="#cb29-19" aria-hidden="true" tabindex="-1"></a>        images <span class="op">=</span> make_grid(images, nrow<span class="op">=</span><span class="dv">16</span>, normalize<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb29-9"><a href="#cb29-9" aria-hidden="true" tabindex="-1"></a>        g_loss, d_loss <span class="op">=</span> train_step(</span>
+<span id="cb29-10"><a href="#cb29-10" aria-hidden="true" tabindex="-1"></a>            generator, discriminator, optimizer_G, optimizer_D, criterion, samples_real, NOISE_DIM, device</span>
+<span id="cb29-11"><a href="#cb29-11" aria-hidden="true" tabindex="-1"></a>        )</span>
+<span id="cb29-12"><a href="#cb29-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-13"><a href="#cb29-13" aria-hidden="true" tabindex="-1"></a>        g_losses.append(g_loss)</span>
+<span id="cb29-14"><a href="#cb29-14" aria-hidden="true" tabindex="-1"></a>        d_losses.append(d_loss)</span>
+<span id="cb29-15"><a href="#cb29-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-16"><a href="#cb29-16" aria-hidden="true" tabindex="-1"></a>    generator.<span class="bu">eval</span>()</span>
+<span id="cb29-17"><a href="#cb29-17" aria-hidden="true" tabindex="-1"></a>    <span class="cf">with</span> torch.inference_mode():</span>
+<span id="cb29-18"><a href="#cb29-18" aria-hidden="true" tabindex="-1"></a>        images <span class="op">=</span> generator(benchmark_noise)</span>
+<span id="cb29-19"><a href="#cb29-19" aria-hidden="true" tabindex="-1"></a>        images <span class="op">=</span> images.detach().cpu()</span>
 <span id="cb29-20"><a href="#cb29-20" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb29-21"><a href="#cb29-21" aria-hidden="true" tabindex="-1"></a>        animation.append(images)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb29-21"><a href="#cb29-21" aria-hidden="true" tabindex="-1"></a>        images <span class="op">=</span> make_grid(images, nrow<span class="op">=</span><span class="dv">16</span>, normalize<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb29-22"><a href="#cb29-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-23"><a href="#cb29-23" aria-hidden="true" tabindex="-1"></a>        animation.append(images)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stderr">
-<pre><code>100%|████████████████████████████████████████████████████████████████████████████████| 100/100 [04:55&lt;00:00,  2.95s/epochs]</code></pre>
+<pre><code>100%|██████████| 100/100 [05:24&lt;00:00,  3.24s/epochs]</code></pre>
 </div>
 </div>
-<div id="cell-53" class="cell page-columns page-full" data-execution_count="32">
-
-<div class="no-row-height column-margin column-container"><div class="cell-output cell-output-display">
+<div id="cell-54" class="cell" data-execution_count="32">
+<div class="cell-output cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="index_files/figure-html/cell-32-output-1.png" class="img-fluid figure-img"></p>
+<p><img src="index_files/figure-html/cell-33-output-1.png" width="690" height="422" class="figure-img"></p>
 <figcaption>Generator and Discriminator loss evolution over epochs using DCGAN on the MNIST fashion dataset.</figcaption>
 </figure>
 </div>
-</div></div></div>
+</div>
+</div>
 <div class="quarto-video"><video id="video_shortcode_videojs_video4" class="video-js vjs-default-skin vjs-fluid" controls="" preload="auto" data-setup="{}" title=""><source src="./figures/dcgan-mnist-fashion.mp4"></video></div>
 </section>
 </section>
@@ -1198,18 +1216,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
     }
     return false;
   }
-  const clipboard = new window.ClipboardJS('.code-copy-button', {
-    text: function(trigger) {
-      const codeEl = trigger.previousElementSibling.cloneNode(true);
-      for (const childEl of codeEl.children) {
-        if (isCodeAnnotation(childEl)) {
-          childEl.remove();
-        }
-      }
-      return codeEl.innerText;
-    }
-  });
-  clipboard.on('success', function(e) {
+  const onCopySuccess = function(e) {
     // button target
     const button = e.trigger;
     // don't keep focus
@@ -1241,7 +1248,27 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
     }, 1000);
     // clear code selection
     e.clearSelection();
+  }
+  const getTextToCopy = function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+    text: getTextToCopy
   });
+  clipboard.on('success', onCopySuccess);
+  if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+    const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+      text: getTextToCopy,
+      container: window.document.getElementById('quarto-embedded-source-code-modal')
+    });
+    clipboardModal.on('success', onCopySuccess);
+  }
     var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
     var mailtoRegex = new RegExp(/^mailto:/);
       var filterRegex = new RegExp("gcerar\.github\.io");
@@ -1249,7 +1276,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
         return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
     }
     // Inspect non-navigation links and adorn them if external
- 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool)');
+ 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
     for (var i=0; i<links.length; i++) {
       const link = links[i];
       if (!isInternal(link.href)) {
@@ -1258,6 +1285,11 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
         if (link.dataset.originalHref !== undefined) {
           link.href = link.dataset.originalHref;
         }
+          // target, if specified
+          link.setAttribute("target", "_blank");
+          if (link.getAttribute("rel") === null) {
+            link.setAttribute("rel", "noopener");
+          }
       }
     }
   function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
@@ -1346,7 +1378,6 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       if (window.Quarto?.typesetMath) {
         window.Quarto.typesetMath(note);
       }
-      // TODO in 1.5, we should make sure this works without a callout special case
       if (note.classList.contains("callout")) {
         return note.outerHTML;
       } else {
@@ -1572,10 +1603,6 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
   }
 });
 </script>
-<script src="https://giscus.app/client.js" data-repo="gcerar/gcerar.github.io" data-repo-id="R_kgDOKO3pIA" data-category="General" data-category-id="DIC_kwDOKO3pIM4CaGy_" data-mapping="title" data-reactions-enabled="1" data-emit-metadata="0" data-input-position="top" data-theme="light" data-lang="en" crossorigin="anonymous" async="">
-</script>
-<input type="hidden" id="giscus-base-theme" value="light">
-<input type="hidden" id="giscus-alt-theme" value="dark">
 </div> <!-- /content -->
 <footer class="footer">
   <div class="nav-footer">
@@ -1598,5 +1625,4 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 
 
 
-<script src="../../site_libs/quarto-html/zenscroll-min.js"></script>
 </body></html>

@@ -1,27 +1,35 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
-    <loc>gcerar.github.io/posts/2023-10-10-vanilla-GANs/index.html</loc>
-    <lastmod>2024-08-01T13:58:37.297Z</lastmod>
-  </url>
-  <url>
-    <loc>gcerar.github.io/snippets.html</loc>
-    <lastmod>2024-07-30T05:44:58.670Z</lastmod>
-  </url>
-  <url>
     <loc>gcerar.github.io/index.html</loc>
-    <lastmod>2023-11-28T15:26:35.381Z</lastmod>
+    <lastmod>2025-02-14T13:01:37.886Z</lastmod>
   </url>
   <url>
-    <loc>gcerar.github.io/about.html</loc>
-    <lastmod>2023-10-17T20:41:51.074Z</lastmod>
-  </url>
-  <url>
-    <loc>gcerar.github.io/posts/2023-11-20-research-compute-infrastructure/index.html</loc>
-    <lastmod>2024-07-30T06:00:22.898Z</lastmod>
+    <loc>gcerar.github.io/posts/2023-10-10-vanilla-GANs/index.html</loc>
+    <lastmod>2025-04-08T06:17:32.710Z</lastmod>
   </url>
   <url>
     <loc>gcerar.github.io/posts/2023-09-15-neural-style-transfer/index.html</loc>
-    <lastmod>2024-08-01T14:05:00.342Z</lastmod>
+    <lastmod>2025-04-08T07:03:25.339Z</lastmod>
+  </url>
+  <url>
+    <loc>gcerar.github.io/posts/2023-11-20-research-compute-infrastructure/index.html</loc>
+    <lastmod>2025-02-14T13:58:00.444Z</lastmod>
+  </url>
+  <url>
+    <loc>gcerar.github.io/about.html</loc>
+    <lastmod>2025-05-07T13:21:26.074Z</lastmod>
+  </url>
+  <url>
+    <loc>gcerar.github.io/posts/2025-01-21-multi-armed-bandit/multi-armed-bandit-problem.html</loc>
+    <lastmod>2025-04-08T06:14:15.140Z</lastmod>
+  </url>
+  <url>
+    <loc>gcerar.github.io/posts/2025-05-10-latex/index.html</loc>
+    <lastmod>2025-05-07T13:19:24.936Z</lastmod>
+  </url>
+  <url>
+    <loc>gcerar.github.io/posts/2025-05-07-ministate-v3/index.html</loc>
+    <lastmod>2025-05-07T18:06:33.574Z</lastmod>
   </url>
 </urlset>

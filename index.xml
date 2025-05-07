@@ -9,8 +9,548 @@
 <link>gcerar.github.io/</link>
 <atom:link href="gcerar.github.io/index.xml" rel="self" type="application/rss+xml"/>
 <description>Greg&#39;s personal blog</description>
-<generator>quarto-1.4.553</generator>
-<lastBuildDate>Mon, 20 Nov 2023 00:00:00 GMT</lastBuildDate>
+<generator>quarto-1.6.42</generator>
+<lastBuildDate>Tue, 06 May 2025 22:00:00 GMT</lastBuildDate>
+<item>
+  <title>Building a No‑Fluff Report Template in LaTeX</title>
+  <dc:creator>Gregor Cerar</dc:creator>
+  <link>gcerar.github.io/posts/2025-05-07-ministate-v3/</link>
+  <description><![CDATA[ 
+
+
+
+
+<p>On a few occasions, I had to write a LaTeX/PDF report or documentation on what I was doing. I often got annoyed with TeX templates, which had lots of wasted whitespace around the title and edges of the document. So, I created a template that improves density, flexibility, and clarity.</p>
+<section id="why-a-new-template" class="level4">
+<h4 class="anchored" data-anchor-id="why-a-new-template">Why a New Template?</h4>
+<ol type="1">
+<li><strong>Dense (less fluff)</strong> — Every square centimeter should serve the reader. Tighter vertical spacing and compact headings keep the narrative flowing.</li>
+<li><strong>Optional titles</strong> — Some documents benefit from title; others (like a few‑paragraph conclusion) do not. The template should let me toggle them off with a single flag.</li>
+<li><strong>Flexible</strong> — Today, I might need a one‑pager. Tomorrow, a 20‑page appendix. Layout decisions (margins, font, color) should be parameterized — not hard‑wired.</li>
+</ol>
+<p>Existing classes like <code>article</code> or even <code>IEEEtran</code> come close but still force in essential baggage (abstract blocks, keywords, etc.). Then I stumbled upon the elegant <a href="https://www.overleaf.com/latex/templates/minimalstatement/pzgpkvvrzyqj"><code>ministate</code></a> class. So I adapted it.</p>
+</section>
+<section id="meet-ministate-v3.0" class="level3">
+<h3 class="anchored" data-anchor-id="meet-ministate-v3.0">Meet <code>ministate</code> v3.0</h3>
+<p>The content of <code>ministate.cls</code> LaTeX class file:</p>
+<div class="sourceCode" id="cb1" style="background: #f1f3f5;"><pre class="sourceCode latex code-with-copy"><code class="sourceCode latex"><span id="cb1-1"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">\ProvidesClass</span>{ministate}[2023/03/29 v3.0 Minimalist statement class]</span>
+<span id="cb1-2"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">\LoadClass</span>[11pt,a4paper]{article}</span>
+<span id="cb1-3"></span>
+<span id="cb1-4"><span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">\usepackage</span>[utf8]{<span class="ex" style="color: null;
+background-color: null;
+font-style: inherit;">inputenc</span>} <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">% from 2018, UTF-8 is default in LaTeX</span></span>
+<span id="cb1-5"><span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">\usepackage</span>[T1]{<span class="ex" style="color: null;
+background-color: null;
+font-style: inherit;">fontenc</span>}</span>
+<span id="cb1-6"><span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">\usepackage</span>{<span class="ex" style="color: null;
+background-color: null;
+font-style: inherit;">lmodern</span>}</span>
+<span id="cb1-7"></span>
+<span id="cb1-8"><span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">\usepackage</span>{<span class="ex" style="color: null;
+background-color: null;
+font-style: inherit;">microtype</span>}</span>
+<span id="cb1-9"></span>
+<span id="cb1-10"><span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">\usepackage</span>[margin=0.8in]{<span class="ex" style="color: null;
+background-color: null;
+font-style: inherit;">geometry</span>}</span>
+<span id="cb1-11"><span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">\usepackage</span>{<span class="ex" style="color: null;
+background-color: null;
+font-style: inherit;">parskip</span>}</span>
+<span id="cb1-12"><span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">\usepackage</span>{<span class="ex" style="color: null;
+background-color: null;
+font-style: inherit;">fancyhdr</span>}</span>
+<span id="cb1-13"></span>
+<span id="cb1-14"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">\setlength</span>{<span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">\headheight</span>}{15.2pt}</span>
+<span id="cb1-15"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">\pagestyle</span>{fancy}</span>
+<span id="cb1-16"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">\fancyhf</span>{} <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">% Clear all header and footer fields</span></span>
+<span id="cb1-17"></span>
+<span id="cb1-18"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">%--------------------------------------------------%</span></span>
+<span id="cb1-19"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">%    Title, HeaderTitle, Author, HeaderAuthor,     %</span></span>
+<span id="cb1-20"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">%                 Custom Date                      %</span></span>
+<span id="cb1-21"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">%--------------------------------------------------%</span></span>
+<span id="cb1-22"></span>
+<span id="cb1-23"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">\let\oldtitle\title</span></span>
+<span id="cb1-24"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">\let\oldauthor\author</span></span>
+<span id="cb1-25"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">\let\olddate\date</span></span>
+<span id="cb1-26"></span>
+<span id="cb1-27"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">\def\@headertitle</span>{}</span>
+<span id="cb1-28"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">\def\@headerauthor</span>{}</span>
+<span id="cb1-29"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">\def\@headerdate</span>{}</span>
+<span id="cb1-30"></span>
+<span id="cb1-31"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">% Redefine the \title and \author commands</span></span>
+<span id="cb1-32"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">\renewcommand</span>{<span class="ex" style="color: null;
+background-color: null;
+font-style: inherit;">\title</span>}[1]{<span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">%</span></span>
+<span id="cb1-33">    <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">\oldtitle</span>{#1}<span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">%</span></span>
+<span id="cb1-34">    <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">\ifx\@headertitle\@empty</span><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">%</span></span>
+<span id="cb1-35">        <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">\relax\def\@headertitle</span>{#1}<span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">%</span></span>
+<span id="cb1-36">    <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">\fi</span><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">%</span></span>
+<span id="cb1-37">}</span>
+<span id="cb1-38"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">\renewcommand</span>{<span class="ex" style="color: null;
+background-color: null;
+font-style: inherit;">\author</span>}[1]{<span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">%</span></span>
+<span id="cb1-39">    <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">\oldauthor</span>{#1}<span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">%</span></span>
+<span id="cb1-40">    <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">\ifx\@headerauthor\@empty</span><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">%</span></span>
+<span id="cb1-41">        <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">\relax\def\@headerauthor</span>{#1}<span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">%</span></span>
+<span id="cb1-42">    <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">\fi</span><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">%</span></span>
+<span id="cb1-43">}</span>
+<span id="cb1-44"></span>
+<span id="cb1-45"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">\renewcommand</span>{<span class="ex" style="color: null;
+background-color: null;
+font-style: inherit;">\date</span>}[1]{<span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">%</span></span>
+<span id="cb1-46">    <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">\olddate</span>{#1}<span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">%</span></span>
+<span id="cb1-47">    <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">\ifx\@headerdate\@empty</span><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">%</span></span>
+<span id="cb1-48">        <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">\relax\def\@headerdate</span>{#1}<span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">%</span></span>
+<span id="cb1-49">    <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">\fi</span><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">%</span></span>
+<span id="cb1-50">}</span>
+<span id="cb1-51"></span>
+<span id="cb1-52"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">% Commands for explicitly setting the header title and header author</span></span>
+<span id="cb1-53"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">\newcommand</span>{<span class="ex" style="color: null;
+background-color: null;
+font-style: inherit;">\headertitle</span>}[1]{<span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">\def\@headertitle</span>{#1}}</span>
+<span id="cb1-54"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">\newcommand</span>{<span class="ex" style="color: null;
+background-color: null;
+font-style: inherit;">\headerauthor</span>}[1]{<span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">\def\@headerauthor</span>{#1}}</span>
+<span id="cb1-55"></span>
+<span id="cb1-56"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">% Apply header settings including the custom date</span></span>
+<span id="cb1-57"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">\fancyhead</span>[L]{<span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">\textbf</span>{<span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">\@headertitle</span>}<span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">\ifx\@headerdate\@empty\else\ </span>(<span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">\@headerdate</span>)<span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">\fi</span>} <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">% Title (Custom Date)</span></span>
+<span id="cb1-58"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">\fancyhead</span>[R]{<span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">\textbf</span>{<span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">\@headerauthor</span>}} <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">% Author</span></span>
+<span id="cb1-59"></span>
+<span id="cb1-60"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">\fancyfoot</span>{} <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">% Override existing foot numbering</span></span>
+<span id="cb1-61"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">\fancyfoot</span>[C]{<span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">\thepage</span>} <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">% Page number at center of footer</span></span>
+<span id="cb1-62"></span>
+<span id="cb1-63"></span>
+<span id="cb1-64"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">%--------------------------------------------------%</span></span>
+<span id="cb1-65"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">%                   Document Body                  %</span></span>
+<span id="cb1-66"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">%--------------------------------------------------%</span></span>
+<span id="cb1-67"></span>
+<span id="cb1-68"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">% Usage:</span></span>
+<span id="cb1-69"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">% \title{Your Title Here}</span></span>
+<span id="cb1-70"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">% \author{Author Name}</span></span>
+<span id="cb1-71"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">% \headertitle{Your Header Title Here} - For custom header title</span></span>
+<span id="cb1-72"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">% \headerauthor{Your Header Author Here} - For custom header author</span></span>
+<span id="cb1-73"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">% \date{Custom Date or Empty String} - To change or remove the date</span></span>
+<span id="cb1-74"></span>
+<span id="cb1-75"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">\makeatletter</span></span>
+<span id="cb1-76"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">\def\@maketitle</span>{<span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">%</span></span>
+<span id="cb1-77">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">\newpage</span></span>
+<span id="cb1-78">  <span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">\begin</span>{<span class="ex" style="color: null;
+background-color: null;
+font-style: inherit;">center</span>}<span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">%</span></span>
+<span id="cb1-79">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">\let</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">\footnote</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">\thanks</span></span>
+<span id="cb1-80">    {<span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">\LARGE</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">\@title</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">\par</span>}<span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">%</span></span>
+<span id="cb1-81">    <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">\vskip</span> 1.0em<span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">%</span></span>
+<span id="cb1-82">    {<span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">\large</span></span>
+<span id="cb1-83">      <span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">\begin</span>{<span class="ex" style="color: null;
+background-color: null;
+font-style: inherit;">tabular</span>}[t]{c}<span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">%</span></span>
+<span id="cb1-84">        <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">\@author</span></span>
+<span id="cb1-85">      <span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">\end</span>{<span class="ex" style="color: null;
+background-color: null;
+font-style: inherit;">tabular</span>}<span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">\par</span>}<span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">%</span></span>
+<span id="cb1-86">    <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">\vskip</span> 1em<span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">%</span></span>
+<span id="cb1-87">  <span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">\end</span>{<span class="ex" style="color: null;
+background-color: null;
+font-style: inherit;">center</span>}<span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">%</span></span>
+<span id="cb1-88">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">\par</span></span>
+<span id="cb1-89">  }<span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">%</span></span>
+<span id="cb1-90"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">\makeatother</span></span></code></pre></div>
+<p>The content of <code>example.tex</code> file:</p>
+<div class="sourceCode" id="cb2" style="background: #f1f3f5;"><pre class="sourceCode latex code-with-copy"><code class="sourceCode latex"><span id="cb2-1"><span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">\documentclass</span>[11pt,a4paper,nonatbib]{<span class="ex" style="color: null;
+background-color: null;
+font-style: inherit;">./ministate</span>}</span>
+<span id="cb2-2"></span>
+<span id="cb2-3"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">% (optional) bibliography</span></span>
+<span id="cb2-4"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">%\usepackage[backend=biber,style=ieee,autocite=plain,sorting=none]{biblatex}</span></span>
+<span id="cb2-5"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">%\addbibresource{biblio.bib}</span></span>
+<span id="cb2-6"><span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">\usepackage</span>[sfdefault]{<span class="ex" style="color: null;
+background-color: null;
+font-style: inherit;">atkinson</span>}</span>
+<span id="cb2-7"><span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">\usepackage</span>{<span class="ex" style="color: null;
+background-color: null;
+font-style: inherit;">fontawesome</span>}</span>
+<span id="cb2-8"></span>
+<span id="cb2-9"><span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">\usepackage</span>{<span class="ex" style="color: null;
+background-color: null;
+font-style: inherit;">hyperref</span>}</span>
+<span id="cb2-10"><span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">\usepackage</span>{<span class="ex" style="color: null;
+background-color: null;
+font-style: inherit;">url</span>}</span>
+<span id="cb2-11"></span>
+<span id="cb2-12"><span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">\usepackage</span>[english]{<span class="ex" style="color: null;
+background-color: null;
+font-style: inherit;">babel</span>}</span>
+<span id="cb2-13"><span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">\usepackage</span>[autostyle,english=british]{<span class="ex" style="color: null;
+background-color: null;
+font-style: inherit;">csquotes</span>}</span>
+<span id="cb2-14"></span>
+<span id="cb2-15"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">% (optional) prevent breaking words</span></span>
+<span id="cb2-16"><span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">\usepackage</span>[none]{<span class="ex" style="color: null;
+background-color: null;
+font-style: inherit;">hyphenat</span>}</span>
+<span id="cb2-17"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">\interdisplaylinepenalty</span>=10000</span>
+<span id="cb2-18"></span>
+<span id="cb2-19"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">% lorem ipsum generator</span></span>
+<span id="cb2-20"><span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">\usepackage</span>{<span class="ex" style="color: null;
+background-color: null;
+font-style: inherit;">kantlipsum</span>}</span>
+<span id="cb2-21"></span>
+<span id="cb2-22"></span>
+<span id="cb2-23"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">% ministate settings</span></span>
+<span id="cb2-24"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">\title</span>{The Summary of Lorem Ipsum}</span>
+<span id="cb2-25"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">\headertitle</span>{The Shorter Title}  <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">% (optional) will use \title if not used</span></span>
+<span id="cb2-26"></span>
+<span id="cb2-27"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">\author</span>{Johnny English, PhD}</span>
+<span id="cb2-28"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">\headerauthor</span>{Johnny E., PhD} <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">% (optional) will use \author if not used</span></span>
+<span id="cb2-29"></span>
+<span id="cb2-30"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">\date</span>{May 7, 2025}</span>
+<span id="cb2-31"></span>
+<span id="cb2-32"><span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">\begin</span>{<span class="ex" style="color: null;
+background-color: null;
+font-style: inherit;">document</span>}</span>
+<span id="cb2-33"></span>
+<span id="cb2-34"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">\maketitle</span></span>
+<span id="cb2-35"></span>
+<span id="cb2-36"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">\kant</span></span>
+<span id="cb2-37"></span>
+<span id="cb2-38"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">%\clearpage</span></span>
+<span id="cb2-39"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">%\printbibliography[title={Osebna bibliografija}]</span></span>
+<span id="cb2-40"></span>
+<span id="cb2-41"><span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">\end</span>{<span class="ex" style="color: null;
+background-color: null;
+font-style: inherit;">document</span>}</span></code></pre></div>
+<section id="outcome" class="level4">
+<h4 class="anchored" data-anchor-id="outcome">Outcome</h4>
+<div>
+
+</div>
+<div class="quarto-layout-panel" data-layout-ncol="2">
+<div class="quarto-layout-row">
+<div class="quarto-layout-cell" style="flex-basis: 50.0%;justify-content: flex-start;">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="gcerar.github.io/posts/2025-05-07-ministate-v3/figures/ministate-with-title-1.png" class="img-fluid figure-img"></p>
+<figcaption>First Page with optional title</figcaption>
+</figure>
+</div>
+</div>
+<div class="quarto-layout-cell" style="flex-basis: 50.0%;justify-content: flex-start;">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="gcerar.github.io/posts/2025-05-07-ministate-v3/figures/ministate-with-title-2.png" class="img-fluid figure-img"></p>
+<figcaption>Second Page</figcaption>
+</figure>
+</div>
+</div>
+</div>
+</div>
+
+
+</section>
+</section>
+
+<div id="quarto-appendix" class="default"><section class="quarto-appendix-contents" id="quarto-reuse"><h2 class="anchored quarto-appendix-heading">Reuse</h2><div class="quarto-appendix-contents"><div><a rel="license" href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.en_us">CC BY-NC-SA 4.0</a></div></div></section></div> ]]></description>
+  <category>LaTeX</category>
+  <guid>gcerar.github.io/posts/2025-05-07-ministate-v3/</guid>
+  <pubDate>Tue, 06 May 2025 22:00:00 GMT</pubDate>
+  <media:content url="gcerar.github.io/posts/2025-05-07-ministate-v3/featured.png" medium="image" type="image/png" height="144" width="144"/>
+</item>
 <item>
   <title>Research Compute Infrastructure</title>
   <dc:creator>Gregor Cerar</dc:creator>
@@ -50,13 +590,13 @@
 <section id="architecture" class="level1">
 <h1>Architecture</h1>
 <p>We decided to base our private cloud on the Kubernetes platform to meet system scalability and resource management requirements, aiming to enhance the functionality, accessibility, and sharing of Jupyter notebooks <span class="citation" data-cites="bussonnier2018jupyterhub">(Bussonnier 2018)</span> within the Kubernetes private cloud. In this section, will delve deeper into the system’s architecture that integrates services and elaborate on the design decisions. Subsequently, we describe the individual services within our infrastructure.</p>
-<div id="tbl-stack" class="hover quarto-float anchored">
+<div id="tbl-stack" class="hover quarto-float quarto-figure quarto-figure-center anchored">
 <figure class="quarto-float quarto-float-tbl figure">
 <figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-stack-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 Table&nbsp;1: Services and Used Technologies.
 </figcaption>
 <div aria-describedby="tbl-stack-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<table class="table-hover table">
+<table class="table-hover caption-top table">
 <thead>
 <tr class="header">
 <th style="text-align: left;">Service</th>
@@ -134,7 +674,7 @@ Table&nbsp;1: Services and Used Technologies.
 </figure>
 </div>
 <p>Table&nbsp;1, in its first column, lists all the services required for system operation. The second column lists the open-source solutions that can provide these services. Bolded services indicate those selected and used in our private cloud. We made our choices based on specific criteria. We first surveyed technologies and solutions utilized in related projects. We further narrowed our selection to open-source solutions tested in private clouds on native infrastructure. A significant factor in our decision-making was also an insight into the popularity of the projects, gauged by the number of stars in repositories, the number of forks of the project, and the level of development activity on GitHub/GitLab. In our decision-making process, we didn’t follow a single empirical metric but took multiple factors into account to ensure a comprehensive assessment of solutions.</p>
-<div id="fig-architecture" class="quarto-figure quarto-figure-center quarto-float anchored">
+<div id="fig-architecture" class="quarto-float quarto-figure quarto-figure-center anchored">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-architecture-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <img src="gcerar.github.io/posts/2023-11-20-research-compute-infrastructure/figures/over10k-arch.png" class="img-fluid figure-img">
@@ -195,13 +735,13 @@ Figure&nbsp;1: A three-tier logical infrastructure diagram. At the bottom is the
 <p>In this section, we’ll present how we deployed our computing infrastructure. First, I’ll summarize the hardware decisions, caveats, and finally, the user experience with some screenshots.</p>
 <section id="hardware" class="level2">
 <h2 class="anchored" data-anchor-id="hardware">Hardware</h2>
-<div id="tbl-hardware" class="hover quarto-float anchored">
+<div id="tbl-hardware" class="hover quarto-float quarto-figure quarto-figure-center anchored">
 <figure class="quarto-float quarto-float-tbl figure">
 <figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-hardware-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 Table&nbsp;2: Hardware specifications of Computing node.
 </figcaption>
 <div aria-describedby="tbl-hardware-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<table class="table-hover table">
+<table class="table-hover caption-top table">
 <thead>
 <tr class="header">
 <th>Hardware</th>
@@ -227,7 +767,7 @@ Table&nbsp;2: Hardware specifications of Computing node.
 </tr>
 <tr class="odd">
 <td>Storage</td>
-<td>6x 8TB SSD SATA, software RAID-Z1 (1 disk redundacy)</td>
+<td>6x 8TB SSD SATA, software RAID-Z1 (1 disk redundancy)</td>
 </tr>
 <tr class="even">
 <td>GPU</td>
@@ -243,7 +783,7 @@ Table&nbsp;2: Hardware specifications of Computing node.
 <p>We chose two NVMe drives configured in the mirror configuration (RAID-1) for the system drive. We selected six 8TB SSD SATA drives configured in ZFS RAID-Z1 for data storage, which has one drive redundancy. We also chose two A100 GPUs as accelerators.</p>
 <p>NVIDIA A100 GPUs come in two form factors: PCI-E and SXM4. The SXM4 proprietary form factor has a higher TDP and high-bandwidth NVLink interconnections between every GPU through NVSwitch hardware. The downside of SXM4 is that it will only support Ampere generation GPUs and require a special motherboard. The PCI-E variant has a lower TDP, and NVLink can only be across two GPUs. However, we decided against vendor lock-in, limiting ourselves to one brand and generation, and went with the PCI-E variant.</p>
 <p>We considered the most likely workflow scenarios. We expected most communication to be CPU-to-GPU, with GPUs sliced into several instances. Once GPU slicing is enabled, the NVIDIA drivers disable NVLink, rendering NVLink connections useless. We can change GPU slicing strategy freely.</p>
-<div id="fig-hardware" class="quarto-figure quarto-figure-center quarto-float anchored">
+<div id="fig-hardware" class="quarto-float quarto-figure quarto-figure-center anchored">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-hardware-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <img src="gcerar.github.io/posts/2023-11-20-research-compute-infrastructure/figures/hardware-top-view-resize.jpg" class="img-fluid figure-img">
@@ -263,7 +803,7 @@ Figure&nbsp;2: The computing node on my desk underwent final checks before being
 <section id="jupyterhub" class="level3">
 <h3 class="anchored" data-anchor-id="jupyterhub">JupyterHub</h3>
 <p>JupyterHub has become a crucial component of our research infrastructure, enhancing our workflow significantly. Its smooth integration was largely due to the interface and functionality of JupyterHub, which closely resemble the tools our researchers and students were familiar with. This similarity played a key role in its quick adoption and high user satisfaction.</p>
-<div id="fig-jhub-profiles" class="quarto-figure quarto-figure-center quarto-float anchored">
+<div id="fig-jhub-profiles" class="quarto-float quarto-figure quarto-figure-center anchored">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-jhub-profiles-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <img src="gcerar.github.io/posts/2023-11-20-research-compute-infrastructure/figures/jhub-profiles.png" class="img-fluid figure-img">
@@ -280,7 +820,7 @@ Figure&nbsp;3: JupyterHub offers a list of predefined containers, where some of 
 <li>A selection of containers offering GPU instances.</li>
 </ul>
 <p>The development environment greets users with a layout similar to modern IDEs, featuring a file explorer on the left and code editor tabs on the right (see Figure&nbsp;4).</p>
-<div id="fig-jhub-workspace" class="quarto-figure quarto-figure-center quarto-float anchored">
+<div id="fig-jhub-workspace" class="quarto-float quarto-figure quarto-figure-center anchored">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-jhub-workspace-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <img src="gcerar.github.io/posts/2023-11-20-research-compute-infrastructure/figures/jhub-workspace.png" class="img-fluid figure-img">
@@ -295,7 +835,7 @@ Figure&nbsp;4: JupyterLab workspace with familiar layout: a file explorer on the
 <h3 class="anchored" data-anchor-id="grafana">Grafana</h3>
 <p>For transparent insight into infrastructure availability, the user has read-only access to the Grafana dashboard (Figure~<img src="https://latex.codecogs.com/png.latex?%5Cref%7Bfig:grafana:dashboard%7D">). Here, they can observe most of the infrastructure metrics.</p>
 <p>For transparent insight into infrastructure availability, the user has read-only access to the Grafana dashboard. Dashboard visualizes computing resource utilization including metrics like total and per-container CPU usage, memory usage per container, GPU utilization, temperature readings, and storage I/O (see Figure&nbsp;5).</p>
-<div id="fig-grafana-dashboard" class="quarto-figure quarto-figure-center quarto-float anchored">
+<div id="fig-grafana-dashboard" class="quarto-float quarto-figure quarto-figure-center anchored">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-grafana-dashboard-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <img src="gcerar.github.io/posts/2023-11-20-research-compute-infrastructure/figures/grafana-censored.png" class="img-fluid figure-img">
@@ -344,7 +884,7 @@ Perkel, Jeffrey M. 2018. <span>“<span class="nocase">Why Jupyter is data scien
   <category>compute</category>
   <category>infrastructure</category>
   <guid>gcerar.github.io/posts/2023-11-20-research-compute-infrastructure/</guid>
-  <pubDate>Mon, 20 Nov 2023 00:00:00 GMT</pubDate>
+  <pubDate>Sun, 19 Nov 2023 23:00:00 GMT</pubDate>
 </item>
 <item>
   <title>Generative Adversarial Networks</title>
@@ -360,10 +900,10 @@ Perkel, Jeffrey M. 2018. <span>“<span class="nocase">Why Jupyter is data scien
 <p>Generative Adversarial Networks (GANs) are an innovative class of unsupervised neural networks that have revolutionized the field of artificial intelligence. They were first introduced in <a href="https://arxiv.org/abs/1406.2661">Generative Adversarial Networks</a> <span class="citation" data-cites="goodfellow2014generative">(Goodfellow et al. 2014)</span> and consist of two separate neural networks: the <strong>generator</strong> (creates data) and the <strong>discriminator</strong> (evaluates data authenticity). The generator aims to fool the discriminator by producing realistic data, while the discriminator tries to differentiate real from fake. Over iterations, the generator’s data becomes more convincing.</p>
 <p>As an analogy, consider two kids, one drawing counterfeit money (“Generator”) and another assessing its realism (“Discriminator”). Over time, the counterfeit drawings become increasingly convincing.</p>
 </section>
-<section id="vanilla-gan" class="level1 page-columns page-full">
+<section id="vanilla-gan" class="level1">
 <h1>Vanilla GAN</h1>
 <p>The most fundamental variant of GAN is the “vanilla” GAN, where “vanilla” signifies the model in its original and most straightforward form rather than a flavor. To better understand its mechanism, I’ve illustrated its structure on Figure&nbsp;1.</p>
-<div id="fig-architecture" class="quarto-figure quarto-figure-center quarto-float anchored">
+<div id="fig-architecture" class="quarto-float quarto-figure quarto-figure-center anchored">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-architecture-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <img src="gcerar.github.io/posts/2023-10-10-vanilla-GANs/figures/GAN-architecture.png" class="img-fluid figure-img">
@@ -410,8 +950,8 @@ Figure&nbsp;1: GAN architecture
 <p>The iterative competition refines both, targeting a proficient Generator and a perceptive Discriminator.</p>
 </section>
 </section>
-<section id="prepare-environment" class="level2">
-<h2 class="anchored" data-anchor-id="prepare-environment">Prepare Environment</h2>
+<section id="prepare-components" class="level2">
+<h2 class="anchored" data-anchor-id="prepare-components">Prepare Components</h2>
 <p>In the upcoming sections, we’ll do the following steps to prepare the development environment:</p>
 <ul>
 <li>Import necessary libraries, primarily PyTorch and Matplotlib.</li>
@@ -422,14 +962,14 @@ Figure&nbsp;1: GAN architecture
 <div id="cell-7" class="cell" data-execution_count="1">
 <div class="sourceCode cell-code" id="cb1" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><span class="im" style="color: #00769E;
 background-color: null;
+font-style: inherit;">from</span> collections.abc <span class="im" style="color: #00769E;
+background-color: null;
+font-style: inherit;">import</span> Callable, Sequence</span>
+<span id="cb1-2"><span class="im" style="color: #00769E;
+background-color: null;
 font-style: inherit;">from</span> pathlib <span class="im" style="color: #00769E;
 background-color: null;
 font-style: inherit;">import</span> Path</span>
-<span id="cb1-2"><span class="im" style="color: #00769E;
-background-color: null;
-font-style: inherit;">from</span> typing <span class="im" style="color: #00769E;
-background-color: null;
-font-style: inherit;">import</span> Callable, Sequence</span>
 <span id="cb1-3"></span>
 <span id="cb1-4"><span class="im" style="color: #00769E;
 background-color: null;
@@ -516,46 +1056,43 @@ font-style: inherit;">/</span> <span class="st" style="color: #20794D;
 background-color: null;
 font-style: inherit;">"datasets"</span></span></code></pre></div>
 </div>
-<div id="cell-8" class="cell" data-execution_count="2">
-<div class="sourceCode cell-code" id="cb2" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><span class="co" style="color: #5E5E5E;
+<div id="cell-9" class="cell" data-execution_count="3">
+<div class="sourceCode cell-code" id="cb2" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1">AMP_ENABLED <span class="op" style="color: #5E5E5E;
 background-color: null;
-font-style: inherit;"># Disable functionalities for speed-up</span></span>
-<span id="cb2-2">torch.autograd.set_detect_anomaly(<span class="va" style="color: #111111;
+font-style: inherit;">=</span> <span class="va" style="color: #111111;
 background-color: null;
-font-style: inherit;">False</span>)</span>
-<span id="cb2-3">torch.autograd.profiler.profile(<span class="va" style="color: #111111;
-background-color: null;
-font-style: inherit;">False</span>)</span>
-<span id="cb2-4">torch.autograd.profiler.emit_nvtx(<span class="va" style="color: #111111;
-background-color: null;
-font-style: inherit;">False</span>)</span>
-<span id="cb2-5"></span>
-<span id="cb2-6">device <span class="op" style="color: #5E5E5E;
+font-style: inherit;">False</span></span>
+<span id="cb2-2"></span>
+<span id="cb2-3">device <span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">=</span> torch.device(<span class="st" style="color: #20794D;
 background-color: null;
-font-style: inherit;">"cuda"</span> <span class="cf" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">if</span> torch.cuda.is_available() <span class="cf" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">else</span> <span class="st" style="color: #20794D;
-background-color: null;
 font-style: inherit;">"cpu"</span>)</span>
-<span id="cb2-7"><span class="cf" style="color: #003B4F;
+<span id="cb2-4"></span>
+<span id="cb2-5"><span class="cf" style="color: #003B4F;
 background-color: null;
+font-weight: bold;
 font-style: inherit;">if</span> torch.cuda.is_available():</span>
-<span id="cb2-8">    <span class="co" style="color: #5E5E5E;
+<span id="cb2-6">    device <span class="op" style="color: #5E5E5E;
 background-color: null;
-font-style: inherit;"># Allow CuDNN internal benchmarking for architecture-specific optimizations</span></span>
-<span id="cb2-9">    torch.backends.cudnn.benchmark <span class="op" style="color: #5E5E5E;
+font-style: inherit;">=</span> torch.device(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"cuda"</span>)</span>
+<span id="cb2-7"></span>
+<span id="cb2-8">    <span class="cf" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">if</span> torch.cuda.is_bf16_supported():</span>
+<span id="cb2-9">        AMP_ENABLED <span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">=</span> <span class="va" style="color: #111111;
 background-color: null;
 font-style: inherit;">True</span></span></code></pre></div>
 </div>
-<div id="cell-9" class="cell" data-execution_count="3">
+<div id="cell-10" class="cell" data-execution_count="4">
 <div class="sourceCode cell-code" id="cb3" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><span class="kw" style="color: #003B4F;
 background-color: null;
+font-weight: bold;
 font-style: inherit;">def</span> weights_init(net: nn.Module) <span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">-&gt;</span> <span class="va" style="color: #111111;
@@ -563,14 +1100,19 @@ background-color: null;
 font-style: inherit;">None</span>:</span>
 <span id="cb3-2">    <span class="cf" style="color: #003B4F;
 background-color: null;
+font-weight: bold;
 font-style: inherit;">for</span> m <span class="kw" style="color: #003B4F;
 background-color: null;
+font-weight: bold;
 font-style: inherit;">in</span> net.modules():</span>
 <span id="cb3-3">        <span class="cf" style="color: #003B4F;
 background-color: null;
+font-weight: bold;
 font-style: inherit;">if</span> <span class="bu" style="color: null;
 background-color: null;
-font-style: inherit;">isinstance</span>(m, (nn.Conv2d, nn.ConvTranspose2d)):</span>
+font-style: inherit;">isinstance</span>(m, nn.Conv2d <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">|</span> nn.ConvTranspose2d):</span>
 <span id="cb3-4">            nn.init.normal_(m.weight, <span class="fl" style="color: #AD0000;
 background-color: null;
 font-style: inherit;">0.0</span>, <span class="fl" style="color: #AD0000;
@@ -578,10 +1120,13 @@ background-color: null;
 font-style: inherit;">0.02</span>)</span>
 <span id="cb3-5">            <span class="cf" style="color: #003B4F;
 background-color: null;
+font-weight: bold;
 font-style: inherit;">if</span> m.bias <span class="kw" style="color: #003B4F;
 background-color: null;
+font-weight: bold;
 font-style: inherit;">is</span> <span class="kw" style="color: #003B4F;
 background-color: null;
+font-weight: bold;
 font-style: inherit;">not</span> <span class="va" style="color: #111111;
 background-color: null;
 font-style: inherit;">None</span>:</span>
@@ -591,9 +1136,12 @@ font-style: inherit;">0.0</span>)</span>
 <span id="cb3-7"></span>
 <span id="cb3-8">        <span class="cf" style="color: #003B4F;
 background-color: null;
+font-weight: bold;
 font-style: inherit;">elif</span> <span class="bu" style="color: null;
 background-color: null;
-font-style: inherit;">isinstance</span>(m, (nn.BatchNorm1d, nn.BatchNorm2d)):</span>
+font-style: inherit;">isinstance</span>(m, nn.BatchNorm1d <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">|</span> nn.BatchNorm2d):</span>
 <span id="cb3-9">            nn.init.normal_(m.weight, <span class="fl" style="color: #AD0000;
 background-color: null;
 font-style: inherit;">1.0</span>, <span class="fl" style="color: #AD0000;
@@ -601,10 +1149,13 @@ background-color: null;
 font-style: inherit;">0.02</span>)</span>
 <span id="cb3-10">            <span class="cf" style="color: #003B4F;
 background-color: null;
+font-weight: bold;
 font-style: inherit;">if</span> m.bias <span class="kw" style="color: #003B4F;
 background-color: null;
+font-weight: bold;
 font-style: inherit;">is</span> <span class="kw" style="color: #003B4F;
 background-color: null;
+font-weight: bold;
 font-style: inherit;">not</span> <span class="va" style="color: #111111;
 background-color: null;
 font-style: inherit;">None</span>:</span>
@@ -614,6 +1165,7 @@ font-style: inherit;">0.0</span>)</span>
 <span id="cb3-12"></span>
 <span id="cb3-13">        <span class="cf" style="color: #003B4F;
 background-color: null;
+font-weight: bold;
 font-style: inherit;">elif</span> <span class="bu" style="color: null;
 background-color: null;
 font-style: inherit;">isinstance</span>(m, nn.Linear):</span>
@@ -624,10 +1176,13 @@ background-color: null;
 font-style: inherit;">0.02</span>)</span>
 <span id="cb3-15">            <span class="cf" style="color: #003B4F;
 background-color: null;
+font-weight: bold;
 font-style: inherit;">if</span> m.bias <span class="kw" style="color: #003B4F;
 background-color: null;
+font-weight: bold;
 font-style: inherit;">is</span> <span class="kw" style="color: #003B4F;
 background-color: null;
+font-weight: bold;
 font-style: inherit;">not</span> <span class="va" style="color: #111111;
 background-color: null;
 font-style: inherit;">None</span>:</span>
@@ -644,12 +1199,14 @@ font-style: inherit;">0.0</span>)</span></code></pre></div>
 <li><strong>Output:</strong> Reshapes data to desired format (e.g., image). Often uses ‘tanh’ for activation.</li>
 <li><strong>Objective:</strong> Generate data indistinguishable from real by the Discriminator.</li>
 </ul>
-<div id="cell-12" class="cell" data-execution_count="5">
+<div id="cell-13" class="cell" data-execution_count="6">
 <div class="sourceCode cell-code" id="cb4" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><span class="kw" style="color: #003B4F;
 background-color: null;
+font-weight: bold;
 font-style: inherit;">class</span> Generator(nn.Module):</span>
 <span id="cb4-2">    <span class="kw" style="color: #003B4F;
 background-color: null;
+font-weight: bold;
 font-style: inherit;">def</span> <span class="fu" style="color: #4758AB;
 background-color: null;
 font-style: inherit;">__init__</span>(<span class="va" style="color: #111111;
@@ -730,7 +1287,7 @@ font-style: inherit;">2</span> <span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">*</span> ngf, <span class="dv" style="color: #AD0000;
 background-color: null;
-font-style: inherit;">2</span> <span class="op" style="color: #5E5E5E;
+font-style: inherit;">4</span> <span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">*</span> ngf),</span>
 <span id="cb4-17">            nn.LeakyReLU(alpha, inplace<span class="op" style="color: #5E5E5E;
@@ -752,6 +1309,7 @@ font-style: inherit;">self</span>.out_dim))),</span>
 <span id="cb4-21"></span>
 <span id="cb4-22">    <span class="kw" style="color: #003B4F;
 background-color: null;
+font-weight: bold;
 font-style: inherit;">def</span> forward(<span class="va" style="color: #111111;
 background-color: null;
 font-style: inherit;">self</span>, x: Tensor) <span class="op" style="color: #5E5E5E;
@@ -773,6 +1331,7 @@ background-color: null;
 font-style: inherit;">self</span>.out_dim))</span>
 <span id="cb4-25">        <span class="cf" style="color: #003B4F;
 background-color: null;
+font-weight: bold;
 font-style: inherit;">return</span> x</span>
 <span id="cb4-26"></span>
 <span id="cb4-27"></span>
@@ -791,7 +1350,7 @@ background-color: null;
 font-style: inherit;">128</span>, <span class="dv" style="color: #AD0000;
 background-color: null;
 font-style: inherit;">100</span>])</span></code></pre></div>
-<div class="cell-output cell-output-display" data-execution_count="5">
+<div class="cell-output cell-output-display" data-execution_count="6">
 <pre><code>==========================================================================================
 Layer (type:depth-idx)                   Output Shape              Param #
 ==========================================================================================
@@ -809,7 +1368,7 @@ Generator                                [128, 1, 28, 28]          --
 Total params: 1,486,352
 Trainable params: 1,486,352
 Non-trainable params: 0
-Total mult-adds (M): 190.25
+Total mult-adds (Units.MEGABYTES): 190.25
 ==========================================================================================
 Input size (MB): 0.05
 Forward/backward pass size (MB): 2.64
@@ -828,12 +1387,14 @@ Estimated Total Size (MB): 8.63
 <li><strong>Output:</strong> Uses a sigmoid activation, yielding a score between 0-1, reflecting the data’s authenticity.</li>
 <li><strong>Objective:</strong> Recognize real data and identify fake data from the Generator.</li>
 </ul>
-<div id="cell-14" class="cell" data-execution_count="6">
+<div id="cell-15" class="cell" data-execution_count="7">
 <div class="sourceCode cell-code" id="cb6" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><span class="kw" style="color: #003B4F;
 background-color: null;
+font-weight: bold;
 font-style: inherit;">class</span> Discriminator(nn.Module):</span>
 <span id="cb6-2">    <span class="kw" style="color: #003B4F;
 background-color: null;
+font-weight: bold;
 font-style: inherit;">def</span> <span class="fu" style="color: #4758AB;
 background-color: null;
 font-style: inherit;">__init__</span>(<span class="va" style="color: #111111;
@@ -916,6 +1477,7 @@ font-style: inherit;">1</span>),</span>
 <span id="cb6-17"></span>
 <span id="cb6-18">    <span class="kw" style="color: #003B4F;
 background-color: null;
+font-weight: bold;
 font-style: inherit;">def</span> forward(<span class="va" style="color: #111111;
 background-color: null;
 font-style: inherit;">self</span>, x: Tensor) <span class="op" style="color: #5E5E5E;
@@ -932,6 +1494,7 @@ background-color: null;
 font-style: inherit;">1</span>))</span>
 <span id="cb6-20">        <span class="cf" style="color: #003B4F;
 background-color: null;
+font-weight: bold;
 font-style: inherit;">return</span> <span class="va" style="color: #111111;
 background-color: null;
 font-style: inherit;">self</span>.model(x)</span>
@@ -956,7 +1519,7 @@ background-color: null;
 font-style: inherit;">28</span>, <span class="dv" style="color: #AD0000;
 background-color: null;
 font-style: inherit;">28</span>])</span></code></pre></div>
-<div class="cell-output cell-output-display" data-execution_count="6">
+<div class="cell-output cell-output-display" data-execution_count="7">
 <pre><code>==========================================================================================
 Layer (type:depth-idx)                   Output Shape              Param #
 ==========================================================================================
@@ -977,7 +1540,7 @@ Discriminator                            [128, 1]                  --
 Total params: 566,273
 Trainable params: 566,273
 Non-trainable params: 0
-Total mult-adds (M): 72.48
+Total mult-adds (Units.MEGABYTES): 72.48
 ==========================================================================================
 Input size (MB): 0.40
 Forward/backward pass size (MB): 0.92
@@ -1009,9 +1572,10 @@ Note
 <p>Using <code>.eval()</code> and <code>.train()</code> modes initially seemed promising for faster training. However, they affected layers like <code>BatchNorm2d</code> and <code>Dropout</code>, making the GAN diverge. Also, switching between eval and train modes is not free of charge.</p>
 </div>
 </div>
-<div id="cell-16" class="cell" data-execution_count="7">
+<div id="cell-17" class="cell" data-execution_count="8">
 <div class="sourceCode cell-code" id="cb8" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><span class="kw" style="color: #003B4F;
 background-color: null;
+font-weight: bold;
 font-style: inherit;">def</span> train_step(</span>
 <span id="cb8-2">    generator: nn.Module,</span>
 <span id="cb8-3">    discriminator: nn.Module,</span>
@@ -1135,13 +1699,14 @@ font-style: inherit;"># Backprop and optimize for generator</span></span>
 <span id="cb8-47"></span>
 <span id="cb8-48">    <span class="cf" style="color: #003B4F;
 background-color: null;
+font-weight: bold;
 font-style: inherit;">return</span> loss_G.item(), loss_D.item()</span></code></pre></div>
 </div>
 </section>
-<section id="evaluation" class="level2 page-columns page-full">
+<section id="evaluation" class="level2">
 <h2 class="anchored" data-anchor-id="evaluation">Evaluation</h2>
 <p>Before evaluation, we configured the learning rate (LR), optimizer’s <img src="https://latex.codecogs.com/png.latex?%5Cbeta"> parameters, batch size, and data loader settings for all experiments. We used the MNIST digits and MNIST fashion datasets for assessment.</p>
-<div id="cell-18" class="cell" data-execution_count="8">
+<div id="cell-19" class="cell" data-execution_count="9">
 <div class="sourceCode cell-code" id="cb9" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1">OPTIMIZER_LR <span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">=</span> <span class="fl" style="color: #AD0000;
@@ -1170,52 +1735,59 @@ font-style: inherit;">=</span> <span class="dv" style="color: #AD0000;
 background-color: null;
 font-style: inherit;">128</span></span></code></pre></div>
 </div>
-<div id="cell-19" class="cell" data-execution_count="9">
-<div class="sourceCode cell-code" id="cb10" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1">loader_kwargs <span class="op" style="color: #5E5E5E;
+<div id="cell-20" class="cell" data-execution_count="10">
+<div class="sourceCode cell-code" id="cb10" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1">g <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> torch.Generator()</span>
+<span id="cb10-2">g.manual_seed(SEED)</span>
+<span id="cb10-3"></span>
+<span id="cb10-4">loader_kwargs <span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">=</span> {</span>
-<span id="cb10-2">    <span class="st" style="color: #20794D;
+<span id="cb10-5">    <span class="st" style="color: #20794D;
 background-color: null;
 font-style: inherit;">"num_workers"</span>: <span class="dv" style="color: #AD0000;
 background-color: null;
 font-style: inherit;">8</span>,</span>
-<span id="cb10-3">    <span class="st" style="color: #20794D;
+<span id="cb10-6">    <span class="st" style="color: #20794D;
 background-color: null;
 font-style: inherit;">"pin_memory"</span>: <span class="va" style="color: #111111;
 background-color: null;
 font-style: inherit;">True</span>,</span>
-<span id="cb10-4">    <span class="st" style="color: #20794D;
+<span id="cb10-7">    <span class="st" style="color: #20794D;
 background-color: null;
 font-style: inherit;">"shuffle"</span>: <span class="va" style="color: #111111;
 background-color: null;
 font-style: inherit;">True</span>,</span>
-<span id="cb10-5">    <span class="st" style="color: #20794D;
+<span id="cb10-8">    <span class="st" style="color: #20794D;
 background-color: null;
 font-style: inherit;">"batch_size"</span>: BATCH_SIZE,</span>
-<span id="cb10-6">    <span class="st" style="color: #20794D;
+<span id="cb10-9">    <span class="st" style="color: #20794D;
 background-color: null;
 font-style: inherit;">"prefetch_factor"</span>: <span class="dv" style="color: #AD0000;
 background-color: null;
 font-style: inherit;">16</span>,</span>
-<span id="cb10-7">    <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"pin_memory_device"</span>: device.<span class="bu" style="color: null;
-background-color: null;
-font-style: inherit;">type</span>,</span>
-<span id="cb10-8">    <span class="st" style="color: #20794D;
+<span id="cb10-10">    <span class="st" style="color: #20794D;
 background-color: null;
 font-style: inherit;">"persistent_workers"</span>: <span class="va" style="color: #111111;
 background-color: null;
 font-style: inherit;">False</span>,</span>
-<span id="cb10-9">}</span></code></pre></div>
+<span id="cb10-11">    <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"worker_init_fn"</span>: seed_worker,</span>
+<span id="cb10-12">    <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"generator"</span>: g,</span>
+<span id="cb10-13">}</span></code></pre></div>
 </div>
-<section id="mnist-digits-dataset" class="level3 page-columns page-full">
+<section id="mnist-digits-dataset" class="level3">
 <h3 class="anchored" data-anchor-id="mnist-digits-dataset">MNIST Digits Dataset</h3>
 <p>The MNIST (Modified National Institute of Standards and Technology) dataset is a well-known collection of handwritten digits, extensively used in the fields of machine learning and computer vision for training and testing purposes. Its simplicity and size make it a popular choice for introductory courses and experiments in image recognition.</p>
 <p>In total, the dataset contains 70,000 grayscale images of handwritten digits (from 0 to 9). Each image is 28x28 pixels.</p>
-<div id="cell-21" class="cell" data-execution_count="10">
+<div id="cell-22" class="cell" data-execution_count="11">
 <div class="sourceCode cell-code" id="cb11" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><span class="kw" style="color: #003B4F;
 background-color: null;
+font-weight: bold;
 font-style: inherit;">def</span> get_minst_dataset(transform<span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">=</span><span class="va" style="color: #111111;
@@ -1272,9 +1844,10 @@ background-color: null;
 font-style: inherit;">=</span> ConcatDataset([trainset, testset])</span>
 <span id="cb11-9">    <span class="cf" style="color: #003B4F;
 background-color: null;
+font-weight: bold;
 font-style: inherit;">return</span> dataset</span></code></pre></div>
 </div>
-<div id="cell-23" class="cell" data-execution_count="12">
+<div id="cell-24" class="cell" data-execution_count="13">
 <div class="sourceCode cell-code" id="cb12" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1">IMG_DIM <span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">=</span> (<span class="dv" style="color: #AD0000;
@@ -1290,33 +1863,40 @@ font-style: inherit;">=</span> <span class="dv" style="color: #AD0000;
 background-color: null;
 font-style: inherit;">100</span></span></code></pre></div>
 </div>
-<div id="cell-24" class="cell" data-execution_count="13">
+<div id="cell-25" class="cell" data-execution_count="14">
 <div class="sourceCode cell-code" id="cb13" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1">transform <span class="op" style="color: #5E5E5E;
 background-color: null;
-font-style: inherit;">=</span> T.Compose([T.ToTensor(), T.Normalize(<span class="fl" style="color: #AD0000;
+font-style: inherit;">=</span> T.Compose(</span>
+<span id="cb13-2">    [</span>
+<span id="cb13-3">        T.ToTensor(),</span>
+<span id="cb13-4">        T.Normalize(<span class="fl" style="color: #AD0000;
 background-color: null;
 font-style: inherit;">0.5</span>, <span class="fl" style="color: #AD0000;
 background-color: null;
-font-style: inherit;">0.5</span>)])</span>
-<span id="cb13-2"></span>
-<span id="cb13-3">data <span class="op" style="color: #5E5E5E;
+font-style: inherit;">0.5</span>),</span>
+<span id="cb13-5">    ]</span>
+<span id="cb13-6">)</span>
+<span id="cb13-7"></span>
+<span id="cb13-8">data <span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">=</span> get_minst_dataset(transform<span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">=</span>transform)</span>
-<span id="cb13-4">dataloader <span class="op" style="color: #5E5E5E;
+<span id="cb13-9">dataloader <span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">=</span> DataLoader(data, <span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">**</span>loader_kwargs)</span>
-<span id="cb13-5"></span>
-<span id="cb13-6">torch.manual_seed(SEED)</span>
-<span id="cb13-7">torch.cuda.manual_seed_all(SEED)</span>
-<span id="cb13-8"></span>
-<span id="cb13-9"><span class="co" style="color: #5E5E5E;
+<span id="cb13-10"></span>
+<span id="cb13-11"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># set seed for random generators</span></span>
+<span id="cb13-12">set_random_seed()</span>
+<span id="cb13-13"></span>
+<span id="cb13-14"><span class="co" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;"># benchmark_noise is used for the animation to show how output evolve on the same vector</span></span>
-<span id="cb13-10">benchmark_noise <span class="op" style="color: #5E5E5E;
+<span id="cb13-15">benchmark_noise <span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">=</span> torch.randn(<span class="dv" style="color: #AD0000;
 background-color: null;
@@ -1327,73 +1907,89 @@ background-color: null;
 font-style: inherit;">16</span>, NOISE_DIM, device<span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">=</span>device)</span>
-<span id="cb13-11"></span>
-<span id="cb13-12">generator <span class="op" style="color: #5E5E5E;
+<span id="cb13-16"></span>
+<span id="cb13-17">generator <span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">=</span> Generator(out_dim<span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">=</span>IMG_DIM, nz<span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">=</span>NOISE_DIM).to(device)</span>
-<span id="cb13-13">generator.<span class="bu" style="color: null;
+<span id="cb13-18">generator.<span class="bu" style="color: null;
 background-color: null;
 font-style: inherit;">apply</span>(weights_init)</span>
-<span id="cb13-14"></span>
-<span id="cb13-15">discriminator <span class="op" style="color: #5E5E5E;
+<span id="cb13-19"></span>
+<span id="cb13-20">discriminator <span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">=</span> Discriminator(input_dim<span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">=</span>IMG_DIM).to(device)</span>
-<span id="cb13-16">discriminator.<span class="bu" style="color: null;
+<span id="cb13-21">discriminator.<span class="bu" style="color: null;
 background-color: null;
 font-style: inherit;">apply</span>(weights_init)</span>
-<span id="cb13-17"></span>
-<span id="cb13-18">optimizer_G <span class="op" style="color: #5E5E5E;
+<span id="cb13-22"></span>
+<span id="cb13-23">optimizer_G <span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">=</span> optim.AdamW(</span>
-<span id="cb13-19">    generator.parameters(),</span>
-<span id="cb13-20">    lr<span class="op" style="color: #5E5E5E;
+<span id="cb13-24">    generator.parameters(),</span>
+<span id="cb13-25">    lr<span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">=</span>OPTIMIZER_LR,</span>
-<span id="cb13-21">    betas<span class="op" style="color: #5E5E5E;
+<span id="cb13-26">    betas<span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">=</span>OPTIMIZER_BETAS,</span>
-<span id="cb13-22">    weight_decay<span class="op" style="color: #5E5E5E;
+<span id="cb13-27">    weight_decay<span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">=</span>L2_NORM,</span>
-<span id="cb13-23">)</span>
-<span id="cb13-24"></span>
-<span id="cb13-25">optimizer_D <span class="op" style="color: #5E5E5E;
+<span id="cb13-28">)</span>
+<span id="cb13-29"></span>
+<span id="cb13-30">optimizer_D <span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">=</span> optim.AdamW(</span>
-<span id="cb13-26">    discriminator.parameters(),</span>
-<span id="cb13-27">    lr<span class="op" style="color: #5E5E5E;
+<span id="cb13-31">    discriminator.parameters(),</span>
+<span id="cb13-32">    lr<span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">=</span>OPTIMIZER_LR,</span>
-<span id="cb13-28">    betas<span class="op" style="color: #5E5E5E;
+<span id="cb13-33">    betas<span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">=</span>OPTIMIZER_BETAS,</span>
-<span id="cb13-29">    weight_decay<span class="op" style="color: #5E5E5E;
+<span id="cb13-34">    weight_decay<span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">=</span>L2_NORM,</span>
-<span id="cb13-30">)</span>
-<span id="cb13-31"></span>
-<span id="cb13-32">criterion <span class="op" style="color: #5E5E5E;
+<span id="cb13-35">)</span>
+<span id="cb13-36"></span>
+<span id="cb13-37">criterion <span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">=</span> nn.BCELoss().to(device)</span></code></pre></div>
 </div>
-<div id="cell-25" class="cell" data-execution_count="14">
-<div class="sourceCode cell-code" id="cb14" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1">animation <span class="op" style="color: #5E5E5E;
+<div id="cell-26" class="cell" data-execution_count="15">
+<div class="sourceCode cell-code" id="cb14" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1">animation: <span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">list</span>[Tensor] <span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">=</span> []</span>
 <span id="cb14-2"></span>
-<span id="cb14-3">g_losses, d_losses <span class="op" style="color: #5E5E5E;
+<span id="cb14-3">g_losses: <span class="bu" style="color: null;
 background-color: null;
-font-style: inherit;">=</span> [], []</span>
-<span id="cb14-4"><span class="cf" style="color: #003B4F;
+font-style: inherit;">list</span>[<span class="bu" style="color: null;
 background-color: null;
+font-style: inherit;">float</span>] <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> []</span>
+<span id="cb14-4">d_losses: <span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">list</span>[<span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">float</span>] <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> []</span>
+<span id="cb14-5"></span>
+<span id="cb14-6"><span class="cf" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
 font-style: inherit;">for</span> _ <span class="kw" style="color: #003B4F;
 background-color: null;
+font-weight: bold;
 font-style: inherit;">in</span> tqdm(<span class="bu" style="color: null;
 background-color: null;
 font-style: inherit;">range</span>(N_EPOCHS), unit<span class="op" style="color: #5E5E5E;
@@ -1401,35 +1997,40 @@ background-color: null;
 font-style: inherit;">=</span><span class="st" style="color: #20794D;
 background-color: null;
 font-style: inherit;">"epochs"</span>):</span>
-<span id="cb14-5">    generator.train()</span>
-<span id="cb14-6">    discriminator.train()</span>
-<span id="cb14-7"></span>
-<span id="cb14-8">    <span class="cf" style="color: #003B4F;
+<span id="cb14-7">    generator.train()</span>
+<span id="cb14-8">    discriminator.train()</span>
+<span id="cb14-9"></span>
+<span id="cb14-10">    <span class="cf" style="color: #003B4F;
 background-color: null;
+font-weight: bold;
 font-style: inherit;">for</span> samples_real, _ <span class="kw" style="color: #003B4F;
 background-color: null;
+font-weight: bold;
 font-style: inherit;">in</span> dataloader:</span>
-<span id="cb14-9">        g_loss, d_loss <span class="op" style="color: #5E5E5E;
+<span id="cb14-11">        g_loss, d_loss <span class="op" style="color: #5E5E5E;
 background-color: null;
-font-style: inherit;">=</span> train_step(generator, discriminator, optimizer_G, optimizer_D, criterion, samples_real, NOISE_DIM, device)</span>
-<span id="cb14-10"></span>
-<span id="cb14-11">        g_losses.append(g_loss)</span>
-<span id="cb14-12">        d_losses.append(d_loss)</span>
-<span id="cb14-13"></span>
-<span id="cb14-14">    generator.<span class="bu" style="color: null;
+font-style: inherit;">=</span> train_step(</span>
+<span id="cb14-12">            generator, discriminator, optimizer_G, optimizer_D, criterion, samples_real, NOISE_DIM, device</span>
+<span id="cb14-13">        )</span>
+<span id="cb14-14"></span>
+<span id="cb14-15">        g_losses.append(g_loss)</span>
+<span id="cb14-16">        d_losses.append(d_loss)</span>
+<span id="cb14-17"></span>
+<span id="cb14-18">    generator.<span class="bu" style="color: null;
 background-color: null;
 font-style: inherit;">eval</span>()</span>
-<span id="cb14-15">    <span class="cf" style="color: #003B4F;
+<span id="cb14-19">    <span class="cf" style="color: #003B4F;
 background-color: null;
+font-weight: bold;
 font-style: inherit;">with</span> torch.inference_mode():</span>
-<span id="cb14-16">        images <span class="op" style="color: #5E5E5E;
+<span id="cb14-20">        images <span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">=</span> generator(benchmark_noise)</span>
-<span id="cb14-17">        images <span class="op" style="color: #5E5E5E;
+<span id="cb14-21">        images <span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">=</span> images.detach().cpu()</span>
-<span id="cb14-18"></span>
-<span id="cb14-19">        images <span class="op" style="color: #5E5E5E;
+<span id="cb14-22"></span>
+<span id="cb14-23">        images <span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">=</span> make_grid(images, nrow<span class="op" style="color: #5E5E5E;
 background-color: null;
@@ -1440,27 +2041,27 @@ background-color: null;
 font-style: inherit;">=</span><span class="va" style="color: #111111;
 background-color: null;
 font-style: inherit;">True</span>)</span>
-<span id="cb14-20">        animation.append(images)</span></code></pre></div>
+<span id="cb14-24">        animation.append(images)</span></code></pre></div>
 <div class="cell-output cell-output-stderr">
-<pre><code>100%|████████████████████████████████████████████████████████████████████████████████| 100/100 [03:43&lt;00:00,  2.23s/epochs]</code></pre>
+<pre><code>100%|██████████| 100/100 [07:44&lt;00:00,  4.64s/epochs]</code></pre>
 </div>
 </div>
-<div id="cell-26" class="cell page-columns page-full" data-execution_count="15">
-
-<div class="no-row-height column-margin column-container"><div class="cell-output cell-output-display">
+<div id="cell-27" class="cell" data-execution_count="16">
+<div class="cell-output cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="gcerar.github.io/posts/2023-10-10-vanilla-GANs/index_files/figure-html/cell-16-output-1.png" class="img-fluid figure-img"></p>
+<p><img src="gcerar.github.io/posts/2023-10-10-vanilla-GANs/index_files/figure-html/cell-17-output-1.png" width="690" height="422" class="figure-img"></p>
 <figcaption>Generator and Discriminator loss evolution over epochs using Vanilla GAN on the MNIST digit dataset.</figcaption>
 </figure>
 </div>
-</div></div></div>
+</div>
+</div>
 <div class="quarto-video"><video id="video_shortcode_videojs_video1" class="video-js vjs-default-skin vjs-fluid" controls="" preload="auto" data-setup="{}" title=""><source src="./figures/gan-mnist.mp4"></video></div>
 </section>
-<section id="mnist-fashion-dataset" class="level3 page-columns page-full">
+<section id="mnist-fashion-dataset" class="level3">
 <h3 class="anchored" data-anchor-id="mnist-fashion-dataset">MNIST Fashion Dataset</h3>
 <p>The Fashion MNIST dataset is a collection of grayscale images of 10 different categories of clothing items, designed as a more challenging alternative to the classic MNIST dataset of handwritten digits. Each image in the dataset is 28x28 pixels. The 10 categories include items like t-shirts/tops, trousers, pullovers, dresses, coats, sandals, and more. With 70,000 images, Fashion MNIST is commonly used for benchmarking machine learning algorithms, especially in image classification tasks.</p>
-<div id="cell-30" class="cell" data-execution_count="17">
+<div id="cell-31" class="cell" data-execution_count="18">
 <div class="sourceCode cell-code" id="cb16" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb16-1">IMG_DIM <span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">=</span> (<span class="dv" style="color: #AD0000;
@@ -1476,9 +2077,10 @@ font-style: inherit;">=</span> <span class="dv" style="color: #AD0000;
 background-color: null;
 font-style: inherit;">100</span></span></code></pre></div>
 </div>
-<div id="cell-31" class="cell" data-execution_count="18">
+<div id="cell-32" class="cell" data-execution_count="19">
 <div class="sourceCode cell-code" id="cb17" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb17-1"><span class="kw" style="color: #003B4F;
 background-color: null;
+font-weight: bold;
 font-style: inherit;">def</span> get_mnist_fashion_dataset(transform<span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">=</span><span class="va" style="color: #111111;
@@ -1533,9 +2135,10 @@ background-color: null;
 font-style: inherit;">=</span> ConcatDataset([trainset, testset])</span>
 <span id="cb17-9">    <span class="cf" style="color: #003B4F;
 background-color: null;
+font-weight: bold;
 font-style: inherit;">return</span> dataset</span></code></pre></div>
 </div>
-<div id="cell-32" class="cell" data-execution_count="20">
+<div id="cell-33" class="cell" data-execution_count="20">
 <div class="sourceCode cell-code" id="cb18" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb18-1">transform <span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">=</span> T.Compose([T.ToTensor(), T.Normalize(<span class="fl" style="color: #AD0000;
@@ -1555,8 +2158,10 @@ font-style: inherit;">=</span> DataLoader(data, <span class="op" style="color: #
 background-color: null;
 font-style: inherit;">**</span>loader_kwargs)</span>
 <span id="cb18-5"></span>
-<span id="cb18-6">torch.manual_seed(SEED)</span>
-<span id="cb18-7">torch.cuda.manual_seed_all(SEED)</span>
+<span id="cb18-6"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># set seed for random generators</span></span>
+<span id="cb18-7">set_random_seed()</span>
 <span id="cb18-8"></span>
 <span id="cb18-9"><span class="co" style="color: #5E5E5E;
 background-color: null;
@@ -1627,7 +2232,7 @@ font-style: inherit;">=</span>L2_NORM,</span>
 background-color: null;
 font-style: inherit;">=</span> nn.BCELoss().to(device)</span></code></pre></div>
 </div>
-<div id="cell-33" class="cell" data-execution_count="21">
+<div id="cell-34" class="cell" data-execution_count="21">
 <div class="sourceCode cell-code" id="cb19" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb19-1">animation <span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">=</span> []</span>
@@ -1637,8 +2242,10 @@ background-color: null;
 font-style: inherit;">=</span> [], []</span>
 <span id="cb19-4"><span class="cf" style="color: #003B4F;
 background-color: null;
+font-weight: bold;
 font-style: inherit;">for</span> _ <span class="kw" style="color: #003B4F;
 background-color: null;
+font-weight: bold;
 font-style: inherit;">in</span> tqdm(<span class="bu" style="color: null;
 background-color: null;
 font-style: inherit;">range</span>(N_EPOCHS), unit<span class="op" style="color: #5E5E5E;
@@ -1651,30 +2258,35 @@ font-style: inherit;">"epochs"</span>):</span>
 <span id="cb19-7"></span>
 <span id="cb19-8">    <span class="cf" style="color: #003B4F;
 background-color: null;
+font-weight: bold;
 font-style: inherit;">for</span> samples_real, _ <span class="kw" style="color: #003B4F;
 background-color: null;
+font-weight: bold;
 font-style: inherit;">in</span> dataloader:</span>
 <span id="cb19-9">        g_loss, d_loss <span class="op" style="color: #5E5E5E;
 background-color: null;
-font-style: inherit;">=</span> train_step(generator, discriminator, optimizer_G, optimizer_D, criterion, samples_real, NOISE_DIM, device)</span>
-<span id="cb19-10"></span>
-<span id="cb19-11">        g_losses.append(g_loss)</span>
-<span id="cb19-12">        d_losses.append(d_loss)</span>
-<span id="cb19-13"></span>
-<span id="cb19-14">    generator.<span class="bu" style="color: null;
+font-style: inherit;">=</span> train_step(</span>
+<span id="cb19-10">            generator, discriminator, optimizer_G, optimizer_D, criterion, samples_real, NOISE_DIM, device</span>
+<span id="cb19-11">        )</span>
+<span id="cb19-12"></span>
+<span id="cb19-13">        g_losses.append(g_loss)</span>
+<span id="cb19-14">        d_losses.append(d_loss)</span>
+<span id="cb19-15"></span>
+<span id="cb19-16">    generator.<span class="bu" style="color: null;
 background-color: null;
 font-style: inherit;">eval</span>()</span>
-<span id="cb19-15">    <span class="cf" style="color: #003B4F;
+<span id="cb19-17">    <span class="cf" style="color: #003B4F;
 background-color: null;
+font-weight: bold;
 font-style: inherit;">with</span> torch.inference_mode():</span>
-<span id="cb19-16">        images <span class="op" style="color: #5E5E5E;
+<span id="cb19-18">        images <span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">=</span> generator(benchmark_noise)</span>
-<span id="cb19-17">        images <span class="op" style="color: #5E5E5E;
+<span id="cb19-19">        images <span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">=</span> images.detach().cpu()</span>
-<span id="cb19-18"></span>
-<span id="cb19-19">        images <span class="op" style="color: #5E5E5E;
+<span id="cb19-20"></span>
+<span id="cb19-21">        images <span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">=</span> make_grid(images, nrow<span class="op" style="color: #5E5E5E;
 background-color: null;
@@ -1685,39 +2297,41 @@ background-color: null;
 font-style: inherit;">=</span><span class="va" style="color: #111111;
 background-color: null;
 font-style: inherit;">True</span>)</span>
-<span id="cb19-20"></span>
-<span id="cb19-21">        animation.append(images)</span></code></pre></div>
+<span id="cb19-22"></span>
+<span id="cb19-23">        animation.append(images)</span></code></pre></div>
 <div class="cell-output cell-output-stderr">
-<pre><code>100%|████████████████████████████████████████████████████████████████████████████████| 100/100 [03:49&lt;00:00,  2.30s/epochs]</code></pre>
+<pre><code>100%|██████████| 100/100 [07:46&lt;00:00,  4.67s/epochs]</code></pre>
 </div>
 </div>
-<div id="cell-34" class="cell page-columns page-full" data-execution_count="22">
-
-<div class="no-row-height column-margin column-container"><div class="cell-output cell-output-display">
+<div id="cell-35" class="cell" data-execution_count="22">
+<div class="cell-output cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="gcerar.github.io/posts/2023-10-10-vanilla-GANs/index_files/figure-html/cell-22-output-1.png" class="img-fluid figure-img"></p>
+<p><img src="gcerar.github.io/posts/2023-10-10-vanilla-GANs/index_files/figure-html/cell-23-output-1.png" width="690" height="422" class="figure-img"></p>
 <figcaption>Generator and Discriminator loss evolution over epochs using Vanilla GAN on the MNIST fashion dataset.</figcaption>
 </figure>
 </div>
-</div></div></div>
+</div>
+</div>
 <div class="quarto-video"><video id="video_shortcode_videojs_video2" class="video-js vjs-default-skin vjs-fluid" controls="" preload="auto" data-setup="{}" title=""><source src="./figures/gan-fashion.mp4"></video></div>
 </section>
 </section>
 </section>
-<section id="dcgan" class="level1 page-columns page-full">
+<section id="dcgan" class="level1">
 <h1>DCGAN</h1>
 <p>DCGAN, short for Deep Convolutional Generative Adversarial Network, differs from vanilla GAN by using convolutional layers. This design makes DCGAN better for image data. With specific architectural guidelines, DCGAN trains more consistently and generates clearer images than vanilla GANs across various hyperparameters.</p>
 <section id="setting-up-dcgans" class="level2">
 <h2 class="anchored" data-anchor-id="setting-up-dcgans">Setting Up DCGANs</h2>
 <section id="generator-1" class="level3">
 <h3 class="anchored" data-anchor-id="generator-1">Generator</h3>
-<div id="cell-40" class="cell" data-execution_count="24">
+<div id="cell-41" class="cell" data-execution_count="24">
 <div class="sourceCode cell-code" id="cb21" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb21-1"><span class="kw" style="color: #003B4F;
 background-color: null;
+font-weight: bold;
 font-style: inherit;">class</span> Generator(nn.Module):</span>
 <span id="cb21-2">    <span class="kw" style="color: #003B4F;
 background-color: null;
+font-weight: bold;
 font-style: inherit;">def</span> <span class="fu" style="color: #4758AB;
 background-color: null;
 font-style: inherit;">__init__</span>(<span class="va" style="color: #111111;
@@ -1857,6 +2471,7 @@ font-style: inherit;">False</span>),</span>
 <span id="cb21-22"></span>
 <span id="cb21-23">    <span class="kw" style="color: #003B4F;
 background-color: null;
+font-weight: bold;
 font-style: inherit;">def</span> forward(<span class="va" style="color: #111111;
 background-color: null;
 font-style: inherit;">self</span>, x: Tensor) <span class="op" style="color: #5E5E5E;
@@ -1877,6 +2492,7 @@ background-color: null;
 font-style: inherit;">1</span>))</span>
 <span id="cb21-25">        <span class="cf" style="color: #003B4F;
 background-color: null;
+font-weight: bold;
 font-style: inherit;">return</span> <span class="va" style="color: #111111;
 background-color: null;
 font-style: inherit;">self</span>.layers(x)</span>
@@ -1910,24 +2526,26 @@ Generator                                [128, 1, 28, 28]          --
 Total params: 312,256
 Trainable params: 312,256
 Non-trainable params: 0
-Total mult-adds (G): 1.76
+Total mult-adds (Units.GIGABYTES): 1.76
 ==========================================================================================
 Input size (MB): 0.05
 Forward/backward pass size (MB): 24.26
 Params size (MB): 1.25
-Estimated Total Size (MB): 25.56
+Estimated Total Size (MB): 25.57
 ==========================================================================================</code></pre>
 </div>
 </div>
 </section>
 <section id="discriminator-1" class="level3">
 <h3 class="anchored" data-anchor-id="discriminator-1">Discriminator</h3>
-<div id="cell-42" class="cell" data-execution_count="25">
+<div id="cell-43" class="cell" data-execution_count="25">
 <div class="sourceCode cell-code" id="cb23" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb23-1"><span class="kw" style="color: #003B4F;
 background-color: null;
+font-weight: bold;
 font-style: inherit;">class</span> Discriminator(nn.Module):</span>
 <span id="cb23-2">    <span class="kw" style="color: #003B4F;
 background-color: null;
+font-weight: bold;
 font-style: inherit;">def</span> <span class="fu" style="color: #4758AB;
 background-color: null;
 font-style: inherit;">__init__</span>(<span class="va" style="color: #111111;
@@ -2054,6 +2672,7 @@ font-style: inherit;">False</span>),</span>
 <span id="cb23-17"></span>
 <span id="cb23-18">    <span class="kw" style="color: #003B4F;
 background-color: null;
+font-weight: bold;
 font-style: inherit;">def</span> forward(<span class="va" style="color: #111111;
 background-color: null;
 font-style: inherit;">self</span>, x: Tensor) <span class="op" style="color: #5E5E5E;
@@ -2075,6 +2694,7 @@ background-color: null;
 font-style: inherit;">1</span>))</span>
 <span id="cb23-21">        <span class="cf" style="color: #003B4F;
 background-color: null;
+font-weight: bold;
 font-style: inherit;">return</span> x</span>
 <span id="cb23-22"></span>
 <span id="cb23-23"></span>
@@ -2108,7 +2728,7 @@ Discriminator                            [128, 1]                  --
 Total params: 109,504
 Trainable params: 109,504
 Non-trainable params: 0
-Total mult-adds (M): 369.68
+Total mult-adds (Units.MEGABYTES): 369.68
 ==========================================================================================
 Input size (MB): 0.40
 Forward/backward pass size (MB): 23.46
@@ -2119,11 +2739,11 @@ Estimated Total Size (MB): 24.30
 </div>
 </section>
 </section>
-<section id="evaluation-1" class="level2 page-columns page-full">
+<section id="evaluation-1" class="level2">
 <h2 class="anchored" data-anchor-id="evaluation-1">Evaluation</h2>
-<section id="mnist-digits-dataset-1" class="level3 page-columns page-full">
+<section id="mnist-digits-dataset-1" class="level3">
 <h3 class="anchored" data-anchor-id="mnist-digits-dataset-1">MNIST Digits Dataset</h3>
-<div id="cell-45" class="cell" data-execution_count="26">
+<div id="cell-46" class="cell" data-execution_count="26">
 <div class="sourceCode cell-code" id="cb25" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb25-1">IMG_DIM <span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">=</span> (<span class="dv" style="color: #AD0000;
@@ -2161,8 +2781,10 @@ font-style: inherit;">=</span> DataLoader(data, <span class="op" style="color: #
 background-color: null;
 font-style: inherit;">**</span>loader_kwargs)</span>
 <span id="cb25-13"></span>
-<span id="cb25-14">torch.manual_seed(SEED)</span>
-<span id="cb25-15">torch.cuda.manual_seed_all(SEED)</span>
+<span id="cb25-14"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># set seed for random generators</span></span>
+<span id="cb25-15">set_random_seed()</span>
 <span id="cb25-16"></span>
 <span id="cb25-17"><span class="co" style="color: #5E5E5E;
 background-color: null;
@@ -2245,7 +2867,7 @@ font-style: inherit;">=</span>L2_NORM,</span>
 background-color: null;
 font-style: inherit;">=</span> nn.BCELoss().to(device)</span></code></pre></div>
 </div>
-<div id="cell-46" class="cell" data-execution_count="27">
+<div id="cell-47" class="cell" data-execution_count="27">
 <div class="sourceCode cell-code" id="cb26" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb26-1">animation <span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">=</span> []</span>
@@ -2255,8 +2877,10 @@ background-color: null;
 font-style: inherit;">=</span> [], []</span>
 <span id="cb26-4"><span class="cf" style="color: #003B4F;
 background-color: null;
+font-weight: bold;
 font-style: inherit;">for</span> _ <span class="kw" style="color: #003B4F;
 background-color: null;
+font-weight: bold;
 font-style: inherit;">in</span> tqdm(<span class="bu" style="color: null;
 background-color: null;
 font-style: inherit;">range</span>(N_EPOCHS), unit<span class="op" style="color: #5E5E5E;
@@ -2269,30 +2893,35 @@ font-style: inherit;">"epochs"</span>):</span>
 <span id="cb26-7"></span>
 <span id="cb26-8">    <span class="cf" style="color: #003B4F;
 background-color: null;
+font-weight: bold;
 font-style: inherit;">for</span> samples_real, _ <span class="kw" style="color: #003B4F;
 background-color: null;
+font-weight: bold;
 font-style: inherit;">in</span> dataloader:</span>
 <span id="cb26-9">        g_loss, d_loss <span class="op" style="color: #5E5E5E;
 background-color: null;
-font-style: inherit;">=</span> train_step(generator, discriminator, optimizer_G, optimizer_D, criterion, samples_real, NOISE_DIM, device)</span>
-<span id="cb26-10"></span>
-<span id="cb26-11">        g_losses.append(g_loss)</span>
-<span id="cb26-12">        d_losses.append(d_loss)</span>
-<span id="cb26-13"></span>
-<span id="cb26-14">    generator.<span class="bu" style="color: null;
+font-style: inherit;">=</span> train_step(</span>
+<span id="cb26-10">            generator, discriminator, optimizer_G, optimizer_D, criterion, samples_real, NOISE_DIM, device</span>
+<span id="cb26-11">        )</span>
+<span id="cb26-12"></span>
+<span id="cb26-13">        g_losses.append(g_loss)</span>
+<span id="cb26-14">        d_losses.append(d_loss)</span>
+<span id="cb26-15"></span>
+<span id="cb26-16">    generator.<span class="bu" style="color: null;
 background-color: null;
 font-style: inherit;">eval</span>()</span>
-<span id="cb26-15">    <span class="cf" style="color: #003B4F;
+<span id="cb26-17">    <span class="cf" style="color: #003B4F;
 background-color: null;
+font-weight: bold;
 font-style: inherit;">with</span> torch.inference_mode():</span>
-<span id="cb26-16">        images <span class="op" style="color: #5E5E5E;
+<span id="cb26-18">        images <span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">=</span> generator(benchmark_noise)</span>
-<span id="cb26-17">        images <span class="op" style="color: #5E5E5E;
+<span id="cb26-19">        images <span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">=</span> images.detach().cpu()</span>
-<span id="cb26-18"></span>
-<span id="cb26-19">        images <span class="op" style="color: #5E5E5E;
+<span id="cb26-20"></span>
+<span id="cb26-21">        images <span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">=</span> make_grid(images, nrow<span class="op" style="color: #5E5E5E;
 background-color: null;
@@ -2303,27 +2932,27 @@ background-color: null;
 font-style: inherit;">=</span><span class="va" style="color: #111111;
 background-color: null;
 font-style: inherit;">True</span>)</span>
-<span id="cb26-20"></span>
-<span id="cb26-21">        animation.append(images)</span></code></pre></div>
+<span id="cb26-22"></span>
+<span id="cb26-23">        animation.append(images)</span></code></pre></div>
 <div class="cell-output cell-output-stderr">
-<pre><code>100%|████████████████████████████████████████████████████████████████████████████████| 100/100 [04:54&lt;00:00,  2.94s/epochs]</code></pre>
+<pre><code>100%|██████████| 100/100 [05:22&lt;00:00,  3.22s/epochs]</code></pre>
 </div>
 </div>
-<div id="cell-47" class="cell page-columns page-full" data-execution_count="28">
-
-<div class="no-row-height column-margin column-container"><div class="cell-output cell-output-display">
+<div id="cell-48" class="cell" data-execution_count="28">
+<div class="cell-output cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="gcerar.github.io/posts/2023-10-10-vanilla-GANs/index_files/figure-html/cell-28-output-1.png" class="img-fluid figure-img"></p>
+<p><img src="gcerar.github.io/posts/2023-10-10-vanilla-GANs/index_files/figure-html/cell-29-output-1.png" width="690" height="422" class="figure-img"></p>
 <figcaption>Generator and Discriminator loss evolution over epochs using DCGAN on the MNIST digit dataset.</figcaption>
 </figure>
 </div>
-</div></div></div>
+</div>
+</div>
 <div class="quarto-video"><video id="video_shortcode_videojs_video3" class="video-js vjs-default-skin vjs-fluid" controls="" preload="auto" data-setup="{}" title=""><source src="./figures/dcgan-mnist.mp4"></video></div>
 </section>
-<section id="mnist-fashion-dataset-1" class="level3 page-columns page-full">
+<section id="mnist-fashion-dataset-1" class="level3">
 <h3 class="anchored" data-anchor-id="mnist-fashion-dataset-1">MNIST Fashion Dataset</h3>
-<div id="cell-51" class="cell" data-execution_count="30">
+<div id="cell-52" class="cell" data-execution_count="30">
 <div class="sourceCode cell-code" id="cb28" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb28-1">IMG_DIM <span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">=</span> (<span class="dv" style="color: #AD0000;
@@ -2361,8 +2990,10 @@ font-style: inherit;">=</span> DataLoader(data, <span class="op" style="color: #
 background-color: null;
 font-style: inherit;">**</span>loader_kwargs)</span>
 <span id="cb28-13"></span>
-<span id="cb28-14">torch.manual_seed(SEED)</span>
-<span id="cb28-15">torch.cuda.manual_seed_all(SEED)</span>
+<span id="cb28-14"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># set seed for random generators</span></span>
+<span id="cb28-15">set_random_seed()</span>
 <span id="cb28-16"></span>
 <span id="cb28-17"><span class="co" style="color: #5E5E5E;
 background-color: null;
@@ -2442,7 +3073,7 @@ font-style: inherit;">=</span> nn.BCELoss().to(device)  <span class="co" style="
 background-color: null;
 font-style: inherit;"># F.binary_cross_entropy_with_logits #nn.BCELoss().to(device)</span></span></code></pre></div>
 </div>
-<div id="cell-52" class="cell" data-execution_count="31">
+<div id="cell-53" class="cell" data-execution_count="31">
 <div class="sourceCode cell-code" id="cb29" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb29-1">animation <span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">=</span> []</span>
@@ -2452,8 +3083,10 @@ background-color: null;
 font-style: inherit;">=</span> [], []</span>
 <span id="cb29-4"><span class="cf" style="color: #003B4F;
 background-color: null;
+font-weight: bold;
 font-style: inherit;">for</span> _ <span class="kw" style="color: #003B4F;
 background-color: null;
+font-weight: bold;
 font-style: inherit;">in</span> tqdm(<span class="bu" style="color: null;
 background-color: null;
 font-style: inherit;">range</span>(N_EPOCHS), unit<span class="op" style="color: #5E5E5E;
@@ -2466,30 +3099,35 @@ font-style: inherit;">"epochs"</span>):</span>
 <span id="cb29-7"></span>
 <span id="cb29-8">    <span class="cf" style="color: #003B4F;
 background-color: null;
+font-weight: bold;
 font-style: inherit;">for</span> samples_real, _ <span class="kw" style="color: #003B4F;
 background-color: null;
+font-weight: bold;
 font-style: inherit;">in</span> dataloader:</span>
 <span id="cb29-9">        g_loss, d_loss <span class="op" style="color: #5E5E5E;
 background-color: null;
-font-style: inherit;">=</span> train_step(generator, discriminator, optimizer_G, optimizer_D, criterion, samples_real, NOISE_DIM, device)</span>
-<span id="cb29-10"></span>
-<span id="cb29-11">        g_losses.append(g_loss)</span>
-<span id="cb29-12">        d_losses.append(d_loss)</span>
-<span id="cb29-13"></span>
-<span id="cb29-14">    generator.<span class="bu" style="color: null;
+font-style: inherit;">=</span> train_step(</span>
+<span id="cb29-10">            generator, discriminator, optimizer_G, optimizer_D, criterion, samples_real, NOISE_DIM, device</span>
+<span id="cb29-11">        )</span>
+<span id="cb29-12"></span>
+<span id="cb29-13">        g_losses.append(g_loss)</span>
+<span id="cb29-14">        d_losses.append(d_loss)</span>
+<span id="cb29-15"></span>
+<span id="cb29-16">    generator.<span class="bu" style="color: null;
 background-color: null;
 font-style: inherit;">eval</span>()</span>
-<span id="cb29-15">    <span class="cf" style="color: #003B4F;
+<span id="cb29-17">    <span class="cf" style="color: #003B4F;
 background-color: null;
+font-weight: bold;
 font-style: inherit;">with</span> torch.inference_mode():</span>
-<span id="cb29-16">        images <span class="op" style="color: #5E5E5E;
+<span id="cb29-18">        images <span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">=</span> generator(benchmark_noise)</span>
-<span id="cb29-17">        images <span class="op" style="color: #5E5E5E;
+<span id="cb29-19">        images <span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">=</span> images.detach().cpu()</span>
-<span id="cb29-18"></span>
-<span id="cb29-19">        images <span class="op" style="color: #5E5E5E;
+<span id="cb29-20"></span>
+<span id="cb29-21">        images <span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">=</span> make_grid(images, nrow<span class="op" style="color: #5E5E5E;
 background-color: null;
@@ -2500,22 +3138,22 @@ background-color: null;
 font-style: inherit;">=</span><span class="va" style="color: #111111;
 background-color: null;
 font-style: inherit;">True</span>)</span>
-<span id="cb29-20"></span>
-<span id="cb29-21">        animation.append(images)</span></code></pre></div>
+<span id="cb29-22"></span>
+<span id="cb29-23">        animation.append(images)</span></code></pre></div>
 <div class="cell-output cell-output-stderr">
-<pre><code>100%|████████████████████████████████████████████████████████████████████████████████| 100/100 [04:55&lt;00:00,  2.95s/epochs]</code></pre>
+<pre><code>100%|██████████| 100/100 [05:24&lt;00:00,  3.24s/epochs]</code></pre>
 </div>
 </div>
-<div id="cell-53" class="cell page-columns page-full" data-execution_count="32">
-
-<div class="no-row-height column-margin column-container"><div class="cell-output cell-output-display">
+<div id="cell-54" class="cell" data-execution_count="32">
+<div class="cell-output cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="gcerar.github.io/posts/2023-10-10-vanilla-GANs/index_files/figure-html/cell-32-output-1.png" class="img-fluid figure-img"></p>
+<p><img src="gcerar.github.io/posts/2023-10-10-vanilla-GANs/index_files/figure-html/cell-33-output-1.png" width="690" height="422" class="figure-img"></p>
 <figcaption>Generator and Discriminator loss evolution over epochs using DCGAN on the MNIST fashion dataset.</figcaption>
 </figure>
 </div>
-</div></div></div>
+</div>
+</div>
 <div class="quarto-video"><video id="video_shortcode_videojs_video4" class="video-js vjs-default-skin vjs-fluid" controls="" preload="auto" data-setup="{}" title=""><source src="./figures/dcgan-mnist-fashion.mp4"></video></div>
 </section>
 </section>
@@ -2540,7 +3178,7 @@ Goodfellow, Ian J., Jean Pouget-Abadie, Mehdi Mirza, Bing Xu, David Warde-Farley
   <category>pytorch</category>
   <category>GAN</category>
   <guid>gcerar.github.io/posts/2023-10-10-vanilla-GANs/</guid>
-  <pubDate>Tue, 10 Oct 2023 00:00:00 GMT</pubDate>
+  <pubDate>Mon, 09 Oct 2023 22:00:00 GMT</pubDate>
   <media:content url="gcerar.github.io/posts/2023-10-10-vanilla-GANs/featured.webp" medium="image" type="image/webp"/>
 </item>
 <item>
@@ -2564,14 +3202,14 @@ Goodfellow, Ian J., Jean Pouget-Abadie, Mehdi Mirza, Bing Xu, David Warde-Farley
 <div id="cell-3" class="cell" data-execution_count="1">
 <div class="sourceCode cell-code" id="cb1" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><span class="im" style="color: #00769E;
 background-color: null;
+font-style: inherit;">from</span> collections.abc <span class="im" style="color: #00769E;
+background-color: null;
+font-style: inherit;">import</span> Iterable, Sequence</span>
+<span id="cb1-2"><span class="im" style="color: #00769E;
+background-color: null;
 font-style: inherit;">from</span> pathlib <span class="im" style="color: #00769E;
 background-color: null;
 font-style: inherit;">import</span> Path</span>
-<span id="cb1-2"><span class="im" style="color: #00769E;
-background-color: null;
-font-style: inherit;">from</span> typing <span class="im" style="color: #00769E;
-background-color: null;
-font-style: inherit;">import</span> Union</span>
 <span id="cb1-3"></span>
 <span id="cb1-4"><span class="im" style="color: #00769E;
 background-color: null;
@@ -2601,40 +3239,40 @@ background-color: null;
 font-style: inherit;">import</span> torch</span>
 <span id="cb1-10"><span class="im" style="color: #00769E;
 background-color: null;
-font-style: inherit;">from</span> PIL <span class="im" style="color: #00769E;
-background-color: null;
-font-style: inherit;">import</span> Image</span>
-<span id="cb1-11"><span class="im" style="color: #00769E;
-background-color: null;
 font-style: inherit;">from</span> torch <span class="im" style="color: #00769E;
 background-color: null;
 font-style: inherit;">import</span> Tensor, nn, optim</span>
-<span id="cb1-12"><span class="im" style="color: #00769E;
+<span id="cb1-11"><span class="im" style="color: #00769E;
 background-color: null;
 font-style: inherit;">from</span> torch.nn <span class="im" style="color: #00769E;
 background-color: null;
 font-style: inherit;">import</span> functional <span class="im" style="color: #00769E;
 background-color: null;
 font-style: inherit;">as</span> F</span>
-<span id="cb1-13"><span class="im" style="color: #00769E;
+<span id="cb1-12"><span class="im" style="color: #00769E;
 background-color: null;
 font-style: inherit;">from</span> torchvision <span class="im" style="color: #00769E;
 background-color: null;
 font-style: inherit;">import</span> models</span>
+<span id="cb1-13"><span class="im" style="color: #00769E;
+background-color: null;
+font-style: inherit;">from</span> torchvision.io <span class="im" style="color: #00769E;
+background-color: null;
+font-style: inherit;">import</span> decode_image</span>
 <span id="cb1-14"><span class="im" style="color: #00769E;
-background-color: null;
-font-style: inherit;">from</span> torchvision <span class="im" style="color: #00769E;
-background-color: null;
-font-style: inherit;">import</span> transforms <span class="im" style="color: #00769E;
-background-color: null;
-font-style: inherit;">as</span> T</span>
-<span id="cb1-15"><span class="im" style="color: #00769E;
 background-color: null;
 font-style: inherit;">from</span> torchvision.transforms <span class="im" style="color: #00769E;
 background-color: null;
 font-style: inherit;">import</span> functional <span class="im" style="color: #00769E;
 background-color: null;
 font-style: inherit;">as</span> VF</span>
+<span id="cb1-15"><span class="im" style="color: #00769E;
+background-color: null;
+font-style: inherit;">from</span> torchvision.transforms <span class="im" style="color: #00769E;
+background-color: null;
+font-style: inherit;">import</span> v2 <span class="im" style="color: #00769E;
+background-color: null;
+font-style: inherit;">as</span> T</span>
 <span id="cb1-16"><span class="im" style="color: #00769E;
 background-color: null;
 font-style: inherit;">from</span> torchvision.utils <span class="im" style="color: #00769E;
@@ -2665,7 +3303,7 @@ background-color: null;
 font-style: inherit;">512</span></span></code></pre></div>
 </div>
 <p>Although it is possible to run neural networks on a CPU, using compute accelerators, such as GPU, will do transformation much faster. Here, I utilize my NVIDIA RTX 3090, where I also took advantage of available tensor cores and reduced precision data type <a href="https://en.wikipedia.org/wiki/Bfloat16_floating-point_format">bfloat16</a> for faster transformation.</p>
-<div id="cell-5" class="cell" data-execution_count="2">
+<div id="cell-6" class="cell" data-execution_count="3">
 <div class="sourceCode cell-code" id="cb2" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1">AMP_ENABLED <span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">=</span> <span class="va" style="color: #111111;
@@ -2676,44 +3314,32 @@ font-style: inherit;">False</span></span>
 background-color: null;
 font-style: inherit;">=</span> torch.device(<span class="st" style="color: #20794D;
 background-color: null;
-font-style: inherit;">"cuda"</span> <span class="cf" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">if</span> torch.cuda.is_available() <span class="cf" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">else</span> <span class="st" style="color: #20794D;
-background-color: null;
 font-style: inherit;">"cpu"</span>)</span>
-<span id="cb2-4"><span class="cf" style="color: #003B4F;
+<span id="cb2-4"></span>
+<span id="cb2-5"><span class="cf" style="color: #003B4F;
 background-color: null;
+font-weight: bold;
 font-style: inherit;">if</span> torch.cuda.is_available():</span>
-<span id="cb2-5">    <span class="co" style="color: #5E5E5E;
+<span id="cb2-6">    device <span class="op" style="color: #5E5E5E;
 background-color: null;
-font-style: inherit;"># Allow CuDNN internal benchmarking for architecture-specific optimizations</span></span>
-<span id="cb2-6">    torch.backends.cudnn.benchmark <span class="op" style="color: #5E5E5E;
+font-style: inherit;">=</span> torch.device(<span class="st" style="color: #20794D;
 background-color: null;
-font-style: inherit;">=</span> <span class="va" style="color: #111111;
-background-color: null;
-font-style: inherit;">True</span></span>
+font-style: inherit;">"cuda"</span>)</span>
 <span id="cb2-7"></span>
-<span id="cb2-8">    <span class="co" style="color: #5E5E5E;
+<span id="cb2-8">    <span class="cf" style="color: #003B4F;
 background-color: null;
-font-style: inherit;"># Enable bfloat16 if supported</span></span>
-<span id="cb2-9">    <span class="cf" style="color: #003B4F;
-background-color: null;
+font-weight: bold;
 font-style: inherit;">if</span> torch.cuda.is_bf16_supported():</span>
-<span id="cb2-10">        AMP_ENABLED <span class="op" style="color: #5E5E5E;
+<span id="cb2-9">        AMP_ENABLED <span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">=</span> <span class="va" style="color: #111111;
 background-color: null;
-font-style: inherit;">True</span></span>
-<span id="cb2-11">        torch.set_float32_matmul_precision(<span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"medium"</span>)</span></code></pre></div>
+font-style: inherit;">True</span></span></code></pre></div>
 </div>
 </section>
 <section id="implementation" class="level1">
 <h1>Implementation</h1>
-<div id="fig-architecture" class="quarto-figure quarto-figure-center quarto-float anchored">
+<div id="fig-architecture" class="quarto-float quarto-figure quarto-figure-center anchored">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-architecture-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <img src="gcerar.github.io/posts/2023-09-15-neural-style-transfer/figures/neural-style-transfer.png" class="img-fluid figure-img">
@@ -2731,7 +3357,7 @@ Figure&nbsp;1: The Neural Style Transfer framework introduced by Gatys <em>et al
 <li>Adjust the neural network to extract features during forward-backward passes, applying gradient modifications to the target image. The neural network stays unchanged in the process.</li>
 <li>Iterate through this process.</li>
 </ul>
-<div id="cell-7" class="cell" data-execution_count="3">
+<div id="cell-8" class="cell" data-execution_count="4">
 <div class="sourceCode cell-code" id="cb3" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><span class="co" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;"># Weights for different features (were these used by original authors?)</span></span>
@@ -2813,40 +3439,61 @@ font-style: inherit;">5_000</span></span></code></pre></div>
 <p>Content loss is calculated through Euclidean distance (<em>i.e.,</em> mean squared error) between the respective intermediate higher-level feature representation <img src="https://latex.codecogs.com/png.latex?F%5El"> and <img src="https://latex.codecogs.com/png.latex?P%5El"> of original input image <img src="https://latex.codecogs.com/png.latex?%5Cvec%7Bx%7D"> and the content image <img src="https://latex.codecogs.com/png.latex?%5Cvec%7Bp%7D"> at layer <img src="https://latex.codecogs.com/png.latex?l">.</p>
 <p>Hence, a given input image <img src="https://latex.codecogs.com/png.latex?%5Cvec%7Bx%7D"> is encoded in each layer of the CNN by the filter responses to that image. A layer with <img src="https://latex.codecogs.com/png.latex?N_l"> distinct filters has <img src="https://latex.codecogs.com/png.latex?N_l"> feature maps of size <img src="https://latex.codecogs.com/png.latex?M_l">, where <img src="https://latex.codecogs.com/png.latex?M_l"> is the height times the width of the feature map. So the response in a layer <img src="https://latex.codecogs.com/png.latex?l"> can be stored in a matrix <img src="https://latex.codecogs.com/png.latex?F%5El%20%5Cin%20%5Cmathcal%7BR%7D%5E%7BN_l%20%5Ctimes%20M_l%7D"> where <img src="https://latex.codecogs.com/png.latex?F_%7Bij%7D%5E%7Bl%7D"> is the activation of the <img src="https://latex.codecogs.com/png.latex?i%5E%7Bth%7D"> filter at position <img src="https://latex.codecogs.com/png.latex?j"> in layer <img src="https://latex.codecogs.com/png.latex?l">.</p>
 <p><img src="https://latex.codecogs.com/png.latex?%0A%5Cmathcal%7BL%7D_%7Bcontent%7D(%5Cvec%7Bp%7D,%20%5Cvec%7Bx%7D,%20l)%20=%20%5Cfrac%7B1%7D%7B2%7D%5Csum_%7Bi,j%7D%20(F%5E%7Bl%7D_%7Bij%7D%20-%20P%5E%7Bl%7D_%7Bij%7D)%5E2%0A"></p>
-<div id="cell-10" class="cell" data-execution_count="4">
+<div id="cell-11" class="cell" data-execution_count="5">
 <div class="sourceCode cell-code" id="cb4" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><span class="kw" style="color: #003B4F;
 background-color: null;
-font-style: inherit;">def</span> content_loss_func(target_features, precomputed_content_features):</span>
+font-weight: bold;
+font-style: inherit;">def</span> content_loss_func(target_features: <span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">dict</span>[<span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">str</span>, Tensor], precomputed_content_features: <span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">dict</span>[<span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">str</span>, Tensor]) <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-&gt;</span> Tensor:</span>
 <span id="cb4-2">    <span class="co" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">"""Calculate content loss metric for give layers."""</span></span>
 <span id="cb4-3"></span>
-<span id="cb4-4">    content_loss <span class="op" style="color: #5E5E5E;
+<span id="cb4-4">    device <span class="op" style="color: #5E5E5E;
 background-color: null;
-font-style: inherit;">=</span> <span class="fl" style="color: #AD0000;
+font-style: inherit;">=</span> <span class="bu" style="color: null;
 background-color: null;
-font-style: inherit;">0.0</span></span>
-<span id="cb4-5">    <span class="cf" style="color: #003B4F;
+font-style: inherit;">next</span>(<span class="bu" style="color: null;
 background-color: null;
+font-style: inherit;">iter</span>(target_features.values())).device</span>
+<span id="cb4-5">    content_loss <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> torch.tensor(<span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0.0</span>, device<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span>device)</span>
+<span id="cb4-6"></span>
+<span id="cb4-7">    <span class="cf" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
 font-style: inherit;">for</span> layer <span class="kw" style="color: #003B4F;
 background-color: null;
+font-weight: bold;
 font-style: inherit;">in</span> precomputed_content_features:</span>
-<span id="cb4-6">        target_feature <span class="op" style="color: #5E5E5E;
+<span id="cb4-8">        target_feature <span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">=</span> target_features[layer]</span>
-<span id="cb4-7">        content_feature <span class="op" style="color: #5E5E5E;
+<span id="cb4-9">        content_feature <span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">=</span> precomputed_content_features[layer]</span>
-<span id="cb4-8"></span>
-<span id="cb4-9">        content_layer_loss <span class="op" style="color: #5E5E5E;
+<span id="cb4-10"></span>
+<span id="cb4-11">        content_loss <span class="op" style="color: #5E5E5E;
 background-color: null;
-font-style: inherit;">=</span> F.mse_loss(target_feature, content_feature)</span>
-<span id="cb4-10">        content_loss <span class="op" style="color: #5E5E5E;
+font-style: inherit;">+=</span> F.mse_loss(target_feature, content_feature)</span>
+<span id="cb4-12"></span>
+<span id="cb4-13">    <span class="cf" style="color: #003B4F;
 background-color: null;
-font-style: inherit;">+=</span> content_layer_loss</span>
-<span id="cb4-11"></span>
-<span id="cb4-12">    <span class="cf" style="color: #003B4F;
-background-color: null;
+font-weight: bold;
 font-style: inherit;">return</span> content_loss</span></code></pre></div>
 </div>
 </section>
@@ -2856,9 +3503,10 @@ font-style: inherit;">return</span> content_loss</span></code></pre></div>
 <p>First, let’s understand the <a href="https://en.wikipedia.org/wiki/Gram_matrix">Gram matrix</a>. Given the feature map <img src="https://latex.codecogs.com/png.latex?F"> of size <img src="https://latex.codecogs.com/png.latex?C%20%5Ctimes%20(H%20%5Ctimes%20W)">, where <img src="https://latex.codecogs.com/png.latex?C"> is the number of channels and <img src="https://latex.codecogs.com/png.latex?H%20%5Ctimes%20W"> are the spatial dimensions, the Gram matrix <img src="https://latex.codecogs.com/png.latex?G"> is of size <img src="https://latex.codecogs.com/png.latex?C%20%5Ctimes%20C"> and is computed as</p>
 <p><img src="https://latex.codecogs.com/png.latex?%0AG%5El_%7Bij%7D%20=%20%5Csum_k%20F%5El_%7Bik%7D%20F%5El_%7Bjk%7D%0A"></p>
 <p>where <img src="https://latex.codecogs.com/png.latex?G_%7Bij%7D"> is the inner product between vectorized feature maps <img src="https://latex.codecogs.com/png.latex?i"> and <img src="https://latex.codecogs.com/png.latex?j">. This results in a matrix that captures the correlation between different feature maps and, thus, the style information.</p>
-<div id="cell-12" class="cell" data-execution_count="5">
+<div id="cell-13" class="cell" data-execution_count="6">
 <div class="sourceCode cell-code" id="cb5" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><span class="kw" style="color: #003B4F;
 background-color: null;
+font-weight: bold;
 font-style: inherit;">def</span> gram_matrix(<span class="bu" style="color: null;
 background-color: null;
 font-style: inherit;">input</span>: Tensor) <span class="op" style="color: #5E5E5E;
@@ -2892,6 +3540,7 @@ font-style: inherit;">=</span> torch.mm(features, features.t())</span>
 <span id="cb5-9"></span>
 <span id="cb5-10">    <span class="cf" style="color: #003B4F;
 background-color: null;
+font-weight: bold;
 font-style: inherit;">return</span> gram</span></code></pre></div>
 </div>
 <p>The style loss between the Gram matrix of the generated image <img src="https://latex.codecogs.com/png.latex?G"> and that of style image <img src="https://latex.codecogs.com/png.latex?A"> (at a specific layer <img src="https://latex.codecogs.com/png.latex?l">) is:</p>
@@ -2899,39 +3548,68 @@ font-style: inherit;">return</span> gram</span></code></pre></div>
 <p>Where <img src="https://latex.codecogs.com/png.latex?E_l"> is the style loss for layer <img src="https://latex.codecogs.com/png.latex?l">, <img src="https://latex.codecogs.com/png.latex?N_l"> and <img src="https://latex.codecogs.com/png.latex?M_l"> are the numbers of channels and height times width in the feature representation of layer <img src="https://latex.codecogs.com/png.latex?l">, respectively. <img src="https://latex.codecogs.com/png.latex?G_%7Bij%7D%5El"> and <img src="https://latex.codecogs.com/png.latex?A_%7Bij%7D%5El"> are the gram matrices of the intermediate representation of the style image <img src="https://latex.codecogs.com/png.latex?%5Cvec%7Ba%7D"> and the input base image <img src="https://latex.codecogs.com/png.latex?%5Cvec%7Bx%7D"> respectively.</p>
 <p>The total style loss is:</p>
 <p><img src="https://latex.codecogs.com/png.latex?%0A%5Cmathcal%7BL%7D_%7Bstyle%7D(%5Cvec%7Ba%7D,%20%5Cvec%7Bx%7D)%20=%20%5Csum_%7Bl=0%7D%5E%7BL%7D%20w_l%20E_l%0A"></p>
-<div id="cell-14" class="cell" data-execution_count="6">
+<div id="cell-15" class="cell" data-execution_count="7">
 <div class="sourceCode cell-code" id="cb6" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><span class="kw" style="color: #003B4F;
 background-color: null;
-font-style: inherit;">def</span> style_loss_func(target_features, style_features, precomputed_style_grams):</span>
-<span id="cb6-2">    style_loss <span class="op" style="color: #5E5E5E;
+font-weight: bold;
+font-style: inherit;">def</span> style_loss_func(</span>
+<span id="cb6-2">    target_features: <span class="bu" style="color: null;
 background-color: null;
-font-style: inherit;">=</span> <span class="fl" style="color: #AD0000;
+font-style: inherit;">dict</span>[<span class="bu" style="color: null;
 background-color: null;
-font-style: inherit;">0.0</span></span>
-<span id="cb6-3">    <span class="cf" style="color: #003B4F;
+font-style: inherit;">str</span>, Tensor], style_features: <span class="bu" style="color: null;
 background-color: null;
+font-style: inherit;">dict</span>[<span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">str</span>, Tensor], precomputed_style_grams: <span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">dict</span>[<span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">str</span>, Tensor]</span>
+<span id="cb6-3">) <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-&gt;</span> Tensor:</span>
+<span id="cb6-4">    device <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">next</span>(<span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">iter</span>(target_features.values())).device</span>
+<span id="cb6-5">    style_loss <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> torch.tensor(<span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0.0</span>, device<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span>device)</span>
+<span id="cb6-6"></span>
+<span id="cb6-7">    <span class="cf" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
 font-style: inherit;">for</span> layer <span class="kw" style="color: #003B4F;
 background-color: null;
+font-weight: bold;
 font-style: inherit;">in</span> style_features:</span>
-<span id="cb6-4">        target_feature <span class="op" style="color: #5E5E5E;
+<span id="cb6-8">        target_feature <span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">=</span> target_features[layer]</span>
-<span id="cb6-5">        target_gram <span class="op" style="color: #5E5E5E;
+<span id="cb6-9">        target_gram <span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">=</span> gram_matrix(target_feature)</span>
-<span id="cb6-6"></span>
-<span id="cb6-7">        style_gram <span class="op" style="color: #5E5E5E;
+<span id="cb6-10"></span>
+<span id="cb6-11">        style_gram <span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">=</span> precomputed_style_grams[layer]</span>
-<span id="cb6-8"></span>
-<span id="cb6-9">        _, c, h, w <span class="op" style="color: #5E5E5E;
+<span id="cb6-12"></span>
+<span id="cb6-13">        _, c, h, w <span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">=</span> target_feature.shape</span>
-<span id="cb6-10"></span>
-<span id="cb6-11">        weight <span class="op" style="color: #5E5E5E;
+<span id="cb6-14"></span>
+<span id="cb6-15">        weight <span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">=</span> STYLE_LAYERS_DEFAULT[layer]</span>
-<span id="cb6-12">        layer_style_loss <span class="op" style="color: #5E5E5E;
+<span id="cb6-16">        layer_style_loss <span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">=</span> weight <span class="op" style="color: #5E5E5E;
 background-color: null;
@@ -2942,12 +3620,13 @@ background-color: null;
 font-style: inherit;">*</span> h <span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">*</span> w)</span>
-<span id="cb6-13">        style_loss <span class="op" style="color: #5E5E5E;
+<span id="cb6-17">        style_loss <span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">+=</span> layer_style_loss</span>
-<span id="cb6-14"></span>
-<span id="cb6-15">    <span class="cf" style="color: #003B4F;
+<span id="cb6-18"></span>
+<span id="cb6-19">    <span class="cf" style="color: #003B4F;
 background-color: null;
+font-weight: bold;
 font-style: inherit;">return</span> style_loss</span></code></pre></div>
 </div>
 </section>
@@ -2958,10 +3637,13 @@ font-style: inherit;">return</span> style_loss</span></code></pre></div>
 <p><img src="https://latex.codecogs.com/png.latex?%0A%5Cmathcal%7BL%7D_%7BTV%7D(%5Cvec%7Bx%7D)%20=%20%5Csum_%7Bi,j%7D%20((x_%7Bi,j+1%7D%20-%20x_%7Bi,j%7D)%5E2%20+%20(x_%7Bi+1,j%7D%20-%20x_%7Bi,j%7D)%5E2)%0A"></p>
 <p>where <img src="https://latex.codecogs.com/png.latex?x_%7Bi,j%7D"> is the pixel value at position <img src="https://latex.codecogs.com/png.latex?(i,j)">.</p>
 <p>In simple terms, this loss penalizes abrupt changes in pixel values from one to its neighbors. By minimizing this loss, the generated image becomes smoother, reducing artifacts and unwanted noise. When combined with content and style losses, the TV loss ensures that the resulting image not only captures the content and style of the source images but also looks visually coherent and smooth.</p>
-<div id="cell-16" class="cell" data-execution_count="7">
+<div id="cell-17" class="cell" data-execution_count="8">
 <div class="sourceCode cell-code" id="cb7" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><span class="kw" style="color: #003B4F;
 background-color: null;
-font-style: inherit;">def</span> total_variance_loss_func(target: Tensor):</span>
+font-weight: bold;
+font-style: inherit;">def</span> total_variance_loss_func(target: Tensor) <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-&gt;</span> Tensor:</span>
 <span id="cb7-2">    tv_loss <span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">=</span> F.l1_loss(target[:, :, :, :<span class="op" style="color: #5E5E5E;
@@ -2972,16 +3654,19 @@ font-style: inherit;">1</span>], target[:, :, :, <span class="dv" style="color: 
 background-color: null;
 font-style: inherit;">1</span>:]) <span class="op" style="color: #5E5E5E;
 background-color: null;
-font-style: inherit;">+</span> F.l1_loss(target[:, :, :<span class="op" style="color: #5E5E5E;
+font-style: inherit;">+</span> F.l1_loss(</span>
+<span id="cb7-3">        target[:, :, :<span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">-</span><span class="dv" style="color: #AD0000;
 background-color: null;
 font-style: inherit;">1</span>, :], target[:, :, <span class="dv" style="color: #AD0000;
 background-color: null;
-font-style: inherit;">1</span>:, :])</span>
-<span id="cb7-3"></span>
-<span id="cb7-4">    <span class="cf" style="color: #003B4F;
+font-style: inherit;">1</span>:, :]</span>
+<span id="cb7-4">    )</span>
+<span id="cb7-5"></span>
+<span id="cb7-6">    <span class="cf" style="color: #003B4F;
 background-color: null;
+font-weight: bold;
 font-style: inherit;">return</span> tv_loss</span></code></pre></div>
 </div>
 </section>
@@ -3001,7 +3686,7 @@ font-style: inherit;">return</span> tv_loss</span></code></pre></div>
 <section id="input-preparation" class="level2">
 <h2 class="anchored" data-anchor-id="input-preparation">Input preparation</h2>
 <p>Here we specify path to content and style images:</p>
-<div id="cell-20" class="cell" data-execution_count="8">
+<div id="cell-21" class="cell" data-execution_count="9">
 <div class="sourceCode cell-code" id="cb8" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1">content_path <span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">=</span> <span class="st" style="color: #20794D;
@@ -3030,7 +3715,7 @@ Note
 <p>An intriguing choice by Gatys <em>et al.</em> was to modify VGG-19, replacing max pooling with average pooling, aiming for visually superior results. However, a challenge arises: our NN was initially trained with <code>MaxPool2d</code> layers. Substituting them can affect activations due to reduced output values. To counteract this, we’ve introduced a custom <code>ScaledAvgPool2d</code>.</p>
 </div>
 </div>
-<div id="cell-22" class="cell" data-execution_count="9">
+<div id="cell-23" class="cell" data-execution_count="10">
 <div class="sourceCode cell-code" id="cb9" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><span class="co" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;"># We will use a frozen pre-trained VGG neural network for feature extraction.</span></span>
@@ -3055,9 +3740,11 @@ background-color: null;
 font-style: inherit;"># activation, so the input needs to be scaled (can't find the original source).</span></span>
 <span id="cb9-9"><span class="kw" style="color: #003B4F;
 background-color: null;
+font-weight: bold;
 font-style: inherit;">class</span> ScaledAvgPool2d(nn.Module):</span>
 <span id="cb9-10">    <span class="kw" style="color: #003B4F;
 background-color: null;
+font-weight: bold;
 font-style: inherit;">def</span> <span class="fu" style="color: #4758AB;
 background-color: null;
 font-style: inherit;">__init__</span>(<span class="va" style="color: #111111;
@@ -3089,11 +3776,13 @@ font-style: inherit;">=</span> scale_factor</span>
 <span id="cb9-14"></span>
 <span id="cb9-15">    <span class="kw" style="color: #003B4F;
 background-color: null;
+font-weight: bold;
 font-style: inherit;">def</span> forward(<span class="va" style="color: #111111;
 background-color: null;
 font-style: inherit;">self</span>, x):</span>
 <span id="cb9-16">        <span class="cf" style="color: #003B4F;
 background-color: null;
+font-weight: bold;
 font-style: inherit;">return</span> <span class="va" style="color: #111111;
 background-color: null;
 font-style: inherit;">self</span>.avgpool(x) <span class="op" style="color: #5E5E5E;
@@ -3131,7 +3820,7 @@ font-style: inherit;">False</span>).to(device)</span></code></pre></div>
 <li>Converting to tensors.</li>
 <li>Normalizing using ImageNet weights.</li>
 </ul>
-<div id="cell-24" class="cell" data-execution_count="10">
+<div id="cell-25" class="cell" data-execution_count="11">
 <div class="sourceCode cell-code" id="cb10" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><span class="co" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;"># ImageNet normalization weights per channel</span></span>
@@ -3158,11 +3847,15 @@ font-style: inherit;">0.225</span>)</span>
 background-color: null;
 font-style: inherit;">=</span> T.Compose(</span>
 <span id="cb10-6">    [</span>
-<span id="cb10-7">        <span class="co" style="color: #5E5E5E;
+<span id="cb10-7">        T.ToImage(),</span>
+<span id="cb10-8">        T.Resize(IMG_SIZE),  <span class="co" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;"># Shorter edge of the image will be matched to `IMG_SIZE`</span></span>
-<span id="cb10-8">        T.Resize(IMG_SIZE),</span>
-<span id="cb10-9">        T.ToTensor(),</span>
+<span id="cb10-9">        T.ToDtype(torch.float32, scale<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">True</span>),</span>
 <span id="cb10-10">        T.Normalize(IMAGENET_MEAN, IMAGENET_STD),</span>
 <span id="cb10-11">    ]</span>
 <span id="cb10-12">)</span>
@@ -3170,40 +3863,42 @@ font-style: inherit;"># Shorter edge of the image will be matched to `IMG_SIZE`<
 <span id="cb10-14"></span>
 <span id="cb10-15"><span class="kw" style="color: #003B4F;
 background-color: null;
-font-style: inherit;">def</span> load_image(path: Union[<span class="bu" style="color: null;
+font-weight: bold;
+font-style: inherit;">def</span> load_image(path: <span class="bu" style="color: null;
 background-color: null;
-font-style: inherit;">str</span>, Path]) <span class="op" style="color: #5E5E5E;
+font-style: inherit;">str</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">|</span> Path) <span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">-&gt;</span> Tensor:</span>
-<span id="cb10-16">    image <span class="op" style="color: #5E5E5E;
+<span id="cb10-16">    img <span class="op" style="color: #5E5E5E;
 background-color: null;
-font-style: inherit;">=</span> Image.<span class="bu" style="color: null;
+font-style: inherit;">=</span> decode_image(<span class="bu" style="color: null;
 background-color: null;
-font-style: inherit;">open</span>(path).convert(<span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"RGB"</span>)</span>
+font-style: inherit;">str</span>(path))</span>
 <span id="cb10-17"></span>
 <span id="cb10-18">    <span class="co" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;"># Transform images into tensors</span></span>
-<span id="cb10-19">    image <span class="op" style="color: #5E5E5E;
+<span id="cb10-19">    img: Tensor <span class="op" style="color: #5E5E5E;
 background-color: null;
-font-style: inherit;">=</span> transform(image)</span>
+font-style: inherit;">=</span> transform(img)</span>
 <span id="cb10-20"></span>
 <span id="cb10-21">    <span class="co" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;"># Add dimension to imitate batch size equal to 1: (C,H,W) -&gt; (B,C,H,W)</span></span>
-<span id="cb10-22">    image <span class="op" style="color: #5E5E5E;
+<span id="cb10-22">    img <span class="op" style="color: #5E5E5E;
 background-color: null;
-font-style: inherit;">=</span> image.unsqueeze(<span class="dv" style="color: #AD0000;
+font-style: inherit;">=</span> img.unsqueeze(<span class="dv" style="color: #AD0000;
 background-color: null;
 font-style: inherit;">0</span>)</span>
 <span id="cb10-23">    <span class="cf" style="color: #003B4F;
 background-color: null;
-font-style: inherit;">return</span> image</span></code></pre></div>
+font-weight: bold;
+font-style: inherit;">return</span> img</span></code></pre></div>
 </div>
 <p>The following code will prepares content <img src="https://latex.codecogs.com/png.latex?%5Cvec%7Bp%7D">, style <img src="https://latex.codecogs.com/png.latex?%5Cvec%7Ba%7D">, and target <img src="https://latex.codecogs.com/png.latex?%5Cvec%7Bx%7D"> images. The target image is a clone of the content image and we enable computation of gradients on it.</p>
-<div id="cell-26" class="cell" data-execution_count="11">
+<div id="cell-27" class="cell" data-execution_count="12">
 <div class="sourceCode cell-code" id="cb11" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><span class="co" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;"># The "style" image from which we obtain style</span></span>
@@ -3232,18 +3927,33 @@ font-style: inherit;">True</span>).to(device)</span></code></pre></div>
 <li>Content feature map comes from <code>relu5_2</code>.</li>
 <li>Style feature maps are sourced from <code>relu1_1</code>, <code>relu2_1</code>, <code>relu3_1</code>, <code>relu4_1</code>, and <code>relu5_1</code>.</li>
 </ul>
-<div id="cell-28" class="cell" data-execution_count="12">
+<div id="cell-29" class="cell">
 <div class="sourceCode cell-code" id="cb12" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><span class="kw" style="color: #003B4F;
 background-color: null;
-font-style: inherit;">def</span> get_features(image: Tensor, model: nn.Module, layers<span class="op" style="color: #5E5E5E;
+font-weight: bold;
+font-style: inherit;">def</span> get_features(image: Tensor, model: nn.Module, layers: Iterable[<span class="bu" style="color: null;
 background-color: null;
-font-style: inherit;">=</span><span class="va" style="color: #111111;
+font-style: inherit;">str</span>] <span class="op" style="color: #5E5E5E;
 background-color: null;
-font-style: inherit;">None</span>):</span>
+font-style: inherit;">|</span> <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">None</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">None</span>) <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-&gt;</span> <span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">dict</span>[<span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">str</span>, Tensor]:</span>
 <span id="cb12-2">    <span class="cf" style="color: #003B4F;
 background-color: null;
+font-weight: bold;
 font-style: inherit;">if</span> layers <span class="kw" style="color: #003B4F;
 background-color: null;
+font-weight: bold;
 font-style: inherit;">is</span> <span class="va" style="color: #111111;
 background-color: null;
 font-style: inherit;">None</span>:</span>
@@ -3251,7 +3961,7 @@ font-style: inherit;">None</span>:</span>
 background-color: null;
 font-style: inherit;">=</span> <span class="bu" style="color: null;
 background-color: null;
-font-style: inherit;">tuple</span>(STYLE_LAYERS_DEFAULT) <span class="op" style="color: #5E5E5E;
+font-style: inherit;">tuple</span>(STYLE_LAYERS_DEFAULT.keys()) <span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">+</span> CONTENT_LAYERS_DEFAULT</span>
 <span id="cb12-4"></span>
@@ -3275,15 +3985,18 @@ font-style: inherit;">=</span> image</span>
 <span id="cb12-10"></span>
 <span id="cb12-11">    <span class="cf" style="color: #003B4F;
 background-color: null;
+font-weight: bold;
 font-style: inherit;">for</span> layer <span class="kw" style="color: #003B4F;
 background-color: null;
-font-style: inherit;">in</span> model:</span>
+font-weight: bold;
+font-style: inherit;">in</span> model.children():</span>
 <span id="cb12-12">        x <span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">=</span> layer(x)</span>
 <span id="cb12-13"></span>
 <span id="cb12-14">        <span class="cf" style="color: #003B4F;
 background-color: null;
+font-weight: bold;
 font-style: inherit;">if</span> <span class="bu" style="color: null;
 background-color: null;
 font-style: inherit;">isinstance</span>(layer, nn.Conv2d):</span>
@@ -3317,8 +4030,10 @@ background-color: null;
 font-style: inherit;">"</span></span>
 <span id="cb12-19">            <span class="cf" style="color: #003B4F;
 background-color: null;
+font-weight: bold;
 font-style: inherit;">if</span> name <span class="kw" style="color: #003B4F;
 background-color: null;
+font-weight: bold;
 font-style: inherit;">in</span> layers:</span>
 <span id="cb12-20">                features[name] <span class="op" style="color: #5E5E5E;
 background-color: null;
@@ -3326,9 +4041,14 @@ font-style: inherit;">=</span> x</span>
 <span id="cb12-21"></span>
 <span id="cb12-22">        <span class="cf" style="color: #003B4F;
 background-color: null;
+font-weight: bold;
 font-style: inherit;">elif</span> <span class="bu" style="color: null;
 background-color: null;
-font-style: inherit;">isinstance</span>(layer, (nn.MaxPool2d, nn.AvgPool2d, ScaledAvgPool2d)):</span>
+font-style: inherit;">isinstance</span>(layer, nn.MaxPool2d <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">|</span> nn.AvgPool2d <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">|</span> ScaledAvgPool2d):</span>
 <span id="cb12-23">            <span class="co" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;"># In VGG, each block ends with max/avg pooling layer.</span></span>
@@ -3345,18 +4065,24 @@ font-style: inherit;">0</span></span>
 <span id="cb12-26"></span>
 <span id="cb12-27">        <span class="cf" style="color: #003B4F;
 background-color: null;
+font-weight: bold;
 font-style: inherit;">elif</span> <span class="bu" style="color: null;
 background-color: null;
-font-style: inherit;">isinstance</span>(layer, (nn.BatchNorm2d, nn.ReLU)):</span>
+font-style: inherit;">isinstance</span>(layer, nn.BatchNorm2d <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">|</span> nn.ReLU):</span>
 <span id="cb12-28">            <span class="cf" style="color: #003B4F;
 background-color: null;
+font-weight: bold;
 font-style: inherit;">pass</span></span>
 <span id="cb12-29"></span>
 <span id="cb12-30">        <span class="cf" style="color: #003B4F;
 background-color: null;
+font-weight: bold;
 font-style: inherit;">else</span>:</span>
 <span id="cb12-31">            <span class="cf" style="color: #003B4F;
 background-color: null;
+font-weight: bold;
 font-style: inherit;">raise</span> <span class="pp" style="color: #AD0000;
 background-color: null;
 font-style: inherit;">Exception</span>(<span class="ss" style="color: #20794D;
@@ -3371,10 +4097,11 @@ font-style: inherit;">"</span>)</span>
 <span id="cb12-32"></span>
 <span id="cb12-33">    <span class="cf" style="color: #003B4F;
 background-color: null;
+font-weight: bold;
 font-style: inherit;">return</span> features</span></code></pre></div>
 </div>
 <p>Since content and style images never change, we can precompute their feature maps and grams to speed up the NST process.</p>
-<div id="cell-30" class="cell" data-execution_count="13">
+<div id="cell-31" class="cell" data-execution_count="14">
 <div class="sourceCode cell-code" id="cb13" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><span class="co" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;"># Precompute content features, style features, and style gram matrices.</span></span>
@@ -3389,12 +4116,14 @@ font-style: inherit;">=</span> get_features(style, model, STYLE_LAYERS_DEFAULT)<
 background-color: null;
 font-style: inherit;">=</span> {layer: gram_matrix(style_features[layer]) <span class="cf" style="color: #003B4F;
 background-color: null;
+font-weight: bold;
 font-style: inherit;">for</span> layer <span class="kw" style="color: #003B4F;
 background-color: null;
+font-weight: bold;
 font-style: inherit;">in</span> style_features}</span></code></pre></div>
 </div>
 <p>Next, we will use <a href="https://pytorch.org/docs/stable/generated/torch.optim.Adam.html">Adam</a> optimizer, where we specify that only target image <img src="https://latex.codecogs.com/png.latex?%5Cvec%7Bx%7D"> is considered for optimization.</p>
-<div id="cell-32" class="cell" data-execution_count="14">
+<div id="cell-33" class="cell" data-execution_count="15">
 <div class="sourceCode cell-code" id="cb14" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1">optimizer <span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">=</span> optim.Adam([target], lr<span class="op" style="color: #5E5E5E;
@@ -3403,7 +4132,7 @@ font-style: inherit;">=</span>LEARNING_RATE)</span></code></pre></div>
 </div>
 <p>The final step of NST is to transfer style using everything we’ve implemented. We extract feature maps, compute total loss, perform steps using gradient descent, and repeat the process <code>N_EPOCHS</code> times. Gradient changes will apply only to the target image.</p>
 <p>To notably enhance NST speed, I utilized mixed precision with the unique <code>bfloat16</code> found in newer hardware. Traditional half-precision float16 doesn’t yield the same results. I’ve tested it. Probably because of the issue with gradient scaling.</p>
-<div id="cell-34" class="cell" data-execution_count="15">
+<div id="cell-35" class="cell" data-execution_count="16">
 <div class="sourceCode cell-code" id="cb15" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb15-1">pbar <span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">=</span> tqdm(<span class="bu" style="color: null;
@@ -3412,11 +4141,14 @@ font-style: inherit;">range</span>(N_EPOCHS))</span>
 <span id="cb15-2"></span>
 <span id="cb15-3"><span class="cf" style="color: #003B4F;
 background-color: null;
+font-weight: bold;
 font-style: inherit;">for</span> _ <span class="kw" style="color: #003B4F;
 background-color: null;
+font-weight: bold;
 font-style: inherit;">in</span> pbar:</span>
 <span id="cb15-4">    <span class="cf" style="color: #003B4F;
 background-color: null;
+font-weight: bold;
 font-style: inherit;">with</span> torch.autocast(<span class="st" style="color: #20794D;
 background-color: null;
 font-style: inherit;">"cuda"</span>, dtype<span class="op" style="color: #5E5E5E;
@@ -3452,18 +4184,13 @@ font-style: inherit;">+</span> style_loss <span class="op" style="color: #5E5E5E
 background-color: null;
 font-style: inherit;">+</span> tv_loss</span>
 <span id="cb15-12"></span>
-<span id="cb15-13">    optimizer.zero_grad(set_to_none<span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">=</span><span class="va" style="color: #111111;
-background-color: null;
-font-style: inherit;">True</span>)</span>
-<span id="cb15-14">    total_loss.backward()  <span class="co" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;"># do I need to `retain_graph=True`?</span></span>
+<span id="cb15-13">    optimizer.zero_grad()</span>
+<span id="cb15-14">    total_loss.backward()</span>
 <span id="cb15-15"></span>
 <span id="cb15-16">    optimizer.step()</span>
 <span id="cb15-17"></span>
-<span id="cb15-18">    pbar.set_postfix_str(<span class="ss" style="color: #20794D;
+<span id="cb15-18">    pbar.set_postfix_str(</span>
+<span id="cb15-19">        <span class="ss" style="color: #20794D;
 background-color: null;
 font-style: inherit;">f"total_loss=</span><span class="sc" style="color: #5E5E5E;
 background-color: null;
@@ -3473,7 +4200,10 @@ font-style: inherit;">.</span>item()<span class="sc" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">:.2f}</span><span class="ss" style="color: #20794D;
 background-color: null;
-font-style: inherit;"> "</span> <span class="ss" style="color: #20794D;
+font-style: inherit;"> "</span>  <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># noqa: E501</span></span>
+<span id="cb15-20">        <span class="ss" style="color: #20794D;
 background-color: null;
 font-style: inherit;">f"content_loss=</span><span class="sc" style="color: #5E5E5E;
 background-color: null;
@@ -3483,7 +4213,8 @@ font-style: inherit;">.</span>item()<span class="sc" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">:.2f}</span><span class="ss" style="color: #20794D;
 background-color: null;
-font-style: inherit;"> "</span> <span class="ss" style="color: #20794D;
+font-style: inherit;"> "</span></span>
+<span id="cb15-21">        <span class="ss" style="color: #20794D;
 background-color: null;
 font-style: inherit;">f"style_loss=</span><span class="sc" style="color: #5E5E5E;
 background-color: null;
@@ -3493,7 +4224,8 @@ font-style: inherit;">.</span>item()<span class="sc" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">:.2f}</span><span class="ss" style="color: #20794D;
 background-color: null;
-font-style: inherit;"> "</span> <span class="ss" style="color: #20794D;
+font-style: inherit;"> "</span></span>
+<span id="cb15-22">        <span class="ss" style="color: #20794D;
 background-color: null;
 font-style: inherit;">f"tv_loss=</span><span class="sc" style="color: #5E5E5E;
 background-color: null;
@@ -3503,73 +4235,104 @@ font-style: inherit;">.</span>item()<span class="sc" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">:.2f}</span><span class="ss" style="color: #20794D;
 background-color: null;
-font-style: inherit;"> "</span>)</span></code></pre></div>
+font-style: inherit;">"</span></span>
+<span id="cb15-23">    )</span></code></pre></div>
 <div class="cell-output cell-output-stderr">
-<pre><code>100%|██████████| 5000/5000 [01:30&lt;00:00, 55.36it/s, total_loss=43.90 content_loss=8.71 style_loss=29.08 tv_loss=6.11 ]     </code></pre>
+<pre><code>100%|██████████| 5000/5000 [01:59&lt;00:00, 41.93it/s, total_loss=43.83 content_loss=8.72 style_loss=29.01 tv_loss=6.10]     </code></pre>
 </div>
 </div>
 <p>As mentioned before, images need to be denormalized (<em>i.e.</em> reverted back) to correct colors. After that we compare content, style and target images side-by-side.</p>
-<div id="cell-36" class="cell" data-execution_count="16">
+<div id="cell-37" class="cell" data-execution_count="17">
 <div class="sourceCode cell-code" id="cb17" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb17-1"><span class="kw" style="color: #003B4F;
 background-color: null;
-font-style: inherit;">class</span> InverseNormalize(<span class="bu" style="color: null;
-background-color: null;
-font-style: inherit;">object</span>):</span>
+font-weight: bold;
+font-style: inherit;">class</span> InverseNormalize:</span>
 <span id="cb17-2">    <span class="kw" style="color: #003B4F;
 background-color: null;
+font-weight: bold;
 font-style: inherit;">def</span> <span class="fu" style="color: #4758AB;
 background-color: null;
 font-style: inherit;">__init__</span>(<span class="va" style="color: #111111;
 background-color: null;
-font-style: inherit;">self</span>, mean, std):</span>
+font-style: inherit;">self</span>, mean: Sequence[<span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">float</span>], std: Sequence[<span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">float</span>]) <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-&gt;</span> <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">None</span>:</span>
 <span id="cb17-3">        <span class="va" style="color: #111111;
 background-color: null;
 font-style: inherit;">self</span>.mean <span class="op" style="color: #5E5E5E;
 background-color: null;
-font-style: inherit;">=</span> mean</span>
+font-style: inherit;">=</span> torch.as_tensor(mean)</span>
 <span id="cb17-4">        <span class="va" style="color: #111111;
 background-color: null;
 font-style: inherit;">self</span>.std <span class="op" style="color: #5E5E5E;
 background-color: null;
-font-style: inherit;">=</span> std</span>
+font-style: inherit;">=</span> torch.as_tensor(std)</span>
 <span id="cb17-5"></span>
 <span id="cb17-6">    <span class="kw" style="color: #003B4F;
 background-color: null;
+font-weight: bold;
 font-style: inherit;">def</span> <span class="fu" style="color: #4758AB;
 background-color: null;
 font-style: inherit;">__call__</span>(<span class="va" style="color: #111111;
 background-color: null;
-font-style: inherit;">self</span>, x: Tensor) <span class="op" style="color: #5E5E5E;
+font-style: inherit;">self</span>, x_norm: Tensor) <span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">-&gt;</span> Tensor:</span>
-<span id="cb17-7">        <span class="cf" style="color: #003B4F;
+<span id="cb17-7">        <span class="co" style="color: #5E5E5E;
 background-color: null;
-font-style: inherit;">for</span> t, m, s <span class="kw" style="color: #003B4F;
+font-style: inherit;"># Ensure mean and std have the correct shape</span></span>
+<span id="cb17-8">        mean <span class="op" style="color: #5E5E5E;
 background-color: null;
-font-style: inherit;">in</span> <span class="bu" style="color: null;
+font-style: inherit;">=</span> <span class="va" style="color: #111111;
 background-color: null;
-font-style: inherit;">zip</span>(x, <span class="va" style="color: #111111;
+font-style: inherit;">self</span>.mean.to(x_norm.device).view(<span class="op" style="color: #5E5E5E;
 background-color: null;
-font-style: inherit;">self</span>.mean, <span class="va" style="color: #111111;
+font-style: inherit;">-</span><span class="dv" style="color: #AD0000;
 background-color: null;
-font-style: inherit;">self</span>.std, strict<span class="op" style="color: #5E5E5E;
+font-style: inherit;">1</span>, <span class="dv" style="color: #AD0000;
 background-color: null;
-font-style: inherit;">=</span><span class="va" style="color: #111111;
+font-style: inherit;">1</span>, <span class="dv" style="color: #AD0000;
 background-color: null;
-font-style: inherit;">True</span>):</span>
-<span id="cb17-8">            t.mul_(s).add_(m)</span>
-<span id="cb17-9">        <span class="cf" style="color: #003B4F;
+font-style: inherit;">1</span>)</span>
+<span id="cb17-9">        std <span class="op" style="color: #5E5E5E;
 background-color: null;
-font-style: inherit;">return</span> x</span>
+font-style: inherit;">=</span> <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">self</span>.std.to(x_norm.device).view(<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>)</span>
 <span id="cb17-10"></span>
-<span id="cb17-11"></span>
-<span id="cb17-12"><span class="kw" style="color: #003B4F;
+<span id="cb17-11">        <span class="co" style="color: #5E5E5E;
 background-color: null;
-font-style: inherit;">class</span> Clip(<span class="bu" style="color: null;
+font-style: inherit;"># Inverse normalization: x = x_normalized * std + mean</span></span>
+<span id="cb17-12">        x <span class="op" style="color: #5E5E5E;
 background-color: null;
-font-style: inherit;">object</span>):</span>
-<span id="cb17-13">    <span class="kw" style="color: #003B4F;
+font-style: inherit;">=</span> x_norm.mul(std).add(mean)</span>
+<span id="cb17-13">        <span class="cf" style="color: #003B4F;
 background-color: null;
+font-weight: bold;
+font-style: inherit;">return</span> x</span>
+<span id="cb17-14"></span>
+<span id="cb17-15"></span>
+<span id="cb17-16"><span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">class</span> Clip:</span>
+<span id="cb17-17">    <span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
 font-style: inherit;">def</span> <span class="fu" style="color: #4758AB;
 background-color: null;
 font-style: inherit;">__init__</span>(<span class="va" style="color: #111111;
@@ -3586,79 +4349,92 @@ font-style: inherit;">float</span> <span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">=</span> <span class="fl" style="color: #AD0000;
 background-color: null;
-font-style: inherit;">1.0</span>):</span>
-<span id="cb17-14">        <span class="va" style="color: #111111;
+font-style: inherit;">1.0</span>) <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-&gt;</span> <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">None</span>:</span>
+<span id="cb17-18">        <span class="va" style="color: #111111;
 background-color: null;
 font-style: inherit;">self</span>.vmin <span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">=</span> vmin</span>
-<span id="cb17-15">        <span class="va" style="color: #111111;
+<span id="cb17-19">        <span class="va" style="color: #111111;
 background-color: null;
 font-style: inherit;">self</span>.vmax <span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">=</span> vmax</span>
-<span id="cb17-16"></span>
-<span id="cb17-17">    <span class="kw" style="color: #003B4F;
+<span id="cb17-20"></span>
+<span id="cb17-21">    <span class="kw" style="color: #003B4F;
 background-color: null;
+font-weight: bold;
 font-style: inherit;">def</span> <span class="fu" style="color: #4758AB;
 background-color: null;
 font-style: inherit;">__call__</span>(<span class="va" style="color: #111111;
 background-color: null;
-font-style: inherit;">self</span>, x):</span>
-<span id="cb17-18">        <span class="cf" style="color: #003B4F;
+font-style: inherit;">self</span>, x: Tensor) <span class="op" style="color: #5E5E5E;
 background-color: null;
+font-style: inherit;">-&gt;</span> Tensor:</span>
+<span id="cb17-22">        <span class="cf" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
 font-style: inherit;">return</span> torch.clamp(x, <span class="va" style="color: #111111;
 background-color: null;
 font-style: inherit;">self</span>.vmin, <span class="va" style="color: #111111;
 background-color: null;
 font-style: inherit;">self</span>.vmax)</span>
-<span id="cb17-19"></span>
-<span id="cb17-20"></span>
-<span id="cb17-21">inv_transform_preview <span class="op" style="color: #5E5E5E;
+<span id="cb17-23"></span>
+<span id="cb17-24"></span>
+<span id="cb17-25">inv_transform_preview <span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">=</span> T.Compose(</span>
-<span id="cb17-22">    [</span>
-<span id="cb17-23">        InverseNormalize(IMAGENET_MEAN, IMAGENET_STD),</span>
-<span id="cb17-24">        T.Resize(IMG_SIZE, antialias<span class="op" style="color: #5E5E5E;
+<span id="cb17-26">    [</span>
+<span id="cb17-27">        InverseNormalize(IMAGENET_MEAN, IMAGENET_STD),</span>
+<span id="cb17-28">        T.Resize(IMG_SIZE, antialias<span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">=</span><span class="va" style="color: #111111;
 background-color: null;
 font-style: inherit;">True</span>),</span>
-<span id="cb17-25">        T.CenterCrop((IMG_SIZE, IMG_SIZE)),</span>
-<span id="cb17-26">        Clip(),</span>
-<span id="cb17-27">    ]</span>
-<span id="cb17-28">)</span>
-<span id="cb17-29"></span>
-<span id="cb17-30">imgs <span class="op" style="color: #5E5E5E;
+<span id="cb17-29">        T.CenterCrop((IMG_SIZE, IMG_SIZE)),</span>
+<span id="cb17-30">        Clip(),</span>
+<span id="cb17-31">    ]</span>
+<span id="cb17-32">)</span>
+<span id="cb17-33"></span>
+<span id="cb17-34">imgs <span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">=</span> [inv_transform_preview(i.detach().squeeze().cpu()) <span class="cf" style="color: #003B4F;
 background-color: null;
+font-weight: bold;
 font-style: inherit;">for</span> i <span class="kw" style="color: #003B4F;
 background-color: null;
+font-weight: bold;
 font-style: inherit;">in</span> (content, style, target)]</span>
-<span id="cb17-31"></span>
-<span id="cb17-32">grid <span class="op" style="color: #5E5E5E;
+<span id="cb17-35"></span>
+<span id="cb17-36">grid <span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">=</span> make_grid(imgs)</span>
-<span id="cb17-33"></span>
-<span id="cb17-34"></span>
-<span id="cb17-35"><span class="kw" style="color: #003B4F;
+<span id="cb17-37"></span>
+<span id="cb17-38"></span>
+<span id="cb17-39"><span class="kw" style="color: #003B4F;
 background-color: null;
+font-weight: bold;
 font-style: inherit;">def</span> show(imgs):</span>
-<span id="cb17-36">    <span class="cf" style="color: #003B4F;
+<span id="cb17-40">    <span class="cf" style="color: #003B4F;
 background-color: null;
+font-weight: bold;
 font-style: inherit;">if</span> <span class="kw" style="color: #003B4F;
 background-color: null;
+font-weight: bold;
 font-style: inherit;">not</span> <span class="bu" style="color: null;
 background-color: null;
 font-style: inherit;">isinstance</span>(imgs, <span class="bu" style="color: null;
 background-color: null;
 font-style: inherit;">list</span>):</span>
-<span id="cb17-37">        imgs <span class="op" style="color: #5E5E5E;
+<span id="cb17-41">        imgs <span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">=</span> [imgs]</span>
-<span id="cb17-38"></span>
-<span id="cb17-39">    fig, axs <span class="op" style="color: #5E5E5E;
+<span id="cb17-42"></span>
+<span id="cb17-43">    fig, axs <span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">=</span> plt.subplots(ncols<span class="op" style="color: #5E5E5E;
 background-color: null;
@@ -3687,23 +4463,25 @@ background-color: null;
 font-style: inherit;">=</span><span class="va" style="color: #111111;
 background-color: null;
 font-style: inherit;">False</span>)</span>
-<span id="cb17-40">    <span class="cf" style="color: #003B4F;
+<span id="cb17-44">    <span class="cf" style="color: #003B4F;
 background-color: null;
+font-weight: bold;
 font-style: inherit;">for</span> i, img <span class="kw" style="color: #003B4F;
 background-color: null;
+font-weight: bold;
 font-style: inherit;">in</span> <span class="bu" style="color: null;
 background-color: null;
 font-style: inherit;">enumerate</span>(imgs):</span>
-<span id="cb17-41">        img <span class="op" style="color: #5E5E5E;
+<span id="cb17-45">        img <span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">=</span> img.detach()</span>
-<span id="cb17-42">        img <span class="op" style="color: #5E5E5E;
+<span id="cb17-46">        img <span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">=</span> VF.to_pil_image(img)</span>
-<span id="cb17-43">        axs[<span class="dv" style="color: #AD0000;
+<span id="cb17-47">        axs[<span class="dv" style="color: #AD0000;
 background-color: null;
 font-style: inherit;">0</span>, i].imshow(np.asarray(img))</span>
-<span id="cb17-44">        axs[<span class="dv" style="color: #AD0000;
+<span id="cb17-48">        axs[<span class="dv" style="color: #AD0000;
 background-color: null;
 font-style: inherit;">0</span>, i].<span class="bu" style="color: null;
 background-color: null;
@@ -3716,13 +4494,13 @@ background-color: null;
 font-style: inherit;">=</span>[], yticks<span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">=</span>[])</span>
-<span id="cb17-45"></span>
-<span id="cb17-46"></span>
-<span id="cb17-47">show(grid)</span></code></pre></div>
+<span id="cb17-49"></span>
+<span id="cb17-50"></span>
+<span id="cb17-51">show(grid)</span></code></pre></div>
 <div class="cell-output cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="gcerar.github.io/posts/2023-09-15-neural-style-transfer/index_files/figure-html/cell-17-output-1.png" class="img-fluid figure-img"></p>
+<p><img src="gcerar.github.io/posts/2023-09-15-neural-style-transfer/index_files/figure-html/cell-18-output-1.png" width="1862" height="634" class="figure-img"></p>
 <figcaption>Successfuly applied neural style transfer. The <strong>content</strong> image (left), the <strong>style</strong> image (center), and final <strong>target</strong> image (right).</figcaption>
 </figure>
 </div>
@@ -3780,7 +4558,7 @@ Gatys, Leon A, Alexander S Ecker, and Matthias Bethge. 2015. <span>“A Neural A
   <category>pytorch</category>
   <category>NST</category>
   <guid>gcerar.github.io/posts/2023-09-15-neural-style-transfer/</guid>
-  <pubDate>Fri, 15 Sep 2023 00:00:00 GMT</pubDate>
+  <pubDate>Thu, 14 Sep 2023 22:00:00 GMT</pubDate>
   <media:content url="gcerar.github.io/posts/2023-09-15-neural-style-transfer/featured.webp" medium="image" type="image/webp"/>
 </item>
 </channel>
