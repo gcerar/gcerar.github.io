@@ -1,31 +1,31 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
-    <loc>gcerar.github.io/index.html</loc>
-    <lastmod>2025-02-14T13:01:37.886Z</lastmod>
+    <loc>https://gcerar.github.io/index.html</loc>
+    <lastmod>2025-05-08T06:52:34.101Z</lastmod>
   </url>
   <url>
-    <loc>gcerar.github.io/posts/2023-11-20-research-compute-infrastructure/index.html</loc>
+    <loc>https://gcerar.github.io/posts/2023-11-20-research-compute-infrastructure/index.html</loc>
     <lastmod>2025-02-14T13:58:00.444Z</lastmod>
   </url>
   <url>
-    <loc>gcerar.github.io/posts/2023-10-10-vanilla-GANs/index.html</loc>
+    <loc>https://gcerar.github.io/posts/2023-10-10-vanilla-GANs/index.html</loc>
     <lastmod>2025-04-08T06:17:32.710Z</lastmod>
   </url>
   <url>
-    <loc>gcerar.github.io/posts/2023-09-15-neural-style-transfer/index.html</loc>
+    <loc>https://gcerar.github.io/posts/2023-09-15-neural-style-transfer/index.html</loc>
     <lastmod>2025-04-08T07:03:25.339Z</lastmod>
   </url>
   <url>
-    <loc>gcerar.github.io/posts/2025-05-07-feature-maps/index.html</loc>
-    <lastmod>2025-05-07T18:16:03.713Z</lastmod>
+    <loc>https://gcerar.github.io/posts/2025-05-06-feature-maps/index.html</loc>
+    <lastmod>2025-05-08T06:54:15.571Z</lastmod>
   </url>
   <url>
-    <loc>gcerar.github.io/posts/2025-05-07-ministate-v3/index.html</loc>
-    <lastmod>2025-05-07T18:14:30.775Z</lastmod>
+    <loc>https://gcerar.github.io/posts/2025-05-07-ministate-v3/index.html</loc>
+    <lastmod>2025-05-08T06:54:15.896Z</lastmod>
   </url>
   <url>
-    <loc>gcerar.github.io/about.html</loc>
+    <loc>https://gcerar.github.io/about.html</loc>
     <lastmod>2025-05-07T18:10:10.254Z</lastmod>
   </url>
 </urlset>
