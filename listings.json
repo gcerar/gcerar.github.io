@@ -2,10 +2,6 @@
   {
     "listing": "/index.html",
     "items": [
-      "/posts/2025-01-21-multi-armed-bandit/multi-armed-bandit-problem.out.html",
-      "/posts/2024-xx-xx-diffusion/index.out.html",
-      "/posts/2023-10-10-vanilla-GANs/index.out.html",
-      "/posts/2023-09-15-neural-style-transfer/index.out.html",
       "/posts/2025-05-07-ministate-v3/index.html",
       "/posts/2025-05-06-feature-maps/index.html",
       "/posts/2023-11-20-research-compute-infrastructure/index.html",
