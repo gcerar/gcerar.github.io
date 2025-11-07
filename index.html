@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en-us" xml:lang="en-us"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.7.30">
+<meta name="generator" content="quarto-1.8.25">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
@@ -34,14 +34,15 @@ ul.task-list li input[type="checkbox"] {
 <script src="site_libs/quarto-listing/quarto-listing.js"></script>
 <script src="site_libs/quarto-html/quarto.js" type="module"></script>
 <script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="site_libs/quarto-html/axe/axe-check.js" type="module"></script>
 <script src="site_libs/quarto-html/popper.min.js"></script>
 <script src="site_libs/quarto-html/tippy.umd.min.js"></script>
 <script src="site_libs/quarto-html/anchor.min.js"></script>
 <link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="site_libs/quarto-html/quarto-syntax-highlighting-b7f1c89f2ad41d6a0e7e2c0fd4f2ca80.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-f39a147e3febc8f4666d447d236c973d.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="site_libs/bootstrap/bootstrap-d7d7eb047d3d87c192e45c8b5d4242fd.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<link href="site_libs/bootstrap/bootstrap-e40cd1dfc77d1a91729420abf2cec41c.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
@@ -122,7 +123,7 @@ const typesetMath = (el) => {
     var macros = [];
     for (var i = 0; i < mathElements.length; i++) {
       var texText = mathElements[i].firstChild;
-      if (mathElements[i].tagName == "SPAN") {
+      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
         window.katex.render(texText.data, mathElements[i], {
           displayMode: mathElements[i].classList.contains('display'),
           throwOnError: false,
@@ -153,6 +154,8 @@ window.Quarto = {
     <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
       <div class="navbar-container container-fluid">
       <div class="navbar-brand-container mx-auto">
+    <a href="./index.html" class="navbar-brand navbar-brand-logo">
+    </a>
     <a class="navbar-brand" href="./index.html">
     <span class="navbar-title">Greg’s blog</span>
     </a>
@@ -208,7 +211,7 @@ window.Quarto = {
 <!-- margin-sidebar -->
     <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
         
-    <h5 class="quarto-listing-category-title">Categories</h5><div class="quarto-listing-category category-cloud"><div class="category" data-category="Y29tcHV0ZQ=="><span class="quarto-category-count category-cloud-2">compute</span></div><div class="category" data-category="R0FO"><span class="quarto-category-count category-cloud-2">GAN</span></div><div class="category" data-category="aW5mcmFzdHJ1Y3R1cmU="><span class="quarto-category-count category-cloud-2">infrastructure</span></div><div class="category" data-category="TGFUZVg="><span class="quarto-category-count category-cloud-2">LaTeX</span></div><div class="category" data-category="bm4="><span class="quarto-category-count category-cloud-2">nn</span></div><div class="category" data-category="TlNU"><span class="quarto-category-count category-cloud-2">NST</span></div><div class="category" data-category="cHl0b3JjaA=="><span class="quarto-category-count category-cloud-6">pytorch</span></div></div></div>
+    <h5 class="quarto-listing-category-title">Categories</h5><div class="quarto-listing-category category-cloud"><div class="category" data-category="Y29tcHV0ZQ=="><span class="quarto-category-count category-cloud-2">compute</span></div><div class="category" data-category="R0FO"><span class="quarto-category-count category-cloud-2">GAN</span></div><div class="category" data-category="aW5mcmFzdHJ1Y3R1cmU="><span class="quarto-category-count category-cloud-2">infrastructure</span></div><div class="category" data-category="TGFUZVg="><span class="quarto-category-count category-cloud-2">LaTeX</span></div><div class="category" data-category="bm4="><span class="quarto-category-count category-cloud-2">nn</span></div><div class="category" data-category="TlNU"><span class="quarto-category-count category-cloud-2">NST</span></div><div class="category" data-category="cHl0b3JjaA=="><span class="quarto-category-count category-cloud-4">pytorch</span></div></div></div>
 <!-- main -->
 <main class="content column-page-left" id="quarto-document-content">
 
@@ -259,7 +262,91 @@ window.Quarto = {
     </div>
 </div>
 <div class="list quarto-listing-default">
-<div class="quarto-post image-right" data-index="0" data-categories="TGFUZVg=" data-listing-date-sort="1746568800000" data-listing-file-modified-sort="1747387993607" data-listing-date-modified-sort="1747387993000" data-listing-reading-time-sort="3" data-listing-word-count-sort="551">
+<div class="quarto-post image-right" data-index="0" data-listing-file-modified-sort="1762537450267" data-listing-reading-time-sort="6" data-listing-word-count-sort="1121">
+<div class="thumbnail"><a href="./posts/2025-01-21-multi-armed-bandit/multi-armed-bandit-problem.out.html" class="no-external">
+
+<div class="listing-item-img-placeholder card-img-top" >&nbsp;</div>
+
+</a></div>
+<div class="body">
+<h3 class="no-anchor listing-title">
+<a href="./posts/2025-01-21-multi-armed-bandit/multi-armed-bandit-problem.out.html" class="no-external">Bernoulli Multi-Armed Bandit Problem</a>
+</h3>
+<div class="delink listing-description"><a href="./posts/2025-01-21-multi-armed-bandit/multi-armed-bandit-problem.out.html" class="no-external">
+Gregor Cerar<br>
+2023-12-20
+</a></div>
+</div>
+<div class="metadata">
+<a href="./posts/2025-01-21-multi-armed-bandit/multi-armed-bandit-problem.out.html" class="no-external">
+<div class="listing-reading-time">6 min</div>
+</a>
+</div>
+</div>
+<div class="quarto-post image-right" data-index="1" data-listing-file-modified-sort="1762537449324" data-listing-reading-time-sort="1" data-listing-word-count-sort="5">
+<div class="thumbnail"><a href="./posts/2024-xx-xx-diffusion/index.out.html" class="no-external">
+
+<p class="card-img-top"><img src="posts/2024-xx-xx-diffusion/index.out_files/figure-html/cell-10-output-1.png"  class="thumbnail-image card-img"/></p>
+
+</a></div>
+<div class="body">
+<h3 class="no-anchor listing-title">
+<a href="./posts/2024-xx-xx-diffusion/index.out.html" class="no-external">Diffusion Models</a>
+</h3>
+<div class="delink listing-description"><a href="./posts/2024-xx-xx-diffusion/index.out.html" class="no-external">
+Gregor Cerar<br>
+2024-08-20
+</a></div>
+</div>
+<div class="metadata">
+<a href="./posts/2024-xx-xx-diffusion/index.out.html" class="no-external">
+<div class="listing-reading-time">1 min</div>
+</a>
+</div>
+</div>
+<div class="quarto-post image-right" data-index="2" data-listing-file-modified-sort="1762537448303" data-listing-reading-time-sort="6" data-listing-word-count-sort="1131">
+<div class="thumbnail"><a href="./posts/2023-10-10-vanilla-GANs/index.out.html" class="no-external">
+
+<p class="card-img-top"><img src="posts/2023-10-10-vanilla-GANs/index.out_files/figure-html/855a6809-26f8-4c95-90c4-a71e9db30eec-1-./figures/GAN-architecture.png"  class="thumbnail-image card-img"/></p>
+
+</a></div>
+<div class="body">
+<h3 class="no-anchor listing-title">
+<a href="./posts/2023-10-10-vanilla-GANs/index.out.html" class="no-external">Generative Adversarial Networks</a>
+</h3>
+<div class="delink listing-description"><a href="./posts/2023-10-10-vanilla-GANs/index.out.html" class="no-external">
+Gregor Cerar<br>
+2023-10-10
+</a></div>
+</div>
+<div class="metadata">
+<a href="./posts/2023-10-10-vanilla-GANs/index.out.html" class="no-external">
+<div class="listing-reading-time">6 min</div>
+</a>
+</div>
+</div>
+<div class="quarto-post image-right" data-index="3" data-listing-file-modified-sort="1762537446982" data-listing-reading-time-sort="9" data-listing-word-count-sort="1616">
+<div class="thumbnail"><a href="./posts/2023-09-15-neural-style-transfer/index.out.html" class="no-external">
+
+<p class="card-img-top"><img src="posts/2023-09-15-neural-style-transfer/index.out_files/figure-html/e3973a29-e9d5-4678-bf46-31ac0ead9301-1-./figures/neural-style-transfer.png"  class="thumbnail-image card-img"/></p>
+
+</a></div>
+<div class="body">
+<h3 class="no-anchor listing-title">
+<a href="./posts/2023-09-15-neural-style-transfer/index.out.html" class="no-external">Neural Style Transfer</a>
+</h3>
+<div class="delink listing-description"><a href="./posts/2023-09-15-neural-style-transfer/index.out.html" class="no-external">
+Gregor Cerar<br>
+2023-09-15
+</a></div>
+</div>
+<div class="metadata">
+<a href="./posts/2023-09-15-neural-style-transfer/index.out.html" class="no-external">
+<div class="listing-reading-time">9 min</div>
+</a>
+</div>
+</div>
+<div class="quarto-post image-right" data-index="4" data-categories="TGFUZVg=" data-listing-date-sort="1746568800000" data-listing-file-modified-sort="1747387993607" data-listing-date-modified-sort="1747387993000" data-listing-reading-time-sort="3" data-listing-word-count-sort="551">
 <div class="thumbnail"><a href="./posts/2025-05-07-ministate-v3/index.html" class="no-external">
 
 <img loading="lazy" src="./posts/2025-05-07-ministate-v3/featured.png" class="thumbnail-image">
@@ -287,7 +374,7 @@ May 7, 2025
 </a>
 </div>
 </div>
-<div class="quarto-post image-right" data-index="1" data-categories="cHl0b3JjaCUyQ25u" data-listing-date-sort="1746482400000" data-listing-file-modified-sort="1746687255571" data-listing-date-modified-sort="1746687255000" data-listing-reading-time-sort="3" data-listing-word-count-sort="404">
+<div class="quarto-post image-right" data-index="5" data-categories="cHl0b3JjaCUyQ25u" data-listing-date-sort="1746482400000" data-listing-file-modified-sort="1746687255571" data-listing-date-modified-sort="1746687255000" data-listing-reading-time-sort="3" data-listing-word-count-sort="404">
 <div class="thumbnail"><a href="./posts/2025-05-06-feature-maps/index.html" class="no-external">
 
 <img loading="lazy" src="./posts/2025-05-06-feature-maps/featured.webp" class="thumbnail-image">
@@ -317,7 +404,7 @@ May 6, 2025
 </a>
 </div>
 </div>
-<div class="quarto-post image-right" data-index="2" data-categories="Y29tcHV0ZSUyQ2luZnJhc3RydWN0dXJl" data-listing-date-sort="1700434800000" data-listing-file-modified-sort="1739541480444" data-listing-date-modified-sort="1739541480000" data-listing-reading-time-sort="23" data-listing-word-count-sort="4579">
+<div class="quarto-post image-right" data-index="6" data-categories="Y29tcHV0ZSUyQ2luZnJhc3RydWN0dXJl" data-listing-date-sort="1700434800000" data-listing-file-modified-sort="1739541480444" data-listing-date-modified-sort="1739541480000" data-listing-reading-time-sort="23" data-listing-word-count-sort="4579">
 <div class="thumbnail"><a href="./posts/2023-11-20-research-compute-infrastructure/index.html" class="no-external">
 
 <p class="card-img-top"><img src="posts/2023-11-20-research-compute-infrastructure/figures/over10k-arch.png"  class="thumbnail-image card-img"/></p>
@@ -347,7 +434,7 @@ Nov 20, 2023
 </a>
 </div>
 </div>
-<div class="quarto-post image-right" data-index="3" data-categories="cHl0b3JjaCUyQ0dBTg==" data-listing-date-sort="1696888800000" data-listing-file-modified-sort="1747388100511" data-listing-date-modified-sort="1747388100000" data-listing-reading-time-sort="5" data-listing-word-count-sort="973">
+<div class="quarto-post image-right" data-index="7" data-categories="cHl0b3JjaCUyQ0dBTg==" data-listing-date-sort="1696888800000" data-listing-file-modified-sort="1747628599690" data-listing-date-modified-sort="1747628599000" data-listing-reading-time-sort="5" data-listing-word-count-sort="973">
 <div class="thumbnail"><a href="./posts/2023-10-10-vanilla-GANs/index.html" class="no-external">
 
 <img loading="lazy" src="./posts/2023-10-10-vanilla-GANs/featured.webp" class="thumbnail-image">
@@ -377,7 +464,7 @@ Oct 10, 2023
 </a>
 </div>
 </div>
-<div class="quarto-post image-right" data-index="4" data-categories="cHl0b3JjaCUyQ05TVA==" data-listing-date-sort="1694728800000" data-listing-file-modified-sort="1744095805339" data-listing-date-modified-sort="1744095805000" data-listing-reading-time-sort="8" data-listing-word-count-sort="1567">
+<div class="quarto-post image-right" data-index="8" data-categories="cHl0b3JjaCUyQ05TVA==" data-listing-date-sort="1694728800000" data-listing-file-modified-sort="1761137249129" data-listing-date-modified-sort="1761137249000" data-listing-reading-time-sort="8" data-listing-word-count-sort="1567">
 <div class="thumbnail"><a href="./posts/2023-09-15-neural-style-transfer/index.html" class="no-external">
 
 <img loading="lazy" src="./posts/2023-09-15-neural-style-transfer/featured.webp" class="thumbnail-image">
@@ -461,13 +548,14 @@ Sep 15, 2023
       e.clearSelection();
     }
     const getTextToCopy = function(trigger) {
-        const codeEl = trigger.previousElementSibling.cloneNode(true);
-        for (const childEl of codeEl.children) {
-          if (isCodeAnnotation(childEl)) {
-            childEl.remove();
-          }
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
         }
-        return codeEl.innerText;
+      }
+      return codeEl.innerText;
     }
     const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
       text: getTextToCopy
