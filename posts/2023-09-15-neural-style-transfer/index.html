@@ -298,7 +298,7 @@ window.Quarto = {
     <div>
     <div class="quarto-title-meta-heading">Modified</div>
     <div class="quarto-title-meta-contents">
-      <p class="date-modified">2025-10-22</p>
+      <p class="date-modified">2025-11-07</p>
     </div>
   </div>
     
@@ -610,7 +610,7 @@ Note
 <li>Content feature map comes from <code>relu5_2</code>.</li>
 <li>Style feature maps are sourced from <code>relu1_1</code>, <code>relu2_1</code>, <code>relu3_1</code>, <code>relu4_1</code>, and <code>relu5_1</code>.</li>
 </ul>
-<div id="cell-29" class="cell" data-execution_count="13">
+<div id="cell-29" class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> get_features(image: Tensor, model: nn.Module, layers: Iterable[<span class="bu">str</span>] <span class="op">|</span> <span class="va">None</span> <span class="op">=</span> <span class="va">None</span>) <span class="op">-&gt;</span> <span class="bu">dict</span>[<span class="bu">str</span>, Tensor]:</span>
 <span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> layers <span class="kw">is</span> <span class="va">None</span>:</span>
 <span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>        layers <span class="op">=</span> <span class="bu">tuple</span>(STYLE_LAYERS_DEFAULT.keys()) <span class="op">+</span> CONTENT_LAYERS_DEFAULT</span>
@@ -684,7 +684,7 @@ Note
 <span id="cb15-22"><a href="#cb15-22" aria-hidden="true" tabindex="-1"></a>        <span class="ss">f"tv_loss=</span><span class="sc">{</span>tv_loss<span class="sc">.</span>item()<span class="sc">:.2f}</span><span class="ss">"</span></span>
 <span id="cb15-23"><a href="#cb15-23" aria-hidden="true" tabindex="-1"></a>    )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stderr">
-<pre><code>100%|██████████| 5000/5000 [01:36&lt;00:00, 51.63it/s, total_loss=43.68 content_loss=8.68 style_loss=28.90 tv_loss=6.10]     </code></pre>
+<pre><code>100%|██████████| 5000/5000 [01:59&lt;00:00, 41.93it/s, total_loss=43.83 content_loss=8.72 style_loss=29.01 tv_loss=6.10]     </code></pre>
 </div>
 </div>
 <p>As mentioned before, images need to be denormalized (<em>i.e.</em> reverted back) to correct colors. After that we compare content, style and target images side-by-side.</p>

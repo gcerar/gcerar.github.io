@@ -5480,7 +5480,7 @@ font-style: inherit;">True</span>).to(device)</span></code></pre></div></div>
 <li>Content feature map comes from <code>relu5_2</code>.</li>
 <li>Style feature maps are sourced from <code>relu1_1</code>, <code>relu2_1</code>, <code>relu3_1</code>, <code>relu4_1</code>, and <code>relu5_1</code>.</li>
 </ul>
-<div id="cell-29" class="cell" data-execution_count="13">
+<div id="cell-29" class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb12" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><span class="kw" style="color: #003B4F;
 background-color: null;
 font-weight: bold;
@@ -5791,7 +5791,7 @@ background-color: null;
 font-style: inherit;">"</span></span>
 <span id="cb15-23">    )</span></code></pre></div></div>
 <div class="cell-output cell-output-stderr">
-<pre><code>100%|██████████| 5000/5000 [01:36&lt;00:00, 51.63it/s, total_loss=43.68 content_loss=8.68 style_loss=28.90 tv_loss=6.10]     </code></pre>
+<pre><code>100%|██████████| 5000/5000 [01:59&lt;00:00, 41.93it/s, total_loss=43.83 content_loss=8.72 style_loss=29.01 tv_loss=6.10]     </code></pre>
 </div>
 </div>
 <p>As mentioned before, images need to be denormalized (<em>i.e.</em> reverted back) to correct colors. After that we compare content, style and target images side-by-side.</p>
