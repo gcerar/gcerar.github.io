@@ -9,7 +9,7 @@
 <link>https://gcerar.github.io/</link>
 <atom:link href="https://gcerar.github.io/index.xml" rel="self" type="application/rss+xml"/>
 <description>Greg&#39;s personal blog</description>
-<generator>quarto-1.8.25</generator>
+<generator>quarto-1.8.26</generator>
 <lastBuildDate>Tue, 06 May 2025 22:00:00 GMT</lastBuildDate>
 <item>
   <title>Building a No‑Fluff Report Template in LaTeX</title>
@@ -5480,7 +5480,7 @@ font-style: inherit;">True</span>).to(device)</span></code></pre></div></div>
 <li>Content feature map comes from <code>relu5_2</code>.</li>
 <li>Style feature maps are sourced from <code>relu1_1</code>, <code>relu2_1</code>, <code>relu3_1</code>, <code>relu4_1</code>, and <code>relu5_1</code>.</li>
 </ul>
-<div id="cell-29" class="cell">
+<div id="cell-29" class="cell" data-execution_count="13">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb12" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><span class="kw" style="color: #003B4F;
 background-color: null;
 font-weight: bold;
@@ -5791,7 +5791,7 @@ background-color: null;
 font-style: inherit;">"</span></span>
 <span id="cb15-23">    )</span></code></pre></div></div>
 <div class="cell-output cell-output-stderr">
-<pre><code>100%|██████████| 5000/5000 [01:59&lt;00:00, 41.93it/s, total_loss=43.83 content_loss=8.72 style_loss=29.01 tv_loss=6.10]     </code></pre>
+<pre><code>100%|██████████| 5000/5000 [01:37&lt;00:00, 51.45it/s, total_loss=43.91 content_loss=8.70 style_loss=29.11 tv_loss=6.11]     </code></pre>
 </div>
 </div>
 <p>As mentioned before, images need to be denormalized (<em>i.e.</em> reverted back) to correct colors. After that we compare content, style and target images side-by-side.</p>
@@ -5997,9 +5997,9 @@ font-style: inherit;">len</span>(imgs), figsize<span class="op" style="color: #5
 background-color: null;
 font-style: inherit;">=</span>(<span class="dv" style="color: #AD0000;
 background-color: null;
-font-style: inherit;">21</span>, <span class="dv" style="color: #AD0000;
+font-style: inherit;">15</span>, <span class="dv" style="color: #AD0000;
 background-color: null;
-font-style: inherit;">7</span>), squeeze<span class="op" style="color: #5E5E5E;
+font-style: inherit;">5</span>), squeeze<span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">=</span><span class="va" style="color: #111111;
 background-color: null;
@@ -6053,7 +6053,7 @@ font-style: inherit;">=</span>[])</span>
 <div class="cell-output cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="https://gcerar.github.io/posts/2023-09-15-neural-style-transfer/index_files/figure-html/cell-18-output-1.png" width="1862" height="634" class="figure-img"></p>
+<p><img src="https://gcerar.github.io/posts/2023-09-15-neural-style-transfer/index_files/figure-html/cell-18-output-1.png" width="1312" height="450" class="figure-img"></p>
 <figcaption>Successfuly applied neural style transfer. The <strong>content</strong> image (left), the <strong>style</strong> image (center), and final <strong>target</strong> image (right).</figcaption>
 </figure>
 </div>
