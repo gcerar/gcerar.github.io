@@ -2,6 +2,8 @@
   {
     "listing": "/index.html",
     "items": [
+      "/posts/reinforcement-learning/2025-12-17-tabular-q-learning.html",
+      "/posts/reinforcement-learning/2025-12-16-multi-armed-bandit-problem.html",
       "/posts/2025-05-07-ministate-v3/index.html",
       "/posts/2025-05-06-feature-maps/index.html",
       "/posts/2023-11-20-research-compute-infrastructure/index.html",

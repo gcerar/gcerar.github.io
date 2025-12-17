@@ -1,0 +1,1873 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en-us" xml:lang="en-us"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.8.26">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="Gregor Cerar">
+<meta name="dcterms.date" content="2025-12-16">
+
+<title>Bernoulli Multi-Armed Bandit Problem – Greg’s blog</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="../../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../../">
+<script src="../../site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="../../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../../site_libs/quarto-html/axe/axe-check.js" type="module"></script>
+<script src="../../site_libs/quarto-html/popper.min.js"></script>
+<script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-257311f31c353275a0fc9c1463d94e88.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-dark-48d47c65b5cdcf4caa257c90842cb98c.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-257311f31c353275a0fc9c1463d94e88.css" rel="stylesheet" class="quarto-color-scheme-extra" id="quarto-text-highlighting-styles">
+<script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../../site_libs/bootstrap/bootstrap-1ca92a1ab776f6c4621c81ac8cbe56f2.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="../../site_libs/bootstrap/bootstrap-dark-ccdfa978c4acb782f2bde8bbfe9a074c.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
+<link href="../../site_libs/bootstrap/bootstrap-1ca92a1ab776f6c4621c81ac8cbe56f2.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+<script async="" src="https://www.googletagmanager.com/gtag/js?id=G-FB81SP2FX7"></script>
+
+<script type="text/javascript">
+
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+gtag('config', 'G-FB81SP2FX7', { 'anonymize_ip': true});
+</script>
+
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+<meta property="og:title" content="Bernoulli Multi-Armed Bandit Problem – Greg’s blog">
+<meta property="og:description" content="The multi-armed bandit (MAB) problem is a classic reinforcement learning problem that illustrates the exploitation-exploration dilemma.">
+<meta property="og:image" content="https://gcerar.github.io/posts/reinforcement-learning/2025-12-16-multi-armed-bandit-problem_files/figure-html/fig-benchmark-output-1.png">
+<meta property="og:site_name" content="Greg's blog">
+<meta property="og:locale" content="en_US">
+<meta property="og:image:height" content="894">
+<meta property="og:image:width" content="2423">
+</head>
+
+<body class="floating nav-fixed quarto-light"><script id="quarto-html-before-body" type="application/javascript">
+    const toggleBodyColorMode = (bsSheetEl) => {
+      const mode = bsSheetEl.getAttribute("data-mode");
+      const bodyEl = window.document.querySelector("body");
+      if (mode === "dark") {
+        bodyEl.classList.add("quarto-dark");
+        bodyEl.classList.remove("quarto-light");
+      } else {
+        bodyEl.classList.add("quarto-light");
+        bodyEl.classList.remove("quarto-dark");
+      }
+    }
+    const toggleBodyColorPrimary = () => {
+      const bsSheetEl = window.document.querySelector("link#quarto-bootstrap:not([rel=disabled-stylesheet])");
+      if (bsSheetEl) {
+        toggleBodyColorMode(bsSheetEl);
+      }
+    }
+    const setColorSchemeToggle = (alternate) => {
+      const toggles = window.document.querySelectorAll('.quarto-color-scheme-toggle');
+      for (let i=0; i < toggles.length; i++) {
+        const toggle = toggles[i];
+        if (toggle) {
+          if (alternate) {
+            toggle.classList.add("alternate");
+          } else {
+            toggle.classList.remove("alternate");
+          }
+        }
+      }
+    };
+    const toggleColorMode = (alternate) => {
+      // Switch the stylesheets
+      const primaryStylesheets = window.document.querySelectorAll('link.quarto-color-scheme:not(.quarto-color-alternate)');
+      const alternateStylesheets = window.document.querySelectorAll('link.quarto-color-scheme.quarto-color-alternate');
+      manageTransitions('#quarto-margin-sidebar .nav-link', false);
+      if (alternate) {
+        // note: dark is layered on light, we don't disable primary!
+        enableStylesheet(alternateStylesheets);
+        for (const sheetNode of alternateStylesheets) {
+          if (sheetNode.id === "quarto-bootstrap") {
+            toggleBodyColorMode(sheetNode);
+          }
+        }
+      } else {
+        disableStylesheet(alternateStylesheets);
+        enableStylesheet(primaryStylesheets)
+        toggleBodyColorPrimary();
+      }
+      manageTransitions('#quarto-margin-sidebar .nav-link', true);
+      // Switch the toggles
+      setColorSchemeToggle(alternate)
+      // Hack to workaround the fact that safari doesn't
+      // properly recolor the scrollbar when toggling (#1455)
+      if (navigator.userAgent.indexOf('Safari') > 0 && navigator.userAgent.indexOf('Chrome') == -1) {
+        manageTransitions("body", false);
+        window.scrollTo(0, 1);
+        setTimeout(() => {
+          window.scrollTo(0, 0);
+          manageTransitions("body", true);
+        }, 40);
+      }
+    }
+    const disableStylesheet = (stylesheets) => {
+      for (let i=0; i < stylesheets.length; i++) {
+        const stylesheet = stylesheets[i];
+        stylesheet.rel = 'disabled-stylesheet';
+      }
+    }
+    const enableStylesheet = (stylesheets) => {
+      for (let i=0; i < stylesheets.length; i++) {
+        const stylesheet = stylesheets[i];
+        if(stylesheet.rel !== 'stylesheet') { // for Chrome, which will still FOUC without this check
+          stylesheet.rel = 'stylesheet';
+        }
+      }
+    }
+    const manageTransitions = (selector, allowTransitions) => {
+      const els = window.document.querySelectorAll(selector);
+      for (let i=0; i < els.length; i++) {
+        const el = els[i];
+        if (allowTransitions) {
+          el.classList.remove('notransition');
+        } else {
+          el.classList.add('notransition');
+        }
+      }
+    }
+    const isFileUrl = () => {
+      return window.location.protocol === 'file:';
+    }
+    const hasAlternateSentinel = () => {
+      let styleSentinel = getColorSchemeSentinel();
+      if (styleSentinel !== null) {
+        return styleSentinel === "alternate";
+      } else {
+        return false;
+      }
+    }
+    const setStyleSentinel = (alternate) => {
+      const value = alternate ? "alternate" : "default";
+      if (!isFileUrl()) {
+        window.localStorage.setItem("quarto-color-scheme", value);
+      } else {
+        localAlternateSentinel = value;
+      }
+    }
+    const getColorSchemeSentinel = () => {
+      if (!isFileUrl()) {
+        const storageValue = window.localStorage.getItem("quarto-color-scheme");
+        return storageValue != null ? storageValue : localAlternateSentinel;
+      } else {
+        return localAlternateSentinel;
+      }
+    }
+    const toggleGiscusIfUsed = (isAlternate, darkModeDefault) => {
+      const baseTheme = document.querySelector('#giscus-base-theme')?.value ?? 'light';
+      const alternateTheme = document.querySelector('#giscus-alt-theme')?.value ?? 'dark';
+      let newTheme = '';
+      if(authorPrefersDark) {
+        newTheme = isAlternate ? baseTheme : alternateTheme;
+      } else {
+        newTheme = isAlternate ? alternateTheme : baseTheme;
+      }
+      const changeGiscusTheme = () => {
+        // From: https://github.com/giscus/giscus/issues/336
+        const sendMessage = (message) => {
+          const iframe = document.querySelector('iframe.giscus-frame');
+          if (!iframe) return;
+          iframe.contentWindow.postMessage({ giscus: message }, 'https://giscus.app');
+        }
+        sendMessage({
+          setConfig: {
+            theme: newTheme
+          }
+        });
+      }
+      const isGiscussLoaded = window.document.querySelector('iframe.giscus-frame') !== null;
+      if (isGiscussLoaded) {
+        changeGiscusTheme();
+      }
+    };
+    const authorPrefersDark = false;
+    const darkModeDefault = authorPrefersDark;
+      document.querySelector('link#quarto-text-highlighting-styles.quarto-color-scheme-extra').rel = 'disabled-stylesheet';
+      document.querySelector('link#quarto-bootstrap.quarto-color-scheme-extra').rel = 'disabled-stylesheet';
+    let localAlternateSentinel = darkModeDefault ? 'alternate' : 'default';
+    // Dark / light mode switch
+    window.quartoToggleColorScheme = () => {
+      // Read the current dark / light value
+      let toAlternate = !hasAlternateSentinel();
+      toggleColorMode(toAlternate);
+      setStyleSentinel(toAlternate);
+      toggleGiscusIfUsed(toAlternate, darkModeDefault);
+      window.dispatchEvent(new Event('resize'));
+    };
+    // Switch to dark mode if need be
+    if (hasAlternateSentinel()) {
+      toggleColorMode(true);
+    } else {
+      toggleColorMode(false);
+    }
+  </script>
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a class="navbar-brand" href="../../index.html">
+    <span class="navbar-title">Greg’s blog</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Search"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll me-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="../../index.html"> <i class="bi bi-house-door" role="img">
+</i> 
+<span class="menu-text">Home</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../../index.html"> <i class="bi bi-file-richtext" role="img">
+</i> 
+<span class="menu-text">Blog</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../../about.html"> <i class="bi bi-file-person" role="img">
+</i> 
+<span class="menu-text">About</span></a>
+  </li>  
+</ul>
+            <ul class="navbar-nav navbar-nav-scroll ms-auto">
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://github.com/gcerar"> <i class="bi bi-github" role="img" aria-label="GitHub page">
+</i> 
+<span class="menu-text"></span></a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://linkedin.com/in/gcerar"> <i class="bi bi-linkedin" role="img" aria-label="LinkedIn page">
+</i> 
+<span class="menu-text"></span></a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="../../posts.xml"> <i class="bi bi-rss" role="img" aria-label="RSS">
+</i> 
+<span class="menu-text"></span></a>
+  </li>  
+</ul>
+          </div> <!-- /navcollapse -->
+            <div class="quarto-navbar-tools">
+  <a href="" class="quarto-color-scheme-toggle quarto-navigation-tool  px-1" onclick="window.quartoToggleColorScheme(); return false;" title="Toggle dark mode"><i class="bi"></i></a>
+</div>
+      </div> <!-- /container-fluid -->
+    </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-full page-navbar">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
+    <nav id="TOC" role="doc-toc" class="toc-active" data-toc-expanded="99">
+    <h2 id="toc-title">Table of Contents</h2>
+   
+  <ul>
+  <li><a href="#what-is-a-multi-armed-bandit" id="toc-what-is-a-multi-armed-bandit" class="nav-link active" data-scroll-target="#what-is-a-multi-armed-bandit">What is a Multi-Armed Bandit?</a></li>
+  <li><a href="#the-environment" id="toc-the-environment" class="nav-link" data-scroll-target="#the-environment">The Environment</a>
+  <ul class="collapse">
+  <li><a href="#formal-definition" id="toc-formal-definition" class="nav-link" data-scroll-target="#formal-definition">Formal Definition</a></li>
+  <li><a href="#bandit-strategies" id="toc-bandit-strategies" class="nav-link" data-scroll-target="#bandit-strategies">Bandit Strategies</a></li>
+  </ul></li>
+  <li><a href="#epsilon-greedy-algorithm" id="toc-epsilon-greedy-algorithm" class="nav-link" data-scroll-target="#epsilon-greedy-algorithm">Epsilon-Greedy Algorithm</a></li>
+  <li><a href="#upper-confidence-bounds-ucb" id="toc-upper-confidence-bounds-ucb" class="nav-link" data-scroll-target="#upper-confidence-bounds-ucb">Upper Confidence Bounds (UCB)</a>
+  <ul class="collapse">
+  <li><a href="#unified-definition" id="toc-unified-definition" class="nav-link" data-scroll-target="#unified-definition">Unified Definition</a></li>
+  <li><a href="#hoeffdings-inequality" id="toc-hoeffdings-inequality" class="nav-link" data-scroll-target="#hoeffdings-inequality">Hoeffding’s Inequality</a></li>
+  <li><a href="#ucb1" id="toc-ucb1" class="nav-link" data-scroll-target="#ucb1">UCB1</a></li>
+  </ul></li>
+  <li><a href="#bayesian-ucb" id="toc-bayesian-ucb" class="nav-link" data-scroll-target="#bayesian-ucb">Bayesian UCB</a>
+  <ul class="collapse">
+  <li><a href="#using-distributional-assumptions" id="toc-using-distributional-assumptions" class="nav-link" data-scroll-target="#using-distributional-assumptions">Using Distributional Assumptions</a></li>
+  <li><a href="#key-difference-from-ucb1" id="toc-key-difference-from-ucb1" class="nav-link" data-scroll-target="#key-difference-from-ucb1">Key Difference from UCB1</a></li>
+  </ul></li>
+  <li><a href="#thompson-sampling" id="toc-thompson-sampling" class="nav-link" data-scroll-target="#thompson-sampling">Thompson Sampling</a>
+  <ul class="collapse">
+  <li><a href="#thompson-sampling-for-bernoulli-bandits-beta-bernoulli" id="toc-thompson-sampling-for-bernoulli-bandits-beta-bernoulli" class="nav-link" data-scroll-target="#thompson-sampling-for-bernoulli-bandits-beta-bernoulli">Thompson Sampling for Bernoulli Bandits (Beta-Bernoulli)</a></li>
+  </ul></li>
+  <li><a href="#benchmark" id="toc-benchmark" class="nav-link" data-scroll-target="#benchmark">Benchmark</a></li>
+  <li><a href="#conclusions" id="toc-conclusions" class="nav-link" data-scroll-target="#conclusions">Conclusions</a></li>
+  <li><a href="#appendix" id="toc-appendix" class="nav-link" data-scroll-target="#appendix">Appendix</a></li>
+  </ul>
+</nav>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar zindex-bottom">
+    </div>
+<!-- main -->
+<main class="content column-page-right" id="quarto-document-content">
+
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Bernoulli Multi-Armed Bandit Problem</h1>
+  <div class="quarto-categories">
+    <div class="quarto-category">python</div>
+    <div class="quarto-category">code</div>
+    <div class="quarto-category">MAB</div>
+    <div class="quarto-category">reinforcement learning</div>
+  </div>
+  </div>
+
+
+
+<div class="quarto-title-meta column-page-right">
+
+    <div>
+    <div class="quarto-title-meta-heading">Author</div>
+    <div class="quarto-title-meta-contents">
+             <p>Gregor Cerar </p>
+          </div>
+  </div>
+    
+    <div>
+    <div class="quarto-title-meta-heading">Published</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date">2025-12-16</p>
+    </div>
+  </div>
+  
+    <div>
+    <div class="quarto-title-meta-heading">Modified</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date-modified">2025-12-17</p>
+    </div>
+  </div>
+    
+  </div>
+  
+<div>
+  <div class="abstract">
+    <div class="block-title">Abstract</div>
+    <p>The multi-armed bandit (MAB) problem is a classic reinforcement learning problem that illustrates the exploitation-exploration dilemma.</p>
+  </div>
+</div>
+
+
+</header>
+
+
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Note
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Credits to <a href="https://lilianweng.github.io/posts/2018-01-23-multi-armed-bandit/">Lil’s blog post</a>. I slightly improved and extended it for myself to better understand statistical terms.</p>
+</div>
+</div>
+<p>The exploitation-exploration dilemma exists in many aspects of our lives. For instance, for your favourite option (<em>e.g.,</em> restaurant, chatbot, artist, busic band) you are confident of what you will get, but you miss the chance to discover an even better option. But if you choose to try new options all the time, you’re very likely gonna deal with unpleasant service from time to time. Not every new option pays off.</p>
+<p>This trade-off becomes especially important when we operate under <strong>incomplete information</strong>. Without full knowledge of our environment, we must gather information while simultaneously making good decisions. Exploitation uses what what we’ve learned, while exploration risks short-term loss to gain long-term insight.</p>
+<p>To see how this plays out in a clean mathematical settings, we turn to a classic model.</p>
+<section id="what-is-a-multi-armed-bandit" class="level1">
+<h1>What is a Multi-Armed Bandit?</h1>
+<p>The multi-armed bandit (MAB) captures this dilemma elegantly. Imagine a row of slot machines (<em>i.e.,</em> “<a href="(https://en.wiktionary.org/wiki/one-armed_bandit)">one-armed bandits</a>”) each with unknown probability of payout. The goals is to maximize the total reward over time. Each pull (<em>i.e.,</em> action) gives you information, but also costs you the chance to pull a better machine.</p>
+</section>
+<section id="the-environment" class="level1">
+<h1>The Environment</h1>
+<p>Let’s consider the simplest version of the problem. You face several slot machines, each with unknown Bernoulli reward distribution. Each play either gives you a fixed reward or gives nothing. You have plenty of trials, and your choices don’t change the underlying probabilities.</p>
+<p>The question is: <em>What is the best strategy to achieve the highest long-term reward?</em></p>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Note
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>For newcommers to reinforcement learning (as I was when writing this), the following clarifications help.</p>
+<p>First, <strong>regret</strong> measures how much reward you lost compared to always choosing the best option in hindsight. It quantifies the “if only I had known…” feeling.</p>
+<p>Second, the reward probabilities are <em>not known ahead of time</em>. You discover them through experiennce. This is what makes the problem interesting.</p>
+</div>
+</div>
+<div id="cell-5" class="cell" data-execution_count="1">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> abc <span class="im">import</span> ABC, abstractmethod</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.ticker <span class="im">as</span> ticker</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy.typing <span class="im">as</span> npt</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> aquarel <span class="im">import</span> load_theme</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="op">%</span>config InlineBackend.figure_formats <span class="op">=</span> {<span class="st">'retina'</span>, <span class="st">'png'</span>}</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div id="cell-6" class="cell" data-execution_count="2">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> BaseBandit(ABC):</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>    k: <span class="bu">int</span>  <span class="co"># number of arms</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>    best_proba: <span class="bu">float</span> <span class="op">|</span> np.float64  <span class="co"># hidden to solver; for regret calculation, highest possible reward probability</span></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>    probas: npt.NDArray[np.float64]  <span class="co"># hidden to solver; reward probabilities</span></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">@abstractmethod</span></span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> generate_reward(<span class="va">self</span>, i: <span class="bu">int</span>) <span class="op">-&gt;</span> <span class="bu">float</span>:</span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>        <span class="co">"""Returns reward after lever `i` is pulled."""</span></span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>        <span class="cf">raise</span> <span class="pp">NotImplementedError</span></span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> BaseSolver(ABC):</span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a>    bandit: BaseBandit  <span class="co"># reference to the bandit instance</span></span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a>    counts: npt.NDArray[np.int64]  <span class="co"># hold stats of pulled levers</span></span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a>    actions: <span class="bu">list</span>[<span class="bu">int</span>]</span>
+<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a>    rewards: <span class="bu">list</span>[<span class="bu">float</span>]</span>
+<span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a>    regrets: <span class="bu">list</span>[<span class="bu">float</span>]</span>
+<span id="cb2-19"><a href="#cb2-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-20"><a href="#cb2-20" aria-hidden="true" tabindex="-1"></a>    <span class="at">@abstractmethod</span></span>
+<span id="cb2-21"><a href="#cb2-21" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> <span class="fu">__init__</span>(<span class="va">self</span>, bandit: BaseBandit) <span class="op">-&gt;</span> <span class="va">None</span>:</span>
+<span id="cb2-22"><a href="#cb2-22" aria-hidden="true" tabindex="-1"></a>        <span class="co">"""bandit (BaseBandit): the target bandit to solve."""</span></span>
+<span id="cb2-23"><a href="#cb2-23" aria-hidden="true" tabindex="-1"></a>        <span class="cf">assert</span> <span class="bu">isinstance</span>(bandit, BaseBandit)</span>
+<span id="cb2-24"><a href="#cb2-24" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.bandit <span class="op">=</span> bandit</span>
+<span id="cb2-25"><a href="#cb2-25" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-26"><a href="#cb2-26" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.counts <span class="op">=</span> np.zeros(<span class="va">self</span>.bandit.k, dtype<span class="op">=</span>np.int64)</span>
+<span id="cb2-27"><a href="#cb2-27" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-28"><a href="#cb2-28" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.actions <span class="op">=</span> []  <span class="co"># a history of lever ids, 0 to bandit n-1.</span></span>
+<span id="cb2-29"><a href="#cb2-29" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.rewards <span class="op">=</span> []  <span class="co"># a history of collected rewards.</span></span>
+<span id="cb2-30"><a href="#cb2-30" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.regrets <span class="op">=</span> []  <span class="co"># a history of regrets for taken actions.</span></span>
+<span id="cb2-31"><a href="#cb2-31" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-32"><a href="#cb2-32" aria-hidden="true" tabindex="-1"></a>    <span class="at">@property</span></span>
+<span id="cb2-33"><a href="#cb2-33" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> num_steps(<span class="va">self</span>) <span class="op">-&gt;</span> <span class="bu">int</span>:</span>
+<span id="cb2-34"><a href="#cb2-34" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> <span class="bu">len</span>(<span class="va">self</span>.actions)</span>
+<span id="cb2-35"><a href="#cb2-35" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-36"><a href="#cb2-36" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> update_regret(<span class="va">self</span>, i: <span class="bu">int</span>) <span class="op">-&gt;</span> <span class="va">None</span>:</span>
+<span id="cb2-37"><a href="#cb2-37" aria-hidden="true" tabindex="-1"></a>        <span class="co">"""Update the regret after the lever `i` is pulled."""</span></span>
+<span id="cb2-38"><a href="#cb2-38" aria-hidden="true" tabindex="-1"></a>        regret <span class="op">=</span> <span class="va">self</span>.bandit.best_proba <span class="op">-</span> <span class="va">self</span>.bandit.probas[i]</span>
+<span id="cb2-39"><a href="#cb2-39" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.regrets.append(regret)</span>
+<span id="cb2-40"><a href="#cb2-40" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-41"><a href="#cb2-41" aria-hidden="true" tabindex="-1"></a>    <span class="at">@property</span></span>
+<span id="cb2-42"><a href="#cb2-42" aria-hidden="true" tabindex="-1"></a>    <span class="at">@abstractmethod</span></span>
+<span id="cb2-43"><a href="#cb2-43" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> estimated_probas(<span class="va">self</span>) <span class="op">-&gt;</span> npt.NDArray[np.float64]:</span>
+<span id="cb2-44"><a href="#cb2-44" aria-hidden="true" tabindex="-1"></a>        <span class="co">"""Retrieve learned reward probability for each arm `n` of the bandit."""</span></span>
+<span id="cb2-45"><a href="#cb2-45" aria-hidden="true" tabindex="-1"></a>        <span class="cf">raise</span> <span class="pp">NotImplementedError</span></span>
+<span id="cb2-46"><a href="#cb2-46" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-47"><a href="#cb2-47" aria-hidden="true" tabindex="-1"></a>    <span class="at">@abstractmethod</span></span>
+<span id="cb2-48"><a href="#cb2-48" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> run_one_step(<span class="va">self</span>) <span class="op">-&gt;</span> <span class="bu">tuple</span>[<span class="bu">int</span>, <span class="bu">float</span>]:</span>
+<span id="cb2-49"><a href="#cb2-49" aria-hidden="true" tabindex="-1"></a>        <span class="co">"""Return solver's selected action and bandit's outcome reward."""</span></span>
+<span id="cb2-50"><a href="#cb2-50" aria-hidden="true" tabindex="-1"></a>        <span class="cf">raise</span> <span class="pp">NotImplementedError</span></span>
+<span id="cb2-51"><a href="#cb2-51" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-52"><a href="#cb2-52" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> run(<span class="va">self</span>, num_steps: <span class="bu">int</span>) <span class="op">-&gt;</span> <span class="va">None</span>:</span>
+<span id="cb2-53"><a href="#cb2-53" aria-hidden="true" tabindex="-1"></a>        <span class="co">"""Run simulation for `num_steps` steps."""</span></span>
+<span id="cb2-54"><a href="#cb2-54" aria-hidden="true" tabindex="-1"></a>        <span class="cf">for</span> _ <span class="kw">in</span> <span class="bu">range</span>(num_steps):</span>
+<span id="cb2-55"><a href="#cb2-55" aria-hidden="true" tabindex="-1"></a>            i, r <span class="op">=</span> <span class="va">self</span>.run_one_step()</span>
+<span id="cb2-56"><a href="#cb2-56" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-57"><a href="#cb2-57" aria-hidden="true" tabindex="-1"></a>            <span class="va">self</span>.counts[i] <span class="op">+=</span> <span class="dv">1</span></span>
+<span id="cb2-58"><a href="#cb2-58" aria-hidden="true" tabindex="-1"></a>            <span class="va">self</span>.actions.append(i)</span>
+<span id="cb2-59"><a href="#cb2-59" aria-hidden="true" tabindex="-1"></a>            <span class="va">self</span>.update_regret(i)</span>
+<span id="cb2-60"><a href="#cb2-60" aria-hidden="true" tabindex="-1"></a>            <span class="va">self</span>.rewards.append(r)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<section id="formal-definition" class="level2">
+<h2 class="anchored" data-anchor-id="formal-definition">Formal Definition</h2>
+<p>With the intuition in place, we can now describe the Bernoulli multi-armed bandit more formally. A bandit problem is defined as a tuple <span class="math inline">\(\langle \mathcal{A}, \mathcal{R} \rangle\)</span>, where:</p>
+<ul>
+<li>We have <span class="math inline">\(K\)</span> machines (or levers) with probabilities <span class="math inline">\(\{ \theta_{1}, \ldots, \theta_{K} \}\)</span>.</li>
+<li>At each time step <span class="math inline">\(t\)</span>, we take an action <span class="math inline">\(a_t\)</span> on one slot machine and receive a reward <span class="math inline">\(r_t\)</span>.</li>
+<li><span class="math inline">\(\mathcal{A}\)</span> is a set of possible actions. The value of an action is expected reward, <span class="math inline">\(Q(a) = \mathbb{E}[r|a] = \theta\)</span>. If action <span class="math inline">\(a_{t}\)</span> corresponds to machine <span class="math inline">\(i\)</span>, then <span class="math inline">\(Q(a_{t}) = \theta_{i}\)</span>.</li>
+<li><span class="math inline">\(\mathcal{R}\)</span> is the reward function. In a Bernoulli bandit, each pull yields a reward of <span class="math inline">\(1\)</span> with probability <span class="math inline">\(Q(a_{t})\)</span>, and <span class="math inline">\(0\)</span> otherwise.</li>
+</ul>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Note
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Recall that a <a href="https://en.wikipedia.org/wiki/Bernoulli_distribution">Bernoulli distribution</a> is a discrete probability distribution, which takes the value <span class="math inline">\(1\)</span> with probability <span class="math inline">\(p\)</span> and <span class="math inline">\(0\)</span> with probability <span class="math inline">\(1 - p\)</span>.</p>
+<p>The symbol <span class="math inline">\(\mathbb{E}[\cdot]\)</span> denotes the <a href="https://en.wikipedia.org/wiki/Expected_value">expected value</a>, a generalized weighted average. The expression <span class="math inline">\(\mathbb{E}[r|a]\)</span> reads as <em>the expected reward (<span class="math inline">\(r\)</span>) that we took action <span class="math inline">\(a\)</span>.</em>”</p>
+<p>Crucially, the probabilities <span class="math inline">\(\{\theta_{i}\}\)</span> are <strong>NOT known in advance</strong>. They must be estimated through interaction.</p>
+</div>
+</div>
+<p>A Bernoulli bandit can be seen as a simplified Marko decision process (MDP) without a state space. The objective is to maximize the total reward <span class="math inline">\(\sum_{t=1}^{T} r_{t}\)</span>. If we knew which action had the biggest reward probability, this would be equivalent to minimizing the <strong>regret</strong> from not always choosing that optimal action.</p>
+<p>Let <span class="math inline">\(\theta^{*}\)</span> denote the reward probability of the optimal action <span class="math inline">\(a^{*}\)</span>:</p>
+<p><span class="math display">\[
+\theta^{*} = Q(a^{*}) = \max_{a \in \mathcal{A}} Q(a) = \max_{1 \leq i \leq K} \theta_{i}
+\]</span></p>
+<p>The expected cumulative regret up to the time <span class="math inline">\(T\)</span> is then:</p>
+<p><span class="math display">\[
+\mathcal{L}_{T} = \mathbb{E}\left[\sum_{t=1}^{T}(\theta^{*} - Q(a_{t}))\right]
+\]</span></p>
+<div id="cell-8" class="cell" data-execution_count="3">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> BernoulliBandit(BaseBandit):</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> <span class="fu">__init__</span>(</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>,</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>        k: <span class="bu">int</span>,</span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>        probas: <span class="bu">list</span>[<span class="bu">float</span>] <span class="op">|</span> npt.NDArray[np.float64] <span class="op">|</span> <span class="va">None</span> <span class="op">=</span> <span class="va">None</span>,</span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>        seed: <span class="bu">int</span> <span class="op">|</span> <span class="va">None</span> <span class="op">=</span> <span class="va">None</span>,</span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>    ):</span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>        <span class="co"># sanity check: `probas` needs to be None or of size `n`.</span></span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>        <span class="cf">assert</span> probas <span class="kw">is</span> <span class="va">None</span> <span class="kw">or</span> <span class="bu">len</span>(probas) <span class="op">==</span> k</span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.k <span class="op">=</span> k  <span class="co"># save number of bandits</span></span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.rng <span class="op">=</span> np.random.default_rng(seed<span class="op">=</span>seed)</span>
+<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a>        <span class="co"># random probabilities, if they are explicitly defined</span></span>
+<span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> probas <span class="kw">is</span> <span class="va">None</span>:</span>
+<span id="cb3-17"><a href="#cb3-17" aria-hidden="true" tabindex="-1"></a>            probas <span class="op">=</span> <span class="va">self</span>.rng.random(size<span class="op">=</span><span class="va">self</span>.k)</span>
+<span id="cb3-18"><a href="#cb3-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-19"><a href="#cb3-19" aria-hidden="true" tabindex="-1"></a>        <span class="co"># convert to numpy array for easier operations later</span></span>
+<span id="cb3-20"><a href="#cb3-20" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.probas <span class="op">=</span> np.asarray(probas)</span>
+<span id="cb3-21"><a href="#cb3-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-22"><a href="#cb3-22" aria-hidden="true" tabindex="-1"></a>        <span class="co"># in case of Bernoulli MAB, highest probabily is equal to optimal</span></span>
+<span id="cb3-23"><a href="#cb3-23" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.best_proba <span class="op">=</span> np.<span class="bu">max</span>(<span class="va">self</span>.probas)</span>
+<span id="cb3-24"><a href="#cb3-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-25"><a href="#cb3-25" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> generate_reward(<span class="va">self</span>, i: <span class="bu">int</span>) <span class="op">-&gt;</span> <span class="bu">int</span>:</span>
+<span id="cb3-26"><a href="#cb3-26" aria-hidden="true" tabindex="-1"></a>        <span class="co"># The player selected the i-th machine.</span></span>
+<span id="cb3-27"><a href="#cb3-27" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> <span class="bu">int</span>(<span class="va">self</span>.rng.random() <span class="op">&lt;</span> <span class="va">self</span>.probas[i])</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</section>
+<section id="bandit-strategies" class="level2">
+<h2 class="anchored" data-anchor-id="bandit-strategies">Bandit Strategies</h2>
+<p>With the bandint problem formally defined, the next question is: <strong>how should we choose actions over time?</strong> Different strategies encode different assumptions about how exploration should be handled. Broadly, we can distinguish three categories:</p>
+<ul>
+<li><strong>No exploration:</strong> always exploit the best-known action (naive and generally poor).</li>
+<li><strong>Random exploration:</strong> explore uniformly at random.</li>
+<li><strong>Informed exploration:</strong> explore more often when uncertainty is high.</li>
+</ul>
+<p>A simple and widely used example of the last category is the <strong><span class="math inline">\(\epsilon\)</span>-greedy</strong> algorithm.</p>
+</section>
+</section>
+<section id="epsilon-greedy-algorithm" class="level1">
+<h1>Epsilon-Greedy Algorithm</h1>
+<p>The <span class="math inline">\(\epsilon\)</span>-greedy algorithm balances exploitation and exploration by choosing the currently best action most of the time, while occasionally exploring at random.</p>
+<section id="information-state" class="level4">
+<h4 class="anchored" data-anchor-id="information-state">Information State</h4>
+<p>At the time step <span class="math inline">\(t\)</span>, the algorithm maintains:</p>
+<ul>
+<li>empirical action-value estimates <span class="math inline">\(\hat{Q}_t(a)\)</span>,</li>
+<li>action counts <span class="math inline">\(N_t(a)\)</span>,</li>
+</ul>
+<p>summarizing all past interactions.</p>
+<p>The empirical value estimate for action <span class="math inline">\(a\)</span> is defined as:</p>
+<p><span class="math display">\[
+\hat{Q}_t(a) = \frac{1}{N_t(a)} \sum_{\tau = 1}^t r_\tau \cdot \mathbb{𝟙}[a_\tau = a]
+\]</span></p>
+<p>where:</p>
+<ul>
+<li><span class="math inline">\(r_\tau\)</span> is the reward received at time step <span class="math inline">\(\tau\)</span>. For a Bernoulli bandit, this is either <span class="math inline">\(1\)</span> (success) or <span class="math inline">\(0\)</span> (no reward).</li>
+<li><span class="math inline">\(\mathbb{𝟙}[a_\tau = a]\)</span> is an indicator function equal to <span class="math inline">\(1\)</span> when action <span class="math inline">\(a\)</span> was taken at time <span class="math inline">\(\tau\)</span>, and <span class="math inline">\(0\)</span> otherwise.</li>
+<li><span class="math inline">\(N_t(a)\)</span> is the number of times action <span class="math inline">\(a\)</span> has been selected: <span class="math display">\[
+N_{t}(a) = \sum_{\tau = 1}^t \mathbb{𝟙}[a_\tau = a]
+\]</span></li>
+</ul>
+</section>
+<section id="policy" class="level4">
+<h4 class="anchored" data-anchor-id="policy">Policy</h4>
+<p>The <span class="math inline">\(\epsilon\)</span>-greedy policy defines a stochastic action-selection rule:</p>
+<ul>
+<li>with probability <span class="math inline">\(1 - \epsilon\)</span>, the greedy action is selected: <span class="math display">\[
+\hat{a}^{*}_t = \arg\max_{a\in\mathcal{A}} \hat{Q}_t(a)
+\]</span></li>
+<li>with probability <span class="math inline">\(\epsilon\)</span>, an action is selected uniformly at random.</li>
+</ul>
+<p>Equivalently, the policy can be written as:</p>
+<p><span class="math display">\[
+\pi(a|h_t) = \begin{cases}
+  1 - \epsilon + \frac{\epsilon}{|\mathcal{A}|}, &amp; a = a^*_t, \\
+  \frac{\epsilon}{|\mathcal{A}|}, &amp; \text{otherwise}.
+\end{cases}
+\]</span></p>
+</section>
+<section id="update-rule" class="level4">
+<h4 class="anchored" data-anchor-id="update-rule">Update Rule</h4>
+<p>After selecting action <span class="math inline">\(a_t\)</span> and observing reward <span class="math inline">\(r_t\)</span>, the estimate <span class="math inline">\(\hat{Q}_t(a_t)\)</span> is updated using the new observation.</p>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Note
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Despite its simplicity, <span class="math inline">\(\epsilon\)</span>-greedy often performs reasonably well. However, because exploration is random and does not depend on uncertainty, it can waste trials on clearly suboptimal actions.</p>
+</div>
+</div>
+<div id="cell-11" class="cell" data-execution_count="4">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> EpsilonGreedy(BaseSolver):</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> <span class="fu">__init__</span>(<span class="va">self</span>, bandit: BaseBandit, eps: <span class="bu">float</span>, init_proba: <span class="bu">float</span> <span class="op">=</span> <span class="fl">1.0</span>, seed: <span class="bu">int</span> <span class="op">|</span> <span class="va">None</span> <span class="op">=</span> <span class="va">None</span>) <span class="op">-&gt;</span> <span class="va">None</span>:</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>        <span class="co">"""</span></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a><span class="co">        eps (float): the probability to explore at each time step.</span></span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a><span class="co">        init_proba (float): default to be 1.0; optimistic initialization</span></span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a><span class="co">        """</span></span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>        <span class="bu">super</span>().<span class="fu">__init__</span>(bandit)</span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>        <span class="cf">assert</span> <span class="fl">0.0</span> <span class="op">&lt;=</span> eps <span class="op">&lt;=</span> <span class="fl">1.0</span></span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.eps <span class="op">=</span> eps</span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a>        <span class="co"># optimistic initialization</span></span>
+<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.estimates <span class="op">=</span> np.full(<span class="va">self</span>.bandit.k, fill_value<span class="op">=</span>init_proba, dtype<span class="op">=</span>np.float64)</span>
+<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a>        <span class="co"># define random generator with seed for reproducibility</span></span>
+<span id="cb4-16"><a href="#cb4-16" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.rng <span class="op">=</span> np.random.default_rng(seed<span class="op">=</span>seed)</span>
+<span id="cb4-17"><a href="#cb4-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-18"><a href="#cb4-18" aria-hidden="true" tabindex="-1"></a>    <span class="at">@property</span></span>
+<span id="cb4-19"><a href="#cb4-19" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> estimated_probas(<span class="va">self</span>) <span class="op">-&gt;</span> npt.NDArray[np.float64]:</span>
+<span id="cb4-20"><a href="#cb4-20" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> <span class="va">self</span>.estimates</span>
+<span id="cb4-21"><a href="#cb4-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-22"><a href="#cb4-22" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> run_one_step(<span class="va">self</span>) <span class="op">-&gt;</span> <span class="bu">tuple</span>[<span class="bu">int</span>, <span class="bu">float</span>]:</span>
+<span id="cb4-23"><a href="#cb4-23" aria-hidden="true" tabindex="-1"></a>        <span class="co"># With probability epsilon pick random exploration, or pick the known best lever.</span></span>
+<span id="cb4-24"><a href="#cb4-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-25"><a href="#cb4-25" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> <span class="va">self</span>.rng.random() <span class="op">&lt;</span> <span class="va">self</span>.eps:</span>
+<span id="cb4-26"><a href="#cb4-26" aria-hidden="true" tabindex="-1"></a>            <span class="co"># pure random exploration</span></span>
+<span id="cb4-27"><a href="#cb4-27" aria-hidden="true" tabindex="-1"></a>            i <span class="op">=</span> <span class="va">self</span>.rng.integers(<span class="dv">0</span>, <span class="va">self</span>.bandit.k)</span>
+<span id="cb4-28"><a href="#cb4-28" aria-hidden="true" tabindex="-1"></a>        <span class="cf">else</span>:</span>
+<span id="cb4-29"><a href="#cb4-29" aria-hidden="true" tabindex="-1"></a>            <span class="co"># greedy selection with random tie-breaking</span></span>
+<span id="cb4-30"><a href="#cb4-30" aria-hidden="true" tabindex="-1"></a>            candidates <span class="op">=</span> np.flatnonzero(<span class="va">self</span>.estimates <span class="op">==</span> <span class="va">self</span>.estimates.<span class="bu">max</span>())</span>
+<span id="cb4-31"><a href="#cb4-31" aria-hidden="true" tabindex="-1"></a>            i <span class="op">=</span> <span class="bu">int</span>(<span class="va">self</span>.rng.choice(candidates))</span>
+<span id="cb4-32"><a href="#cb4-32" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-33"><a href="#cb4-33" aria-hidden="true" tabindex="-1"></a>        r <span class="op">=</span> <span class="va">self</span>.bandit.generate_reward(i)</span>
+<span id="cb4-34"><a href="#cb4-34" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.estimates[i] <span class="op">+=</span> <span class="fl">1.0</span> <span class="op">/</span> (<span class="va">self</span>.counts[i] <span class="op">+</span> <span class="dv">1</span>) <span class="op">*</span> (r <span class="op">-</span> <span class="va">self</span>.estimates[i])</span>
+<span id="cb4-35"><a href="#cb4-35" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-36"><a href="#cb4-36" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> i, r</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</section>
+</section>
+<section id="upper-confidence-bounds-ucb" class="level1">
+<h1>Upper Confidence Bounds (UCB)</h1>
+<p>Random exploration gives us the opportunity to try actions we know little about. However, pure randomness can also cause us to waste time and re-exploring action we already have striong evidence are suboptimal (bad luck still happens!). Two broad alternatives exist:</p>
+<ol type="1">
+<li><strong>Decay <span class="math inline">\(\epsilon\)</span> over time</strong> in <span class="math inline">\(\epsilon\)</span>-greedy, making exploration less frequent, or</li>
+<li><strong>Act optimistically for uncertain actions,</strong> favoring actions where our estimates are still unreliable.</li>
+</ol>
+<p>The second idea leads to the class of <strong>Upper Confidence Bound (UCB)</strong> algorithms. The key intuition is simple:</p>
+<blockquote class="blockquote">
+<p>If we are unsure about action’s value, we pretend it could be good until proven otherwise.</p>
+</blockquote>
+<p>More formally, UCB defines <strong>upper confidence bound</strong> <span class="math inline">\(\hat{U}_t(a)\)</span> that measures the uncertainty in our estimate <span class="math inline">\(\hat{Q}_t(a)\)</span>. With high probability, the true value satisfies:</p>
+<p><span class="math display">\[
+Q(a) \leq \hat{Q}_t(a) + \hat{U}_t(a).
+\]</span></p>
+<p>The uncertainty term <span class="math inline">\(\hat{U}_t(a)\)</span> must shrink as we gather more data. Thus, it is a decreasing function of <span class="math inline">\(N_t(a)\)</span>: the more we pull an arm, the more confident we become, and the smaller its uncertainty bonus should be.</p>
+<p>Given this, the UCB policy selects the action whose <em>optimistic estimate</em> is highest:</p>
+<p><span class="math display">\[
+a_{t}^{\textrm{UCB}} = \arg\max_{a \in \mathcal{A}} \left[ \hat{Q}_{t}(a) + \hat{U}_{t}(a) \right]
+\]</span></p>
+<p>This ensures a natural balance: well explored actions rely mostly on <span class="math inline">\(\hat{Q}_{t}(a)\)</span>, while poorly explored actions get an extra boost from their larger uncertainty term.</p>
+<section id="unified-definition" class="level2">
+<h2 class="anchored" data-anchor-id="unified-definition">Unified Definition</h2>
+<section id="information-state-1" class="level4">
+<h4 class="anchored" data-anchor-id="information-state-1">Information State</h4>
+<p>At time step <span class="math inline">\(t\)</span>, the UCB algorithms maintains:</p>
+<ul>
+<li>empirical action-value estimates <span class="math inline">\(\hat{Q}_t(a)\)</span>,</li>
+<li>action counts <span class="math inline">\(N_t(a)\)</span>.</li>
+</ul>
+<p>The quantities summarize the full interaction history.</p>
+</section>
+<section id="policy-1" class="level4">
+<h4 class="anchored" data-anchor-id="policy-1">Policy</h4>
+<p>UCB defines deterministic policy:</p>
+<p><span class="math display">\[
+\pi(a|h_t) = \begin{cases}
+    1, &amp; a = \arg\max_{a'} \left[ \hat{Q}_t(a') + \hat{U}_t(a') \right], \\
+    0, &amp; \text{otherwise}.
+\end{cases}
+\]</span></p>
+<p>Unlike <span class="math inline">\(\epsilon\)</span>-greedy, exploration is not injected explicitly. Instead, it emerges through optimism in the face of uncertainty.</p>
+</section>
+<section id="action-selection" class="level4">
+<h4 class="anchored" data-anchor-id="action-selection">Action Selection</h4>
+<p>At each time step, the selected action is:</p>
+<p><span class="math display">\[
+a_t = \arg\max_{a \in \mathcal{A}} \left[ \hat{Q}_t(a) + \hat{U}_t(a) \right].
+\]</span></p>
+</section>
+<section id="update-rule-1" class="level4">
+<h4 class="anchored" data-anchor-id="update-rule-1">Update Rule</h4>
+<p>After selecting action <span class="math inline">\(a_t\)</span> and observing reward <span class="math inline">\(r_t\)</span>, the algorithm updates:</p>
+<ul>
+<li>the action counts <span class="math inline">\(N_t(a_t)\)</span></li>
+<li>the empirical estimate <span class="math inline">\(\hat{Q}_t(a_t)\)</span></li>
+</ul>
+</section>
+<section id="choosing-the-uncertainty-bound" class="level4">
+<h4 class="anchored" data-anchor-id="choosing-the-uncertainty-bound">Choosing the Uncertainty Bound</h4>
+<p>The remaining design choice is how to define <span class="math inline">\(\hat{U}_t(a)\)</span>. Different choices lead to different members of the UCB family, such as <strong>UCB1</strong>, which derives its bound from Hoeffding’s inequality.</p>
+<p><strong>Now the question is: how do we choose the uncertainty bound <span class="math inline">\(\hat{U}_t(a)\)</span>?</strong></p>
+</section>
+</section>
+<section id="hoeffdings-inequality" class="level2">
+<h2 class="anchored" data-anchor-id="hoeffdings-inequality">Hoeffding’s Inequality</h2>
+<p>If we do not want to assign any prior knowledge about the shape of the reward distribution (<em>e.g.,</em> Gaussian, exponential), we can rely on <strong>Hoeffding’s Inequality</strong>. This theorem is applicable on <strong>any bounded distribution</strong>.</p>
+<p>A random variable is said to follow a <strong>bounded distribution</strong> if all its values lie within a fixed finite interval <span class="math inline">\([a,b]\)</span>. In our case, Bernoulli rewards always lie in <span class="math inline">\([0,1]\)</span>, so the boundedness assumption is naturally satisfied.</p>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Note
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Here are a few examples for intuition:</p>
+<ul>
+<li>A Bernoulli distribution is bounded on interval <span class="math inline">\([0,1]\)</span>.</li>
+<li>A uniform distribution on interval <em>e.g.,</em> <span class="math inline">\([2,5]\)</span> is bounded.</li>
+<li>A Gaussian distribution is <em>not</em> bounded because of its infinite tails.</li>
+</ul>
+</div>
+</div>
+<section id="hoeffdings-inequality-informal-version" class="level4">
+<h4 class="anchored" data-anchor-id="hoeffdings-inequality-informal-version">Hoeffding’s Inequality (informal version)</h4>
+<p>Let <span class="math inline">\(X_1, \ldots, X_t\)</span> be i.i.d. (independent and identically distributed) random variables, all bounded in the interval <span class="math inline">\([0,1]\)</span>. The sample mean is</p>
+<p><span class="math display">\[
+\overline{X}_t = \frac{1}{t} \sum_{\tau = 1}^{t} X_{\tau}.
+\]</span></p>
+<p>Then for any <span class="math inline">\(u \gt 0\)</span>, Hoeffding’s inequality states:</p>
+<p><span class="math display">\[
+\mathbb{P}\left[\mathbb{E}[X] \gt \overline{X}_{t} + u \right] \leq \mathrm{e}^{-2tu^2}.
+\]</span></p>
+<p>This inequality bounds the probability that the true mean exceeds the empirical mean my more than <span class="math inline">\(u\)</span>.</p>
+</section>
+<section id="applying-hoeffdings-inequality-to-bandit-rewards" class="level4">
+<h4 class="anchored" data-anchor-id="applying-hoeffdings-inequality-to-bandit-rewards">Applying Hoeffding’s Inequality to Bandit Rewards</h4>
+<p>To apply this result to the multi-armed bandit setting, we observe that <strong>each fixed action <span class="math inline">\(a\)</span> defines its own random reward-generating process</strong>. Every time we select action <span class="math inline">\(a\)</span>, we obtain a reward drawn independently from the same bounded distribution. Therefore, Hoeffding’s inequality applies directly to each arm.</p>
+<p>For a fixed target action <span class="math inline">\(a\)</span>, define:</p>
+<ul>
+<li><span class="math inline">\(r_{\tau}(a)\)</span> as the reward random variable,</li>
+<li><span class="math inline">\(Q(a)\)</span> as the true mean reward,</li>
+<li><span class="math inline">\(\hat{Q}_{t}(a)\)</span> as the sample mean reward,</li>
+<li>and <span class="math inline">\(u = U_{t}(a)\)</span> as the upper confidence bound.</li>
+</ul>
+<p>By directly identifying Hoeffding’s variables with the bandit quantities:</p>
+<p><span class="math display">\[
+X_{\tau} \leftrightarrow r_\tau(a),\quad
+\mathbb{E}[X] \leftrightarrow Q(a),\quad
+\overline{X} \leftrightarrow \hat{Q}_{t}(a),\quad
+t \leftrightarrow N_{t}(a)
+\]</span></p>
+<p>we obtain:</p>
+<p><span class="math display">\[
+\mathbb{P} \left[ Q(a) \gt \hat{Q}_{t}(a) + U_{t}(a) \right] \leq \mathrm{e}^{-2 N_{t}(a) U_{t}(a)^2}.
+\]</span></p>
+<p>This gives a probabilistic upper bound on how much the true reward of an action can exceed its empirical estimate.</p>
+</section>
+<section id="choosing-the-upper-confidence-bound" class="level4">
+<h4 class="anchored" data-anchor-id="choosing-the-upper-confidence-bound">Choosing the Upper Confidence Bound</h4>
+<p>We want to select the confidence bound so that the probability of underestimating the true mean is very small. Let us require this probability to be below a small threshold <span class="math inline">\(p\)</span>:</p>
+<p><span class="math display">\[
+\mathrm{e}^{-2N_{t}(a)U_{t}(a)^2} = p.
+\]</span></p>
+<p>Solving for <span class="math inline">\(U_{t}(a)\)</span>, we obtain:</p>
+<p><span class="math display">\[
+U_{t}(a) = \sqrt{\frac{-\ln{p}}{2N_{t}(a)}}.
+\]</span></p>
+<p>This expression defines how much optimism we should add to the empirical estimate based on how many times the action has been sampled.</p>
+</section>
+</section>
+<section id="ucb1" class="level2">
+<h2 class="anchored" data-anchor-id="ucb1">UCB1</h2>
+<p>From the previous section, we obtained a general form of the confidence bound:</p>
+<p><span class="math display">\[
+U_{t}(a) = \sqrt{\frac{-\ln{p}}{2N_{t}(a)}}.
+\]</span></p>
+<p>The remaining question is how to choose the threshold probability <span class="math inline">\(p\)</span>. Intuitively, as time goes on and we collect more data, we want our confidence bounds to become <strong>tighter</strong> and failures to become increasingly unlikely. A simple and effective heuristic is to let the failure probability <strong>decrease with time</strong>.</p>
+<p>A common choice is:</p>
+<p><span class="math display">\[
+p = t^{-4},
+\]</span></p>
+<p>which makes the failure probabilities summable over time and enables strong regret guarantees.</p>
+<p>Substituting this into the confidence bound gives:</p>
+<p><span class="math display">\[
+U_{t}(a) = \sqrt{\frac{2\ln{t}}{N_{t}(a)}}.
+\]</span></p>
+<p>This yields the classic <strong>UCB1</strong> algorithm.</p>
+<p>At each time step, UCB1 selects the action that maximizes the optimistic estimate of the reward:</p>
+<p><span class="math display">\[
+a_{t}^\textrm{UCB1} = \arg\max_{a \in \mathcal{A}} \left[ \hat{Q}_t(a) + \sqrt{\frac{2\ln{t}}{N_{t}(a)}} \right].
+\]</span></p>
+<p>Here:</p>
+<ul>
+<li><span class="math inline">\(\hat{Q}_{t}(a)\)</span> promotes <strong>exploitation</strong>,</li>
+<li>the square-root term promotes <strong>exploration</strong>, shrinking as <span class="math inline">\(N_{t}(a)\)</span> increases,</li>
+<li>and the <span class="math inline">\(\ln{t}\)</span> term ensures that even rarely chosen actions are revisited occasionally.</li>
+</ul>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Note
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><strong>Why this works (one sentence intuition)</strong></p>
+<p>UCB1 always chooses the action with the <strong>highest plausible reward</strong>, where “plausible” is defined by a confidence interval that shrinks as evidence accumulates.</p>
+</div>
+</div>
+<div id="cell-17" class="cell" data-execution_count="5">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> UCB1(BaseSolver):</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> <span class="fu">__init__</span>(<span class="va">self</span>, bandit: BaseBandit, init_proba: <span class="bu">float</span> <span class="op">=</span> <span class="fl">1.0</span>, seed: <span class="bu">int</span> <span class="op">|</span> <span class="va">None</span> <span class="op">=</span> <span class="va">None</span>):</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>        <span class="bu">super</span>().<span class="fu">__init__</span>(bandit)</span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.t <span class="op">=</span> <span class="dv">0</span>  <span class="co"># number of time steps</span></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.estimates <span class="op">=</span> np.full(shape<span class="op">=</span><span class="va">self</span>.bandit.k, fill_value<span class="op">=</span>init_proba, dtype<span class="op">=</span>np.float64)</span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.rng <span class="op">=</span> np.random.default_rng(seed)</span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">@property</span></span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> estimated_probas(<span class="va">self</span>) <span class="op">-&gt;</span> npt.NDArray[np.float64]:</span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> <span class="va">self</span>.estimates</span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> run_one_step(<span class="va">self</span>) <span class="op">-&gt;</span> <span class="bu">tuple</span>[<span class="bu">int</span>, <span class="bu">float</span>]:</span>
+<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.t <span class="op">+=</span> <span class="dv">1</span></span>
+<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-15"><a href="#cb5-15" aria-hidden="true" tabindex="-1"></a>        <span class="co"># Pick the best one with consideration of upper confidence bounds.</span></span>
+<span id="cb5-16"><a href="#cb5-16" aria-hidden="true" tabindex="-1"></a>        ucb <span class="op">=</span> <span class="va">self</span>.estimates <span class="op">+</span> np.sqrt(<span class="dv">2</span> <span class="op">*</span> np.log(<span class="va">self</span>.t) <span class="op">/</span> (<span class="dv">1</span> <span class="op">+</span> <span class="va">self</span>.counts))</span>
+<span id="cb5-17"><a href="#cb5-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-18"><a href="#cb5-18" aria-hidden="true" tabindex="-1"></a>        <span class="co"># tie-breaking</span></span>
+<span id="cb5-19"><a href="#cb5-19" aria-hidden="true" tabindex="-1"></a>        candidates <span class="op">=</span> np.flatnonzero(ucb <span class="op">==</span> ucb.<span class="bu">max</span>())</span>
+<span id="cb5-20"><a href="#cb5-20" aria-hidden="true" tabindex="-1"></a>        i <span class="op">=</span> <span class="bu">int</span>(<span class="va">self</span>.rng.choice(candidates))</span>
+<span id="cb5-21"><a href="#cb5-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-22"><a href="#cb5-22" aria-hidden="true" tabindex="-1"></a>        r <span class="op">=</span> <span class="va">self</span>.bandit.generate_reward(i)</span>
+<span id="cb5-23"><a href="#cb5-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-24"><a href="#cb5-24" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.estimates[i] <span class="op">+=</span> <span class="fl">1.0</span> <span class="op">/</span> (<span class="va">self</span>.counts[i] <span class="op">+</span> <span class="dv">1</span>) <span class="op">*</span> (r <span class="op">-</span> <span class="va">self</span>.estimates[i])</span>
+<span id="cb5-25"><a href="#cb5-25" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-26"><a href="#cb5-26" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> i, r</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</section>
+</section>
+<section id="bayesian-ucb" class="level1">
+<h1>Bayesian UCB</h1>
+<p>Bayesian UCB is an instance of the UCB principle in which uncertainty is quantified using the posterior distribution of the reward model.</p>
+<p>In the UCB and UCB1 algorithms, we <strong>do not assume any specific form of the reward distribution</strong>. Because of this, we rely on <strong>Hoeffding’s inequality</strong>, which provides a very general but also somewhat loose confidence bound that works for <em>any</em> bounded distribution.</p>
+<p>However, in some applications we may have <strong>prior knowledge</strong> about how rewards are distributed. When such information is available, we can replace Hoeffding’s generic bound with a <strong>distribution-aware confidence bound</strong>, leading to a more data-efficient strategy. This idea gives rise to <strong>Bayesian UCB</strong>.</p>
+<section id="using-distributional-assumptions" class="level2">
+<h2 class="anchored" data-anchor-id="using-distributional-assumptions">Using Distributional Assumptions</h2>
+<p>For example, suppose we believe that the mean reward of each slot machine follows a <strong>Gaussian likelihood</strong>, which induces a <strong>Gaussian posterior distribution</strong> over the mean reward of each action. After observing rewards for a given action <span class="math inline">\(a\)</span>, the posterior is characterized by:</p>
+<ul>
+<li>a posterior mean <span class="math inline">\(\mu_{t}(a)\)</span>,</li>
+<li>and a posterior standard deviation <span class="math inline">\(\sigma_{t}(a)\)</span></li>
+</ul>
+<p>In this case, a natural choice for the upper confidence bound is the <strong>upper quantile of the posterior</strong>, for instance a 95% confidence bound:</p>
+<p><span class="math display">\[
+\hat{U}_{t}(a) = c\sigma_{t}(a),
+\]</span></p>
+<p>where <span class="math inline">\(c \approx 2\)</span> corresponds to a 95% credible interval for a Gaussian distribution.</p>
+<p>The Bayesian UCB action selection rule then becomes:</p>
+<p><span class="math display">\[
+a_{t}^{Bayes\text{-}UCB} = \arg\max_{a \in \mathcal{A}}\left[ \mu_{t}(a) + c \sigma_{t}(a) \right].
+\]</span></p>
+<p>Interpretation:</p>
+<ul>
+<li><span class="math inline">\(\mu_{t}(a)\)</span> plays the role of <strong>exploitation</strong> (current best estimate),</li>
+<li><span class="math inline">\(\sigma_{t}(a)\)</span> captures <strong>uncertainty</strong> (how much we still do not know),</li>
+<li>the constant <span class="math inline">\(c\)</span> controls how optimistic we are.</li>
+</ul>
+<p>Compared to UCB1, where uncertainty depends only on <span class="math inline">\(N_{t}(a)\)</span>, Bayesian UCB uses the <strong>full posterior uncertainty</strong>, which often leads to <strong>faster learning</strong> when the model assumptions are correct.</p>
+</section>
+<section id="key-difference-from-ucb1" class="level2">
+<h2 class="anchored" data-anchor-id="key-difference-from-ucb1">Key Difference from UCB1</h2>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>UCB1</th>
+<th>Bayesian UCB</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>No distributional assumption</td>
+<td>Explicit reward model</td>
+</tr>
+<tr class="even">
+<td>Hoeffding bound</td>
+<td>Posterior quantile</td>
+</tr>
+<tr class="odd">
+<td>Worst-case guarantees</td>
+<td>Model dependent efficiency</td>
+</tr>
+</tbody>
+</table>
+<div id="cell-19" class="cell" data-execution_count="6">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> BayesianUCB(BaseSolver):</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> <span class="fu">__init__</span>(</span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>, bandit: BaseBandit, c: <span class="bu">float</span> <span class="op">=</span> <span class="dv">2</span>, init_a: <span class="bu">float</span> <span class="op">=</span> <span class="dv">1</span>, init_b: <span class="bu">float</span> <span class="op">=</span> <span class="dv">1</span>, seed: <span class="bu">int</span> <span class="op">|</span> <span class="va">None</span> <span class="op">=</span> <span class="va">None</span></span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>    ) <span class="op">-&gt;</span> <span class="va">None</span>:</span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>        <span class="bu">super</span>().<span class="fu">__init__</span>(bandit)</span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.c <span class="op">=</span> c</span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>._as <span class="op">=</span> np.full(<span class="va">self</span>.bandit.k, fill_value<span class="op">=</span>init_a, dtype<span class="op">=</span>np.float64)</span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>._bs <span class="op">=</span> np.full(<span class="va">self</span>.bandit.k, fill_value<span class="op">=</span>init_b, dtype<span class="op">=</span>np.float64)</span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.t <span class="op">=</span> <span class="dv">0</span></span>
+<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.rng <span class="op">=</span> np.random.default_rng(seed)</span>
+<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a>    <span class="at">@property</span></span>
+<span id="cb6-15"><a href="#cb6-15" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> estimated_probas(<span class="va">self</span>) <span class="op">-&gt;</span> npt.NDArray[np.float64]:</span>
+<span id="cb6-16"><a href="#cb6-16" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> <span class="va">self</span>._as <span class="op">/</span> (<span class="va">self</span>._as <span class="op">+</span> <span class="va">self</span>._bs)</span>
+<span id="cb6-17"><a href="#cb6-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-18"><a href="#cb6-18" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> run_one_step(<span class="va">self</span>) <span class="op">-&gt;</span> <span class="bu">tuple</span>[<span class="bu">int</span>, <span class="bu">float</span>]:</span>
+<span id="cb6-19"><a href="#cb6-19" aria-hidden="true" tabindex="-1"></a>        <span class="im">from</span> scipy.stats <span class="im">import</span> beta</span>
+<span id="cb6-20"><a href="#cb6-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-21"><a href="#cb6-21" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.t <span class="op">+=</span> <span class="dv">1</span></span>
+<span id="cb6-22"><a href="#cb6-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-23"><a href="#cb6-23" aria-hidden="true" tabindex="-1"></a>        <span class="co"># ensure each arm is tried at least once</span></span>
+<span id="cb6-24"><a href="#cb6-24" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> <span class="va">self</span>.t <span class="op">&lt;=</span> <span class="va">self</span>.bandit.k:</span>
+<span id="cb6-25"><a href="#cb6-25" aria-hidden="true" tabindex="-1"></a>            i <span class="op">=</span> <span class="va">self</span>.t <span class="op">-</span> <span class="dv">1</span></span>
+<span id="cb6-26"><a href="#cb6-26" aria-hidden="true" tabindex="-1"></a>        <span class="cf">else</span>:</span>
+<span id="cb6-27"><a href="#cb6-27" aria-hidden="true" tabindex="-1"></a>            mu <span class="op">=</span> <span class="va">self</span>._as <span class="op">/</span> (<span class="va">self</span>._as <span class="op">+</span> <span class="va">self</span>._bs)  <span class="co"># posterior mean</span></span>
+<span id="cb6-28"><a href="#cb6-28" aria-hidden="true" tabindex="-1"></a>            sigma <span class="op">=</span> beta.std(<span class="va">self</span>._as, <span class="va">self</span>._bs)  <span class="co"># posterior std Beta(alpha, beta)</span></span>
+<span id="cb6-29"><a href="#cb6-29" aria-hidden="true" tabindex="-1"></a>            confidence <span class="op">=</span> mu <span class="op">+</span> <span class="va">self</span>.c <span class="op">*</span> sigma</span>
+<span id="cb6-30"><a href="#cb6-30" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-31"><a href="#cb6-31" aria-hidden="true" tabindex="-1"></a>            <span class="co"># tie-breaking</span></span>
+<span id="cb6-32"><a href="#cb6-32" aria-hidden="true" tabindex="-1"></a>            candidates <span class="op">=</span> np.flatnonzero(confidence <span class="op">==</span> confidence.<span class="bu">max</span>())</span>
+<span id="cb6-33"><a href="#cb6-33" aria-hidden="true" tabindex="-1"></a>            i <span class="op">=</span> <span class="va">self</span>.rng.choice(candidates)</span>
+<span id="cb6-34"><a href="#cb6-34" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-35"><a href="#cb6-35" aria-hidden="true" tabindex="-1"></a>        r <span class="op">=</span> <span class="va">self</span>.bandit.generate_reward(i)</span>
+<span id="cb6-36"><a href="#cb6-36" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-37"><a href="#cb6-37" aria-hidden="true" tabindex="-1"></a>        <span class="co"># update Beta posterior for Bernoulli reward</span></span>
+<span id="cb6-38"><a href="#cb6-38" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>._as[i] <span class="op">+=</span> r  <span class="co"># successes</span></span>
+<span id="cb6-39"><a href="#cb6-39" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>._bs[i] <span class="op">+=</span> <span class="dv">1</span> <span class="op">-</span> r  <span class="co"># failures</span></span>
+<span id="cb6-40"><a href="#cb6-40" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-41"><a href="#cb6-41" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> i, r</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</section>
+</section>
+<section id="thompson-sampling" class="level1">
+<h1>Thompson Sampling</h1>
+<p>Thompson Sampling defines a stochastic policy that selects actions in proportion to their posterior probability of being optimal.</p>
+<p>Bayesian UCB still follows the same basic philosophy as UCB1. It builds an <strong>explicit confidence bound</strong> and then acts optimistically with respect to that bound. Thompson Sampling takes a more direct and fully Bayesian approach. Instead of computing an upper bound, it <strong>samples directly from the posterior distribution and acts on that sample</strong>.</p>
+<p>The idea is remarkably simple:</p>
+<blockquote class="blockquote">
+<p>Instead of asking <em>“Which action could be best?”</em>, Thompson Sampling asks <strong>“Which action is most likely to be the best right now?”</strong></p>
+</blockquote>
+<p>At each time step, we treat the unknown reward probability of each action as a random variable and maintain a <strong>posterior distribution</strong> over its value. Then:</p>
+<ol type="1">
+<li>We <strong>sample one possible reward</strong> from the posterior of each action.</li>
+<li>We <strong>select the action with the highest sampled value</strong>.</li>
+<li>We <strong>observe the reward and update the posterior</strong>.</li>
+</ol>
+<p>This naturally balances exploration and exploitation:</p>
+<ul>
+<li>actions with high uncertainty are more likely to occasionally produce large samples → <strong>exploration</strong>,</li>
+<li>actions with high posterior mean consistently produce large samples → <strong>exploitation</strong>.</li>
+</ul>
+<p>No explicit exploration parameters or confidence bound is required.</p>
+<section id="thompson-sampling-for-bernoulli-bandits-beta-bernoulli" class="level2">
+<h2 class="anchored" data-anchor-id="thompson-sampling-for-bernoulli-bandits-beta-bernoulli">Thompson Sampling for Bernoulli Bandits (Beta-Bernoulli)</h2>
+<p>In the Bernoulli banding setting, the reward of each action is either <span class="math inline">\(0\)</span> or <span class="math inline">\(1\)</span>. The conjugate prior for the Bernoulli distribution is the <strong>Beta distribution</strong>, so we model each action as:</p>
+<p><span class="math display">\[
+\theta_{a} \sim \textrm{Beta}(\alpha_a, \beta_a),
+\]</span></p>
+<p>where:</p>
+<ul>
+<li><span class="math inline">\(\alpha_a\)</span> counts observed successes,</li>
+<li><span class="math inline">\(\beta_a\)</span> counts observed failures.</li>
+</ul>
+<p>Initially, we typically use a non-informative prior such as:</p>
+<p><span class="math display">\[
+\alpha_a = 1, \quad \beta_a = 1.
+\]</span></p>
+<section id="action-selection-1" class="level4">
+<h4 class="anchored" data-anchor-id="action-selection-1">Action Selection</h4>
+<p>At time <span class="math inline">\(t\)</span> Thompson Sampling performs:</p>
+<p><span class="math display">\[
+\tilde{\theta_a} \sim \textrm{Beta}(\alpha_a, \beta_a) \quad \textrm{for each} a \in \mathcal{A},
+\]</span></p>
+<p>and selects:</p>
+<p><span class="math display">\[
+a_t^\textrm{TS} = \arg\max_{a \in \mathcal{A}} \tilde{\theta}_a.
+\]</span></p>
+<p>That is, we draw one plausible value for each arm and act greedly with respect to this randomly sampled world.</p>
+</section>
+<section id="posterior-update" class="level4">
+<h4 class="anchored" data-anchor-id="posterior-update">Posterior Update</h4>
+<p>After observing the reward <span class="math inline">\(r_t \in {0,1}\)</span>, we update:</p>
+<p><span class="math display">\[
+\alpha_a \leftarrow \alpha_a + r_t, \quad \beta_a \leftarrow \beta_a + (1 - r_t).
+\]</span></p>
+<p>This update is exact Bayesian inference for the Bernoulli-Beta model.</p>
+</section>
+<section id="why-thompson-sampling-works-so-well" class="level4">
+<h4 class="anchored" data-anchor-id="why-thompson-sampling-works-so-well">Why Thompson Sampling Works so Well</h4>
+<p>Thompson Sampling does not separate exploration from exploitation. Instead, exploration <strong>emerges naturally from uncertainty</strong> in the posterior:</p>
+<ul>
+<li>If an action is well understood, its posterior is sharp (little randomness).</li>
+<li>If an action is uncertain, its posterior is wide (occasional optimistic samples).</li>
+</ul>
+<p>In contrast:</p>
+<ul>
+<li><span class="math inline">\(\epsilon\)</span>-greedy explores <strong>blindly</strong>,</li>
+<li>UCB explores via <strong>deterministic optimism</strong>,</li>
+<li>Thompson Sampling explores via <strong>probabilistic belief</strong>.</li>
+</ul>
+</section>
+<section id="relationship-to-bayesian-ucb" class="level4">
+<h4 class="anchored" data-anchor-id="relationship-to-bayesian-ucb">Relationship to Bayesian UCB</h4>
+<p>Bayesian UCB selects actions using:</p>
+<p><span class="math display">\[
+\mu_t(a) + c \sigma_t(a),
+\]</span></p>
+<p>which corresponds to choosing a fixed <strong>upper quantile</strong> of the posterior.</p>
+<p>Thompson Sampling instead <strong>draws a random quantile at every time step</strong>. In this sense:</p>
+<blockquote class="blockquote">
+<p>Bayesian UCB is optimistic; Thompson Sampling is probabilistic.</p>
+</blockquote>
+<p>Both use Bayesian posteriors, but Thompson Sampling avoids manually choosing confidence levels.</p>
+<div id="cell-21" class="cell" data-execution_count="7">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> ThompsonSampling(BaseSolver):</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> <span class="fu">__init__</span>(<span class="va">self</span>, bandit: BaseBandit, init_a: <span class="bu">int</span> <span class="op">=</span> <span class="dv">1</span>, init_b: <span class="bu">int</span> <span class="op">=</span> <span class="dv">1</span>, seed: <span class="bu">int</span> <span class="op">|</span> <span class="va">None</span> <span class="op">=</span> <span class="va">None</span>) <span class="op">-&gt;</span> <span class="va">None</span>:</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>        <span class="bu">super</span>().<span class="fu">__init__</span>(bandit)</span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>._as <span class="op">=</span> np.full(<span class="va">self</span>.bandit.k, fill_value<span class="op">=</span>init_a, dtype<span class="op">=</span>np.float64)</span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>._bs <span class="op">=</span> np.full(<span class="va">self</span>.bandit.k, fill_value<span class="op">=</span>init_b, dtype<span class="op">=</span>np.float64)</span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.rng <span class="op">=</span> np.random.default_rng(seed)</span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">@property</span></span>
+<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> estimated_probas(<span class="va">self</span>) <span class="op">-&gt;</span> npt.NDArray[np.float64]:</span>
+<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> <span class="va">self</span>._as <span class="op">/</span> (<span class="va">self</span>._as <span class="op">+</span> <span class="va">self</span>._bs)</span>
+<span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-14"><a href="#cb7-14" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> run_one_step(<span class="va">self</span>) <span class="op">-&gt;</span> <span class="bu">tuple</span>[<span class="bu">int</span>, <span class="bu">float</span>]:</span>
+<span id="cb7-15"><a href="#cb7-15" aria-hidden="true" tabindex="-1"></a>        samples <span class="op">=</span> <span class="va">self</span>.rng.beta(<span class="va">self</span>._as, <span class="va">self</span>._bs)</span>
+<span id="cb7-16"><a href="#cb7-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-17"><a href="#cb7-17" aria-hidden="true" tabindex="-1"></a>        <span class="co"># tie-breaking</span></span>
+<span id="cb7-18"><a href="#cb7-18" aria-hidden="true" tabindex="-1"></a>        candidates <span class="op">=</span> np.flatnonzero(samples <span class="op">==</span> samples.<span class="bu">max</span>())</span>
+<span id="cb7-19"><a href="#cb7-19" aria-hidden="true" tabindex="-1"></a>        i <span class="op">=</span> <span class="bu">int</span>(<span class="va">self</span>.rng.choice(candidates))</span>
+<span id="cb7-20"><a href="#cb7-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-21"><a href="#cb7-21" aria-hidden="true" tabindex="-1"></a>        r <span class="op">=</span> <span class="va">self</span>.bandit.generate_reward(i)</span>
+<span id="cb7-22"><a href="#cb7-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-23"><a href="#cb7-23" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>._as[i] <span class="op">+=</span> r</span>
+<span id="cb7-24"><a href="#cb7-24" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>._bs[i] <span class="op">+=</span> <span class="dv">1</span> <span class="op">-</span> r</span>
+<span id="cb7-25"><a href="#cb7-25" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-26"><a href="#cb7-26" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> i, r</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</section>
+</section>
+</section>
+<section id="benchmark" class="level1">
+<h1>Benchmark</h1>
+<div id="cell-23" class="cell" data-execution_count="8">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>N_STEPS <span class="op">=</span> <span class="dv">10_000</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>SEED <span class="op">=</span> <span class="bn">0x42</span></span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>K <span class="op">=</span> <span class="dv">10</span></span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>np.random.seed(SEED)</span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>rng <span class="op">=</span> np.random.default_rng(SEED)</span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a><span class="co"># Probabilities {0.0, 0.1, ..., 0.9} then shuffle them</span></span>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a><span class="co"># probas = rng.uniform(0, 1, size=K)</span></span>
+<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a>probas <span class="op">=</span> np.linspace(<span class="dv">0</span>, <span class="dv">1</span>, K, endpoint<span class="op">=</span><span class="va">False</span>, dtype<span class="op">=</span>np.float64)</span>
+<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(probas)</span>
+<span id="cb8-12"><a href="#cb8-12" aria-hidden="true" tabindex="-1"></a>rng.shuffle(probas)</span>
+<span id="cb8-13"><a href="#cb8-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-14"><a href="#cb8-14" aria-hidden="true" tabindex="-1"></a>bbandit <span class="op">=</span> BernoulliBandit(k<span class="op">=</span>K, probas<span class="op">=</span>probas, seed<span class="op">=</span>SEED)</span>
+<span id="cb8-15"><a href="#cb8-15" aria-hidden="true" tabindex="-1"></a>epsgreedy <span class="op">=</span> EpsilonGreedy(bbandit, eps<span class="op">=</span><span class="fl">0.01</span>, seed<span class="op">=</span>SEED)</span>
+<span id="cb8-16"><a href="#cb8-16" aria-hidden="true" tabindex="-1"></a>epsgreedy.run(N_STEPS)</span>
+<span id="cb8-17"><a href="#cb8-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-18"><a href="#cb8-18" aria-hidden="true" tabindex="-1"></a><span class="co"># Random is a special case of EpsilogGreedy</span></span>
+<span id="cb8-19"><a href="#cb8-19" aria-hidden="true" tabindex="-1"></a><span class="co"># bbandit = BernoulliBandit(k=K, probas=probas, seed=SEED)</span></span>
+<span id="cb8-20"><a href="#cb8-20" aria-hidden="true" tabindex="-1"></a><span class="co"># random = EpsilonGreedy(bbandit, eps=1.0, seed=SEED)</span></span>
+<span id="cb8-21"><a href="#cb8-21" aria-hidden="true" tabindex="-1"></a><span class="co"># random.run(N_STEPS)</span></span>
+<span id="cb8-22"><a href="#cb8-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-23"><a href="#cb8-23" aria-hidden="true" tabindex="-1"></a>bbandit <span class="op">=</span> BernoulliBandit(k<span class="op">=</span>K, probas<span class="op">=</span>probas, seed<span class="op">=</span>SEED)</span>
+<span id="cb8-24"><a href="#cb8-24" aria-hidden="true" tabindex="-1"></a>ucb1 <span class="op">=</span> UCB1(bbandit, seed<span class="op">=</span>SEED)</span>
+<span id="cb8-25"><a href="#cb8-25" aria-hidden="true" tabindex="-1"></a>ucb1.run(N_STEPS)</span>
+<span id="cb8-26"><a href="#cb8-26" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-27"><a href="#cb8-27" aria-hidden="true" tabindex="-1"></a>bbandit <span class="op">=</span> BernoulliBandit(k<span class="op">=</span>K, probas<span class="op">=</span>probas, seed<span class="op">=</span>SEED)</span>
+<span id="cb8-28"><a href="#cb8-28" aria-hidden="true" tabindex="-1"></a>bayesian <span class="op">=</span> BayesianUCB(bbandit, seed<span class="op">=</span>SEED)</span>
+<span id="cb8-29"><a href="#cb8-29" aria-hidden="true" tabindex="-1"></a>bayesian.run(N_STEPS)</span>
+<span id="cb8-30"><a href="#cb8-30" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-31"><a href="#cb8-31" aria-hidden="true" tabindex="-1"></a>bbandit <span class="op">=</span> BernoulliBandit(k<span class="op">=</span>K, probas<span class="op">=</span>probas, seed<span class="op">=</span>SEED)</span>
+<span id="cb8-32"><a href="#cb8-32" aria-hidden="true" tabindex="-1"></a>thompson <span class="op">=</span> ThompsonSampling(bbandit, seed<span class="op">=</span>SEED)</span>
+<span id="cb8-33"><a href="#cb8-33" aria-hidden="true" tabindex="-1"></a>thompson.run(N_STEPS)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[0.  0.1 0.2 0.3 0.4 0.5 0.6 0.7 0.8 0.9]</code></pre>
+</div>
+</div>
+<div id="cell-fig-benchmark" class="cell" data-execution_count="9">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> load_theme(<span class="st">"ambivalent"</span>):</span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>    fig, ax <span class="op">=</span> plt.subplots(ncols<span class="op">=</span><span class="dv">3</span>, nrows<span class="op">=</span><span class="dv">1</span>, figsize<span class="op">=</span>(<span class="dv">12</span>, <span class="dv">4</span>), facecolor<span class="op">=</span><span class="st">"none"</span>, layout<span class="op">=</span><span class="st">"constrained"</span>)</span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>    solvers_labels <span class="op">=</span> {</span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>        <span class="vs">r"</span><span class="dv">$</span><span class="er">\</span><span class="vs">epsilon</span><span class="dv">$</span><span class="vs">-greedy"</span>: epsgreedy,</span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>        <span class="st">"UCB1"</span>: ucb1,</span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a>        <span class="st">"Bayesian"</span>: bayesian,</span>
+<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a>        <span class="st">"Thompson"</span>: thompson,</span>
+<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a>    }</span>
+<span id="cb10-10"><a href="#cb10-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-11"><a href="#cb10-11" aria-hidden="true" tabindex="-1"></a>    <span class="co"># --- 1) cumulative regret ---</span></span>
+<span id="cb10-12"><a href="#cb10-12" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> label, solver <span class="kw">in</span> solvers_labels.items():</span>
+<span id="cb10-13"><a href="#cb10-13" aria-hidden="true" tabindex="-1"></a>        ax[<span class="dv">0</span>].plot(np.cumsum(solver.regrets), label<span class="op">=</span>label, clip_on<span class="op">=</span><span class="va">False</span>)</span>
+<span id="cb10-14"><a href="#cb10-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-15"><a href="#cb10-15" aria-hidden="true" tabindex="-1"></a>    ax[<span class="dv">0</span>].set_xlabel(<span class="st">"Time steps"</span>)</span>
+<span id="cb10-16"><a href="#cb10-16" aria-hidden="true" tabindex="-1"></a>    ax[<span class="dv">0</span>].set_ylabel(<span class="st">"Cumulative regret"</span>)</span>
+<span id="cb10-17"><a href="#cb10-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-18"><a href="#cb10-18" aria-hidden="true" tabindex="-1"></a>    <span class="co"># --- shared x for action-ranked plots ---</span></span>
+<span id="cb10-19"><a href="#cb10-19" aria-hidden="true" tabindex="-1"></a>    sorted_indices <span class="op">=</span> np.argsort(bbandit.probas)</span>
+<span id="cb10-20"><a href="#cb10-20" aria-hidden="true" tabindex="-1"></a>    x <span class="op">=</span> np.arange(bbandit.k)  <span class="co"># 0..k-1 (rank after sorting)</span></span>
+<span id="cb10-21"><a href="#cb10-21" aria-hidden="true" tabindex="-1"></a>    p_true <span class="op">=</span> bbandit.probas[sorted_indices]</span>
+<span id="cb10-22"><a href="#cb10-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-23"><a href="#cb10-23" aria-hidden="true" tabindex="-1"></a>    <span class="co"># jitter for scatter points (so methods don't overlap)</span></span>
+<span id="cb10-24"><a href="#cb10-24" aria-hidden="true" tabindex="-1"></a>    n_methods <span class="op">=</span> <span class="bu">len</span>(solvers_labels)</span>
+<span id="cb10-25"><a href="#cb10-25" aria-hidden="true" tabindex="-1"></a>    jit <span class="op">=</span> <span class="fl">0.12</span>  <span class="co"># horizontal separation between methods (in "x units")</span></span>
+<span id="cb10-26"><a href="#cb10-26" aria-hidden="true" tabindex="-1"></a>    offsets <span class="op">=</span> (np.arange(n_methods) <span class="op">-</span> (n_methods <span class="op">-</span> <span class="dv">1</span>) <span class="op">/</span> <span class="dv">2</span>) <span class="op">*</span> jit</span>
+<span id="cb10-27"><a href="#cb10-27" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-28"><a href="#cb10-28" aria-hidden="true" tabindex="-1"></a>    <span class="co"># --- 2) estimated probability per action (jittered scatter + true line) ---</span></span>
+<span id="cb10-29"><a href="#cb10-29" aria-hidden="true" tabindex="-1"></a>    ax[<span class="dv">1</span>].plot(</span>
+<span id="cb10-30"><a href="#cb10-30" aria-hidden="true" tabindex="-1"></a>        x,</span>
+<span id="cb10-31"><a href="#cb10-31" aria-hidden="true" tabindex="-1"></a>        p_true,</span>
+<span id="cb10-32"><a href="#cb10-32" aria-hidden="true" tabindex="-1"></a>        linestyle<span class="op">=</span><span class="st">"-."</span>,</span>
+<span id="cb10-33"><a href="#cb10-33" aria-hidden="true" tabindex="-1"></a>        marker<span class="op">=</span><span class="st">"o"</span>,</span>
+<span id="cb10-34"><a href="#cb10-34" aria-hidden="true" tabindex="-1"></a>        markersize<span class="op">=</span><span class="dv">3</span>,</span>
+<span id="cb10-35"><a href="#cb10-35" aria-hidden="true" tabindex="-1"></a>        label<span class="op">=</span><span class="st">"True $p(a)$"</span>,</span>
+<span id="cb10-36"><a href="#cb10-36" aria-hidden="true" tabindex="-1"></a>        zorder<span class="op">=</span><span class="dv">1</span>,</span>
+<span id="cb10-37"><a href="#cb10-37" aria-hidden="true" tabindex="-1"></a>        clip_on<span class="op">=</span><span class="va">False</span>,</span>
+<span id="cb10-38"><a href="#cb10-38" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb10-39"><a href="#cb10-39" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-40"><a href="#cb10-40" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> off, (label, solver) <span class="kw">in</span> <span class="bu">zip</span>(offsets, solvers_labels.items(), strict<span class="op">=</span><span class="va">True</span>):</span>
+<span id="cb10-41"><a href="#cb10-41" aria-hidden="true" tabindex="-1"></a>        ax[<span class="dv">1</span>].scatter(</span>
+<span id="cb10-42"><a href="#cb10-42" aria-hidden="true" tabindex="-1"></a>            x <span class="op">+</span> off,</span>
+<span id="cb10-43"><a href="#cb10-43" aria-hidden="true" tabindex="-1"></a>            solver.estimated_probas[sorted_indices],</span>
+<span id="cb10-44"><a href="#cb10-44" aria-hidden="true" tabindex="-1"></a>            s<span class="op">=</span><span class="dv">35</span>,</span>
+<span id="cb10-45"><a href="#cb10-45" aria-hidden="true" tabindex="-1"></a>            label<span class="op">=</span>label,</span>
+<span id="cb10-46"><a href="#cb10-46" aria-hidden="true" tabindex="-1"></a>            alpha<span class="op">=</span><span class="fl">0.8</span>,</span>
+<span id="cb10-47"><a href="#cb10-47" aria-hidden="true" tabindex="-1"></a>            zorder<span class="op">=</span><span class="dv">2</span>,</span>
+<span id="cb10-48"><a href="#cb10-48" aria-hidden="true" tabindex="-1"></a>            clip_on<span class="op">=</span><span class="va">False</span>,</span>
+<span id="cb10-49"><a href="#cb10-49" aria-hidden="true" tabindex="-1"></a>        )</span>
+<span id="cb10-50"><a href="#cb10-50" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-51"><a href="#cb10-51" aria-hidden="true" tabindex="-1"></a>    ax[<span class="dv">1</span>].set_xlabel(<span class="vs">r"Actions sorted by </span><span class="dv">$</span><span class="ch">\t</span><span class="vs">heta</span><span class="dv">$</span><span class="vs">"</span>)</span>
+<span id="cb10-52"><a href="#cb10-52" aria-hidden="true" tabindex="-1"></a>    ax[<span class="dv">1</span>].set_ylabel(<span class="st">"Estimated probability"</span>)</span>
+<span id="cb10-53"><a href="#cb10-53" aria-hidden="true" tabindex="-1"></a>    ax[<span class="dv">1</span>].set_xticks(x)</span>
+<span id="cb10-54"><a href="#cb10-54" aria-hidden="true" tabindex="-1"></a>    ax[<span class="dv">1</span>].set_xticklabels([<span class="bu">str</span>(i) <span class="cf">for</span> i <span class="kw">in</span> x])  <span class="co"># or sorted_indices.astype(str) for original IDs</span></span>
+<span id="cb10-55"><a href="#cb10-55" aria-hidden="true" tabindex="-1"></a>    ax[<span class="dv">1</span>].set_ylim(<span class="fl">0.0</span>, <span class="fl">1.0</span>)</span>
+<span id="cb10-56"><a href="#cb10-56" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-57"><a href="#cb10-57" aria-hidden="true" tabindex="-1"></a>    <span class="co"># --- 3) action selection rate (grouped bars, centered on ranks) ---</span></span>
+<span id="cb10-58"><a href="#cb10-58" aria-hidden="true" tabindex="-1"></a>    width <span class="op">=</span> <span class="fl">0.18</span></span>
+<span id="cb10-59"><a href="#cb10-59" aria-hidden="true" tabindex="-1"></a>    bar_offsets <span class="op">=</span> (np.arange(n_methods) <span class="op">-</span> (n_methods <span class="op">-</span> <span class="dv">1</span>) <span class="op">/</span> <span class="dv">2</span>) <span class="op">*</span> width</span>
+<span id="cb10-60"><a href="#cb10-60" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-61"><a href="#cb10-61" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> off, (label, solver) <span class="kw">in</span> <span class="bu">zip</span>(bar_offsets, solvers_labels.items(), strict<span class="op">=</span><span class="va">True</span>):</span>
+<span id="cb10-62"><a href="#cb10-62" aria-hidden="true" tabindex="-1"></a>        ax[<span class="dv">2</span>].bar(</span>
+<span id="cb10-63"><a href="#cb10-63" aria-hidden="true" tabindex="-1"></a>            x <span class="op">+</span> off,</span>
+<span id="cb10-64"><a href="#cb10-64" aria-hidden="true" tabindex="-1"></a>            solver.counts[sorted_indices] <span class="op">/</span> <span class="bu">len</span>(solver.regrets) <span class="op">*</span> <span class="fl">100.0</span>,</span>
+<span id="cb10-65"><a href="#cb10-65" aria-hidden="true" tabindex="-1"></a>            width<span class="op">=</span>width,</span>
+<span id="cb10-66"><a href="#cb10-66" aria-hidden="true" tabindex="-1"></a>            label<span class="op">=</span>label,</span>
+<span id="cb10-67"><a href="#cb10-67" aria-hidden="true" tabindex="-1"></a>            alpha<span class="op">=</span><span class="fl">0.85</span>,</span>
+<span id="cb10-68"><a href="#cb10-68" aria-hidden="true" tabindex="-1"></a>            clip_on<span class="op">=</span><span class="va">False</span>,</span>
+<span id="cb10-69"><a href="#cb10-69" aria-hidden="true" tabindex="-1"></a>        )</span>
+<span id="cb10-70"><a href="#cb10-70" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-71"><a href="#cb10-71" aria-hidden="true" tabindex="-1"></a>    ax[<span class="dv">2</span>].set_xlabel(<span class="vs">r"Actions sorted by </span><span class="dv">$</span><span class="ch">\t</span><span class="vs">heta</span><span class="dv">$</span><span class="vs">"</span>)</span>
+<span id="cb10-72"><a href="#cb10-72" aria-hidden="true" tabindex="-1"></a>    ax[<span class="dv">2</span>].set_ylabel(<span class="st">"</span><span class="sc">% o</span><span class="st">f trials"</span>)</span>
+<span id="cb10-73"><a href="#cb10-73" aria-hidden="true" tabindex="-1"></a>    ax[<span class="dv">2</span>].set_xticks(x)</span>
+<span id="cb10-74"><a href="#cb10-74" aria-hidden="true" tabindex="-1"></a>    ax[<span class="dv">2</span>].set_xticklabels([<span class="bu">str</span>(i) <span class="cf">for</span> i <span class="kw">in</span> x])  <span class="co"># or sorted_indices.astype(str)</span></span>
+<span id="cb10-75"><a href="#cb10-75" aria-hidden="true" tabindex="-1"></a>    ax[<span class="dv">2</span>].set_ylim(<span class="dv">0</span>, <span class="dv">100</span>)</span>
+<span id="cb10-76"><a href="#cb10-76" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-77"><a href="#cb10-77" aria-hidden="true" tabindex="-1"></a>    <span class="co"># (Optional) make the two right panels less "grid heavy" if your theme uses strong grids</span></span>
+<span id="cb10-78"><a href="#cb10-78" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> a <span class="kw">in</span> (ax[<span class="dv">1</span>], ax[<span class="dv">2</span>]):</span>
+<span id="cb10-79"><a href="#cb10-79" aria-hidden="true" tabindex="-1"></a>        a.grid(axis<span class="op">=</span><span class="st">"y"</span>, alpha<span class="op">=</span><span class="fl">0.25</span>)</span>
+<span id="cb10-80"><a href="#cb10-80" aria-hidden="true" tabindex="-1"></a>        a.set_axisbelow(<span class="va">True</span>)</span>
+<span id="cb10-81"><a href="#cb10-81" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-82"><a href="#cb10-82" aria-hidden="true" tabindex="-1"></a>    <span class="co"># --- single shared legend (deduplicated) ---</span></span>
+<span id="cb10-83"><a href="#cb10-83" aria-hidden="true" tabindex="-1"></a>    handles, labels <span class="op">=</span> [], []</span>
+<span id="cb10-84"><a href="#cb10-84" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> axis <span class="kw">in</span> fig.axes:</span>
+<span id="cb10-85"><a href="#cb10-85" aria-hidden="true" tabindex="-1"></a>        _handles, _labels <span class="op">=</span> axis.get_legend_handles_labels()</span>
+<span id="cb10-86"><a href="#cb10-86" aria-hidden="true" tabindex="-1"></a>        handles.extend(_handles)</span>
+<span id="cb10-87"><a href="#cb10-87" aria-hidden="true" tabindex="-1"></a>        labels.extend(_labels)</span>
+<span id="cb10-88"><a href="#cb10-88" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-89"><a href="#cb10-89" aria-hidden="true" tabindex="-1"></a>    by_label <span class="op">=</span> <span class="bu">dict</span>(<span class="bu">zip</span>(labels, handles, strict<span class="op">=</span><span class="va">True</span>))</span>
+<span id="cb10-90"><a href="#cb10-90" aria-hidden="true" tabindex="-1"></a>    fig.legend(</span>
+<span id="cb10-91"><a href="#cb10-91" aria-hidden="true" tabindex="-1"></a>        by_label.values(),</span>
+<span id="cb10-92"><a href="#cb10-92" aria-hidden="true" tabindex="-1"></a>        by_label.keys(),</span>
+<span id="cb10-93"><a href="#cb10-93" aria-hidden="true" tabindex="-1"></a>        loc<span class="op">=</span><span class="dv">8</span>,</span>
+<span id="cb10-94"><a href="#cb10-94" aria-hidden="true" tabindex="-1"></a>        ncols<span class="op">=</span><span class="bu">len</span>(by_label),</span>
+<span id="cb10-95"><a href="#cb10-95" aria-hidden="true" tabindex="-1"></a>        bbox_to_anchor<span class="op">=</span>(<span class="fl">0.5</span>, <span class="op">-</span><span class="fl">0.1</span>),</span>
+<span id="cb10-96"><a href="#cb10-96" aria-hidden="true" tabindex="-1"></a>        fancybox<span class="op">=</span><span class="va">True</span>,</span>
+<span id="cb10-97"><a href="#cb10-97" aria-hidden="true" tabindex="-1"></a>        frameon<span class="op">=</span><span class="va">True</span>,</span>
+<span id="cb10-98"><a href="#cb10-98" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb10-99"><a href="#cb10-99" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-100"><a href="#cb10-100" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display">
+<div id="fig-benchmark" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-benchmark-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="2025-12-16-multi-armed-bandit-problem_files/figure-html/fig-benchmark-output-1.png" width="1211" height="447" class="figure-img">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-benchmark-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;1: The results of the experiment on solving Bernoulli bandit with K=10, slot machines with reward probabilities, {0.0, 0.1, …, 0.9}. Each solver runs 10,000 steps.
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>The figure above shows side-by-side comparison of four bandint strategies: <span class="math inline">\(\epsilon\)</span>-greedy, UCB1, Bayesian UCB, and Thompson Sampling. All algorithms are evaluated on the same 10-armed Bernoulli bandit. Each subplot highlights a different aspect of algorithmic behavior: regret, reward estimation, and exploration patterns. Together, they illustrate how the theoretical ideas introduced earlier play out in practice.</p>
+<section id="cumulative-regret-over-time-left" class="level4">
+<h4 class="anchored" data-anchor-id="cumulative-regret-over-time-left">1. Cumulative Regret Over Time (left)</h4>
+<p>The left subplot shows how much regret each algorithm accumulates over 10,000 time steps. Lower curve indicate better performance.</p>
+<ul>
+<li><strong>Thompson Sampling</strong> performs best. Its regret curve rises slowly at first and then flatten, showing that it quickly identifies the optimal arm and almost never leaves it afterward.</li>
+<li><strong>Bayesian UCB</strong> is slightly worse but still competitive. Using posterior uncertainty leads to steady improvement without requiring an explicit exploration parameter.</li>
+<li><strong><span class="math inline">\(\epsilon\)</span>-greedy</strong> suffers more early regret and coverges more slowly, since it explores randomly rather than strategically.</li>
+<li><strong>UCB1</strong> explores aggresively and therefore incurs noticeably higher regret. This is expected in settings where several arms have relatively high reward probabilities, making early optimistic exploration particularly costly.</li>
+</ul>
+<p>The qualitative ordering matches classic theoretical results: <strong>Thompson Sampling</strong> <span class="math inline">\(\ge\)</span> <strong>Bayesian UCB</strong> <span class="math inline">\(\ge\)</span> <strong><span class="math inline">\(\epsilon\)</span>-greedy</strong> <span class="math inline">\(\ge\)</span> <strong>UCB1</strong> for this type of environment.</p>
+</section>
+<section id="estimated-reward-probabilities-middle" class="level4">
+<h4 class="anchored" data-anchor-id="estimated-reward-probabilities-middle">2. Estimated Reward Probabilities (middle)</h4>
+<p>The middle subplot show how accurately each method estimates the reward probability of each arm after training. Arms are sorted by their true <span class="math inline">\(\theta\)</span> values, and the dashed line represents perfect estimation.</p>
+<ul>
+<li><strong>Thompson Sampling</strong> and <strong>Bayesian UCB</strong> are concentrated near the diagonal. Their estimates are reasonably accurate even for suboptimal arms.</li>
+<li><strong><span class="math inline">\(\epsilon\)</span>-greedy</strong> is more scattered. Because it explores randomly and infrequently revisits some arms, several estimates remain biased or underdeveloped.</li>
+<li><strong>UCB1</strong> tends to overestimate some suboptimal arms early on and then underexplore them later. UCB’s deterministic optimism often leads to distinctive estimation bias: Once the bonus term shrinks, there is little incentive to revisit an arm, even if its estimate is wrong.</li>
+</ul>
+<p>This subplot highlights key difference: <strong>good decision-making does not always require perfectly accurate models</strong>, but algorithms that maintain richer uncertainty estimates (Bayesian UCB and Thompson Sampling) tend to form more reliable estimates.</p>
+</section>
+<section id="fraction-of-pulls-per-arm-right" class="level4">
+<h4 class="anchored" data-anchor-id="fraction-of-pulls-per-arm-right">3. Fraction of Pulls per Arm (right)</h4>
+<p>The right subplot shows how often each algorithm select each action. Here, the behavioral differences are most visible.</p>
+<ul>
+<li><strong>Thompson Sampling</strong> plays the best arm almost exclusively, with its bar nearly reaching 100%.</li>
+<li><strong>Bayesian UCB</strong> focuses heavily on the best arm but still allocates a small percentage of trials to others due to posterior uncertainty.</li>
+<li><strong><span class="math inline">\(\epsilon\)</span>-greedy</strong> spreads its attention more broadly. Because exploration is random, even clearly suboptimal arms continue to receive occasional pulls.</li>
+<li><strong>UCB1</strong> revisits several arms during the optimistic exploration phase. Once the bonus term shrinks, it commits strongly to the best arm, but the early exploration leaves a visible footprint.</li>
+</ul>
+<p>This suboptimal emphasizes how each strategy allocates exploration effort:</p>
+<ul>
+<li><strong><span class="math inline">\(\epsilon\)</span>-greedy</strong>: broad, unfocused exploration</li>
+<li><strong>UCB1</strong>: early over-exploration, later commitment</li>
+<li><strong>Bayesian UCB</strong>: exploration guided by posterior uncertainty</li>
+<li><strong>Thompson</strong>: exploration proportional to probabilities of being optimal</li>
+</ul>
+</section>
+<section id="putting-it-all-together" class="level4">
+<h4 class="anchored" data-anchor-id="putting-it-all-together">Putting It All Together</h4>
+<p>These three views (regret, estimation accuracy, and action frequencies) provide a comprehensive picture of each algorithm’s strengths and weaknesses:</p>
+<ul>
+<li><strong>Thompson Sampling</strong> is consistent and strong: low regret, accurate estimation, and efficient exploration.</li>
+<li><strong>Bayesian UCB</strong> offers a pricipled middle ground and performs well when prior structure is appropriate.</li>
+<li><strong><span class="math inline">\(\epsilon\)</span>-greedy</strong> is simple but wasteful: random exploration leads to both under- and over-exploration.</li>
+<li><strong>UCB1</strong> works as intended, but deterministic optimism causes large early regret when many arms have similar payoffs.</li>
+</ul>
+<p>Results shown correspond to a single random seed; while relative performance may vary across runs, the qualitative behavior and average ordering are consistent with theoretical expectations.</p>
+<p>Overall, the benchmark illustrates a central message of the exploration-exploitation dilemma: <strong>better uncertainty modeling leads to more efficient learning</strong>.</p>
+</section>
+</section>
+<section id="conclusions" class="level1">
+<h1>Conclusions</h1>
+<p>The benchmark highlights the core differences between bandit algorithms in practice:</p>
+<ul>
+<li><strong>Thompson Sampling</strong> achieves the lowest regret and concentrates almost all pulls on the optimal arm, reflecting efficient, uncertainty-aware exploration.</li>
+<li><strong>Bayesian UCB</strong> performs similarly well, balancing optimism with Bayesian posterior uncertainty.</li>
+<li><strong><span class="math inline">\(\epsilon\)</span>-greedy</strong> is simple but wasteful: random exploration leads to slower convergence and less accurate value estimates.</li>
+<li><strong>UCB1</strong> explores aggressively early on, which increases regret in environments with many high-reward arms.</li>
+</ul>
+<p>Overall, algorithms that model uncertainty explicitly, such as Thompson Sampling and Bayesian UCB, deliver more focused exploration and stronger performance.</p>
+</section>
+<section id="appendix" class="level1">
+<h1>Appendix</h1>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 23%">
+<col style="width: 38%">
+<col style="width: 16%">
+<col style="width: 20%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Method</th>
+<th>Exploration mechanism</th>
+<th>Determistic?</th>
+<th>Uses Posterior?</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><span class="math inline">\(\epsilon\)</span>-greedy</td>
+<td>Random with prob. <span class="math inline">\(\epsilon\)</span></td>
+<td>No</td>
+<td>No</td>
+</tr>
+<tr class="even">
+<td>UCB1</td>
+<td>Optimism via bound</td>
+<td>Yes</td>
+<td>No</td>
+</tr>
+<tr class="odd">
+<td>Bayesian UCB</td>
+<td>Posterior quantile</td>
+<td>Yes</td>
+<td>Yes</td>
+</tr>
+<tr class="even">
+<td>Thompson Sampling</td>
+<td>Posterior sampling</td>
+<td>No</td>
+<td>Yes</td>
+</tr>
+</tbody>
+</table>
+
+
+</section>
+
+<div id="quarto-appendix" class="default"><section class="quarto-appendix-contents" id="quarto-reuse"><h2 class="anchored quarto-appendix-heading">Reuse</h2><div class="quarto-appendix-contents"><div><a rel="license" href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.en_us">CC BY-NC-SA 4.0</a></div></div></section></div></main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    // Ensure there is a toggle, if there isn't float one in the top right
+    if (window.document.querySelector('.quarto-color-scheme-toggle') === null) {
+      const a = window.document.createElement('a');
+      a.classList.add('top-right');
+      a.classList.add('quarto-color-scheme-toggle');
+      a.href = "";
+      a.onclick = function() { try { window.quartoToggleColorScheme(); } catch {} return false; };
+      const i = window.document.createElement("i");
+      i.classList.add('bi');
+      a.appendChild(i);
+      window.document.body.appendChild(a);
+    }
+    setColorSchemeToggle(hasAlternateSentinel())
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp("https:\/\/gcerar\.github\.io");
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+            // target, if specified
+            link.setAttribute("target", "_blank");
+            if (link.getAttribute("rel") === null) {
+              link.setAttribute("rel", "noopener");
+            }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+</div> <!-- /content -->
+<footer class="footer">
+  <div class="nav-footer">
+    <div class="nav-footer-left">
+      &nbsp;
+    </div>   
+    <div class="nav-footer-center">
+<p>© Copyright 2021, Gregor Cerar</p>
+</div>
+    <div class="nav-footer-right">
+      &nbsp;
+    </div>
+  </div>
+</footer>
+
+
+
+
+</body></html>
