@@ -6776,22 +6776,25 @@ font-style: inherit;">import</span> Path</span>
 background-color: null;
 font-style: inherit;">from</span> typing <span class="im" style="color: #00769E;
 background-color: null;
-font-style: inherit;">import</span> Final</span>
+font-style: inherit;">import</span> Any, Final</span>
 <span id="cb1-4"></span>
 <span id="cb1-5"><span class="im" style="color: #00769E;
+background-color: null;
+font-style: inherit;">import</span> joblib</span>
+<span id="cb1-6"><span class="im" style="color: #00769E;
 background-color: null;
 font-style: inherit;">import</span> numpy <span class="im" style="color: #00769E;
 background-color: null;
 font-style: inherit;">as</span> np</span>
-<span id="cb1-6"><span class="im" style="color: #00769E;
+<span id="cb1-7"><span class="im" style="color: #00769E;
 background-color: null;
 font-style: inherit;">from</span> matplotlib <span class="im" style="color: #00769E;
 background-color: null;
 font-style: inherit;">import</span> pyplot <span class="im" style="color: #00769E;
 background-color: null;
 font-style: inherit;">as</span> plt</span>
-<span id="cb1-7"></span>
-<span id="cb1-8"><span class="op" style="color: #5E5E5E;
+<span id="cb1-8"></span>
+<span id="cb1-9"><span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">%</span>config InlineBackend.figure_formats <span class="op" style="color: #5E5E5E;
 background-color: null;
@@ -6800,75 +6803,75 @@ background-color: null;
 font-style: inherit;">'retina'</span>, <span class="st" style="color: #20794D;
 background-color: null;
 font-style: inherit;">'png'</span>}</span>
-<span id="cb1-9"></span>
-<span id="cb1-10"><span class="im" style="color: #00769E;
+<span id="cb1-10"></span>
+<span id="cb1-11"><span class="im" style="color: #00769E;
 background-color: null;
 font-style: inherit;">import</span> torch</span>
-<span id="cb1-11"><span class="im" style="color: #00769E;
+<span id="cb1-12"><span class="im" style="color: #00769E;
 background-color: null;
 font-style: inherit;">from</span> torch <span class="im" style="color: #00769E;
 background-color: null;
 font-style: inherit;">import</span> Tensor, nn, optim</span>
-<span id="cb1-12"><span class="im" style="color: #00769E;
+<span id="cb1-13"><span class="im" style="color: #00769E;
 background-color: null;
 font-style: inherit;">from</span> torch.utils.data <span class="im" style="color: #00769E;
 background-color: null;
 font-style: inherit;">import</span> ConcatDataset, DataLoader, Dataset</span>
-<span id="cb1-13"><span class="im" style="color: #00769E;
+<span id="cb1-14"><span class="im" style="color: #00769E;
 background-color: null;
 font-style: inherit;">from</span> torchinfo <span class="im" style="color: #00769E;
 background-color: null;
 font-style: inherit;">import</span> summary</span>
-<span id="cb1-14"><span class="im" style="color: #00769E;
+<span id="cb1-15"><span class="im" style="color: #00769E;
 background-color: null;
 font-style: inherit;">from</span> torchvision <span class="im" style="color: #00769E;
 background-color: null;
 font-style: inherit;">import</span> transforms <span class="im" style="color: #00769E;
 background-color: null;
 font-style: inherit;">as</span> T</span>
-<span id="cb1-15"><span class="im" style="color: #00769E;
+<span id="cb1-16"><span class="im" style="color: #00769E;
 background-color: null;
 font-style: inherit;">from</span> torchvision.utils <span class="im" style="color: #00769E;
 background-color: null;
 font-style: inherit;">import</span> make_grid</span>
-<span id="cb1-16"><span class="im" style="color: #00769E;
+<span id="cb1-17"><span class="im" style="color: #00769E;
 background-color: null;
 font-style: inherit;">from</span> tqdm <span class="im" style="color: #00769E;
 background-color: null;
 font-style: inherit;">import</span> tqdm</span>
-<span id="cb1-17"></span>
-<span id="cb1-18">SEED: Final[<span class="bu" style="color: null;
+<span id="cb1-18"></span>
+<span id="cb1-19">SEED: Final[<span class="bu" style="color: null;
 background-color: null;
 font-style: inherit;">int</span>] <span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">=</span> <span class="dv" style="color: #AD0000;
 background-color: null;
 font-style: inherit;">42</span></span>
-<span id="cb1-19"></span>
-<span id="cb1-20">PROJECT_PATH <span class="op" style="color: #5E5E5E;
+<span id="cb1-20"></span>
+<span id="cb1-21">PROJECT_PATH <span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">=</span> Path(<span class="st" style="color: #20794D;
 background-color: null;
 font-style: inherit;">"."</span>).resolve()</span>
-<span id="cb1-21">FIGURE_PATH <span class="op" style="color: #5E5E5E;
+<span id="cb1-22">FIGURE_PATH <span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">=</span> PROJECT_PATH <span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">/</span> <span class="st" style="color: #20794D;
 background-color: null;
 font-style: inherit;">"figures"</span></span>
-<span id="cb1-22">DATASET_PATH <span class="op" style="color: #5E5E5E;
+<span id="cb1-23">DATASET_PATH <span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">=</span> Path.home() <span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">/</span> <span class="st" style="color: #20794D;
 background-color: null;
 font-style: inherit;">"datasets"</span></span>
-<span id="cb1-23"></span>
-<span id="cb1-24"><span class="co" style="color: #5E5E5E;
+<span id="cb1-24"></span>
+<span id="cb1-25"><span class="co" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;"># Common constants for all experiments</span></span>
-<span id="cb1-25">IMG_DIM: Final[<span class="bu" style="color: null;
+<span id="cb1-26">IMG_DIM: Final[<span class="bu" style="color: null;
 background-color: null;
 font-style: inherit;">tuple</span>[<span class="bu" style="color: null;
 background-color: null;
@@ -7286,7 +7289,9 @@ font-style: inherit;">0.3</span>),</span>
 <span id="cb6-14">            nn.Linear(ndf, <span class="dv" style="color: #AD0000;
 background-color: null;
 font-style: inherit;">1</span>),</span>
-<span id="cb6-15">            nn.Sigmoid(),</span>
+<span id="cb6-15">            <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># nn.Sigmoid(),</span></span>
 <span id="cb6-16">        )</span>
 <span id="cb6-17"></span>
 <span id="cb6-18">    <span class="kw" style="color: #003B4F;
@@ -7349,7 +7354,6 @@ Discriminator                            [128, 1]                  --
 │    └─LeakyReLU: 2-8                    [128, 128]                --
 │    └─Dropout: 2-9                      [128, 128]                --
 │    └─Linear: 2-10                      [128, 1]                  129
-│    └─Sigmoid: 2-11                     [128, 1]                  --
 ==========================================================================================
 Total params: 566,273
 Trainable params: 566,273
@@ -7415,106 +7419,119 @@ background-color: null;
 font-style: inherit;">=</span> real_data.size(<span class="dv" style="color: #AD0000;
 background-color: null;
 font-style: inherit;">0</span>)</span>
-<span id="cb8-12"></span>
-<span id="cb8-13">    real_data <span class="op" style="color: #5E5E5E;
+<span id="cb8-12">    real_data <span class="op" style="color: #5E5E5E;
 background-color: null;
-font-style: inherit;">=</span> real_data.to(device)</span>
-<span id="cb8-14"></span>
-<span id="cb8-15">    <span class="co" style="color: #5E5E5E;
+font-style: inherit;">=</span> real_data.to(device, non_blocking<span class="op" style="color: #5E5E5E;
 background-color: null;
-font-style: inherit;"># Labels for real and fake data</span></span>
-<span id="cb8-16">    real_labels <span class="op" style="color: #5E5E5E;
+font-style: inherit;">=</span><span class="va" style="color: #111111;
 background-color: null;
-font-style: inherit;">=</span> torch.ones(batch_size, <span class="dv" style="color: #AD0000;
+font-style: inherit;">True</span>)</span>
+<span id="cb8-13"></span>
+<span id="cb8-14">    <span class="co" style="color: #5E5E5E;
 background-color: null;
-font-style: inherit;">1</span>, device<span class="op" style="color: #5E5E5E;
+font-style: inherit;">### Train Discriminator</span></span>
+<span id="cb8-15">    optim_D.zero_grad(set_to_none<span class="op" style="color: #5E5E5E;
 background-color: null;
-font-style: inherit;">=</span>device)</span>
-<span id="cb8-17">    fake_labels <span class="op" style="color: #5E5E5E;
+font-style: inherit;">=</span><span class="va" style="color: #111111;
 background-color: null;
-font-style: inherit;">=</span> torch.zeros(batch_size, <span class="dv" style="color: #AD0000;
+font-style: inherit;">True</span>)</span>
+<span id="cb8-16"></span>
+<span id="cb8-17">    noise <span class="op" style="color: #5E5E5E;
 background-color: null;
-font-style: inherit;">1</span>, device<span class="op" style="color: #5E5E5E;
+font-style: inherit;">=</span> torch.randn(batch_size, noise_dim, device<span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">=</span>device)</span>
 <span id="cb8-18"></span>
-<span id="cb8-19">    <span class="co" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">### Train Discriminator</span></span>
-<span id="cb8-20"></span>
-<span id="cb8-21">    <span class="co" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;"># Real data</span></span>
-<span id="cb8-22">    output_real <span class="op" style="color: #5E5E5E;
+<span id="cb8-19">    output_real <span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">=</span> discriminator(real_data)</span>
-<span id="cb8-23">    loss_D_real <span class="op" style="color: #5E5E5E;
+<span id="cb8-20">    real_labels <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> torch.ones_like(output_real)</span>
+<span id="cb8-21">    loss_D_real <span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">=</span> criterion(output_real, real_labels)</span>
-<span id="cb8-24"></span>
-<span id="cb8-25">    <span class="co" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;"># Fake data</span></span>
-<span id="cb8-26">    noise <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">=</span> torch.randn(batch_size, noise_dim, dtype<span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">=</span>torch.<span class="bu" style="color: null;
-background-color: null;
-font-style: inherit;">float</span>, device<span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">=</span>device)</span>
-<span id="cb8-27">    fake_data <span class="op" style="color: #5E5E5E;
+<span id="cb8-22"></span>
+<span id="cb8-23">    fake_data <span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">=</span> generator(noise)</span>
-<span id="cb8-28">    output_fake <span class="op" style="color: #5E5E5E;
+<span id="cb8-24">    output_fake <span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">=</span> discriminator(fake_data.detach())</span>
-<span id="cb8-29">    loss_D_fake <span class="op" style="color: #5E5E5E;
+<span id="cb8-25">    fake_labels <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> torch.zeros_like(output_fake)</span>
+<span id="cb8-26">    loss_D_fake <span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">=</span> criterion(output_fake, fake_labels)</span>
-<span id="cb8-30"></span>
-<span id="cb8-31">    <span class="co" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;"># Backprop and optimize for discriminator</span></span>
-<span id="cb8-32">    loss_D <span class="op" style="color: #5E5E5E;
+<span id="cb8-27"></span>
+<span id="cb8-28">    loss_D <span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">=</span> (loss_D_real <span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">+</span> loss_D_fake) <span class="op" style="color: #5E5E5E;
 background-color: null;
-font-style: inherit;">/</span> <span class="fl" style="color: #AD0000;
+font-style: inherit;">/</span> <span class="dv" style="color: #AD0000;
 background-color: null;
-font-style: inherit;">2.0</span></span>
-<span id="cb8-33">    discriminator.zero_grad()</span>
-<span id="cb8-34">    loss_D.backward()</span>
-<span id="cb8-35">    optim_D.step()</span>
-<span id="cb8-36"></span>
-<span id="cb8-37">    <span class="co" style="color: #5E5E5E;
+font-style: inherit;">2</span></span>
+<span id="cb8-29"></span>
+<span id="cb8-30">    loss_D.backward()</span>
+<span id="cb8-31">    optim_D.step()</span>
+<span id="cb8-32"></span>
+<span id="cb8-33">    <span class="co" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">### Train Generator</span></span>
-<span id="cb8-38"></span>
-<span id="cb8-39">    <span class="co" style="color: #5E5E5E;
+<span id="cb8-34">    optim_G.zero_grad(set_to_none<span class="op" style="color: #5E5E5E;
 background-color: null;
-font-style: inherit;"># Recompute fake data's discriminator scores</span></span>
-<span id="cb8-40">    output_fake <span class="op" style="color: #5E5E5E;
+font-style: inherit;">=</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">True</span>)</span>
+<span id="cb8-35"></span>
+<span id="cb8-36">    <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Freeze D params so autograd does not waste work computing their grads</span></span>
+<span id="cb8-37">    <span class="cf" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">for</span> p <span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">in</span> discriminator.parameters():</span>
+<span id="cb8-38">        p.requires_grad_(<span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">False</span>)</span>
+<span id="cb8-39"></span>
+<span id="cb8-40">    fake_data <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> generator(noise)</span>
+<span id="cb8-41">    output_fake <span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">=</span> discriminator(fake_data)</span>
-<span id="cb8-41">    loss_G <span class="op" style="color: #5E5E5E;
+<span id="cb8-42">    target_for_g <span class="op" style="color: #5E5E5E;
 background-color: null;
-font-style: inherit;">=</span> criterion(output_fake, real_labels)</span>
-<span id="cb8-42"></span>
-<span id="cb8-43">    <span class="co" style="color: #5E5E5E;
+font-style: inherit;">=</span> torch.ones_like(output_fake)</span>
+<span id="cb8-43">    loss_G <span class="op" style="color: #5E5E5E;
 background-color: null;
-font-style: inherit;"># Backprop and optimize for generator</span></span>
-<span id="cb8-44">    generator.zero_grad()</span>
+font-style: inherit;">=</span> criterion(output_fake, target_for_g)</span>
+<span id="cb8-44"></span>
 <span id="cb8-45">    loss_G.backward()</span>
 <span id="cb8-46">    optim_G.step()</span>
 <span id="cb8-47"></span>
 <span id="cb8-48">    <span class="cf" style="color: #003B4F;
 background-color: null;
 font-weight: bold;
-font-style: inherit;">return</span> loss_G.item(), loss_D.item()</span></code></pre></div></div>
+font-style: inherit;">for</span> p <span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">in</span> discriminator.parameters():</span>
+<span id="cb8-49">        p.requires_grad_(<span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">True</span>)</span>
+<span id="cb8-50"></span>
+<span id="cb8-51">    <span class="cf" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">return</span> loss_G.detach().item(), loss_D.detach().item()</span></code></pre></div></div>
 </div>
 </section>
 <section id="evaluation" class="level2">
@@ -7560,9 +7577,11 @@ background-color: null;
 font-style: inherit;">=</span> {</span>
 <span id="cb10-5">    <span class="st" style="color: #20794D;
 background-color: null;
-font-style: inherit;">"num_workers"</span>: <span class="dv" style="color: #AD0000;
+font-style: inherit;">"num_workers"</span>: joblib.cpu_count(only_physical_cores<span class="op" style="color: #5E5E5E;
 background-color: null;
-font-style: inherit;">8</span>,</span>
+font-style: inherit;">=</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">True</span>),</span>
 <span id="cb10-6">    <span class="st" style="color: #20794D;
 background-color: null;
 font-style: inherit;">"pin_memory"</span>: <span class="va" style="color: #111111;
@@ -7580,12 +7599,12 @@ font-style: inherit;">"batch_size"</span>: BATCH_SIZE,</span>
 background-color: null;
 font-style: inherit;">"prefetch_factor"</span>: <span class="dv" style="color: #AD0000;
 background-color: null;
-font-style: inherit;">16</span>,</span>
+font-style: inherit;">2</span>,</span>
 <span id="cb10-10">    <span class="st" style="color: #20794D;
 background-color: null;
 font-style: inherit;">"persistent_workers"</span>: <span class="va" style="color: #111111;
 background-color: null;
-font-style: inherit;">False</span>,</span>
+font-style: inherit;">True</span>,</span>
 <span id="cb10-11">    <span class="st" style="color: #20794D;
 background-color: null;
 font-style: inherit;">"worker_init_fn"</span>: seed_worker,</span>
@@ -7675,37 +7694,34 @@ font-style: inherit;">100</span></span></code></pre></div></div>
 <div id="cell-25" class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1">transform <span class="op" style="color: #5E5E5E;
 background-color: null;
-font-style: inherit;">=</span> T.Compose(</span>
-<span id="cb13-2">    [</span>
-<span id="cb13-3">        T.ToTensor(),</span>
-<span id="cb13-4">        T.Normalize(<span class="fl" style="color: #AD0000;
+font-style: inherit;">=</span> T.Compose([T.ToTensor(), T.Normalize(<span class="fl" style="color: #AD0000;
 background-color: null;
 font-style: inherit;">0.5</span>, <span class="fl" style="color: #AD0000;
 background-color: null;
-font-style: inherit;">0.5</span>),</span>
-<span id="cb13-5">    ]</span>
-<span id="cb13-6">)</span>
-<span id="cb13-7"></span>
-<span id="cb13-8">data <span class="op" style="color: #5E5E5E;
+font-style: inherit;">0.5</span>)])</span>
+<span id="cb13-2"></span>
+<span id="cb13-3">dataset <span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">=</span> get_mnist_dataset(transform<span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">=</span>transform)</span>
-<span id="cb13-9">dataloader <span class="op" style="color: #5E5E5E;
+<span id="cb13-4">dataloader <span class="op" style="color: #5E5E5E;
 background-color: null;
-font-style: inherit;">=</span> DataLoader(data, <span class="op" style="color: #5E5E5E;
+font-style: inherit;">=</span> DataLoader(dataset, <span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">**</span>loader_kwargs)</span>
-<span id="cb13-10"></span>
-<span id="cb13-11"><span class="co" style="color: #5E5E5E;
+<span id="cb13-5"></span>
+<span id="cb13-6"><span class="co" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;"># set seed for random generators</span></span>
-<span id="cb13-12">set_random_seed()</span>
-<span id="cb13-13"></span>
-<span id="cb13-14"><span class="co" style="color: #5E5E5E;
+<span id="cb13-7">set_random_seed(seed<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span>SEED)</span>
+<span id="cb13-8"></span>
+<span id="cb13-9"><span class="co" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;"># benchmark_noise is used for the animation to show how output evolve on the same vector</span></span>
-<span id="cb13-15">benchmark_noise <span class="op" style="color: #5E5E5E;
+<span id="cb13-10">benchmark_noise <span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">=</span> torch.randn(<span class="dv" style="color: #AD0000;
 background-color: null;
@@ -7716,60 +7732,60 @@ background-color: null;
 font-style: inherit;">16</span>, NOISE_DIM, device<span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">=</span>device)</span>
-<span id="cb13-16"></span>
-<span id="cb13-17">generator <span class="op" style="color: #5E5E5E;
+<span id="cb13-11"></span>
+<span id="cb13-12">generator <span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">=</span> Generator(out_dim<span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">=</span>IMG_DIM, nz<span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">=</span>NOISE_DIM).to(device)</span>
-<span id="cb13-18">generator.<span class="bu" style="color: null;
+<span id="cb13-13">generator.<span class="bu" style="color: null;
 background-color: null;
 font-style: inherit;">apply</span>(weights_init)</span>
-<span id="cb13-19"></span>
-<span id="cb13-20">discriminator <span class="op" style="color: #5E5E5E;
+<span id="cb13-14"></span>
+<span id="cb13-15">discriminator <span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">=</span> Discriminator(input_dim<span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">=</span>IMG_DIM).to(device)</span>
-<span id="cb13-21">discriminator.<span class="bu" style="color: null;
+<span id="cb13-16">discriminator.<span class="bu" style="color: null;
 background-color: null;
 font-style: inherit;">apply</span>(weights_init)</span>
-<span id="cb13-22"></span>
-<span id="cb13-23">optimizer_G <span class="op" style="color: #5E5E5E;
+<span id="cb13-17"></span>
+<span id="cb13-18">optimizer_G <span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">=</span> optim.AdamW(</span>
-<span id="cb13-24">    generator.parameters(),</span>
-<span id="cb13-25">    lr<span class="op" style="color: #5E5E5E;
+<span id="cb13-19">    generator.parameters(),</span>
+<span id="cb13-20">    lr<span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">=</span>OPTIMIZER_LR,</span>
-<span id="cb13-26">    betas<span class="op" style="color: #5E5E5E;
+<span id="cb13-21">    betas<span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">=</span>OPTIMIZER_BETAS,</span>
-<span id="cb13-27">    weight_decay<span class="op" style="color: #5E5E5E;
+<span id="cb13-22">    weight_decay<span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">=</span>L2_NORM,</span>
-<span id="cb13-28">)</span>
-<span id="cb13-29"></span>
-<span id="cb13-30">optimizer_D <span class="op" style="color: #5E5E5E;
+<span id="cb13-23">)</span>
+<span id="cb13-24"></span>
+<span id="cb13-25">optimizer_D <span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">=</span> optim.AdamW(</span>
-<span id="cb13-31">    discriminator.parameters(),</span>
-<span id="cb13-32">    lr<span class="op" style="color: #5E5E5E;
+<span id="cb13-26">    discriminator.parameters(),</span>
+<span id="cb13-27">    lr<span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">=</span>OPTIMIZER_LR,</span>
-<span id="cb13-33">    betas<span class="op" style="color: #5E5E5E;
+<span id="cb13-28">    betas<span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">=</span>OPTIMIZER_BETAS,</span>
-<span id="cb13-34">    weight_decay<span class="op" style="color: #5E5E5E;
+<span id="cb13-29">    weight_decay<span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">=</span>L2_NORM,</span>
-<span id="cb13-35">)</span>
-<span id="cb13-36"></span>
-<span id="cb13-37">criterion <span class="op" style="color: #5E5E5E;
+<span id="cb13-30">)</span>
+<span id="cb13-31"></span>
+<span id="cb13-32">criterion <span class="op" style="color: #5E5E5E;
 background-color: null;
-font-style: inherit;">=</span> nn.BCELoss().to(device)</span></code></pre></div></div>
+font-style: inherit;">=</span> nn.BCEWithLogitsLoss().to(device)</span></code></pre></div></div>
 </div>
 <div id="cell-26" class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb14" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1">animation: <span class="bu" style="color: null;
@@ -7844,7 +7860,7 @@ background-color: null;
 font-style: inherit;">=</span> generator(benchmark_noise)</span>
 <span id="cb14-28">        images <span class="op" style="color: #5E5E5E;
 background-color: null;
-font-style: inherit;">=</span> images.detach().cpu()</span>
+font-style: inherit;">=</span> images.cpu()</span>
 <span id="cb14-29"></span>
 <span id="cb14-30">        images <span class="op" style="color: #5E5E5E;
 background-color: null;
@@ -7857,9 +7873,21 @@ background-color: null;
 font-style: inherit;">=</span><span class="va" style="color: #111111;
 background-color: null;
 font-style: inherit;">True</span>)</span>
-<span id="cb14-31">        animation.append(images)</span></code></pre></div></div>
+<span id="cb14-31">        images <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> (images <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">*</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">255</span>).clamp(<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">255</span>).to(torch.uint8)</span>
+<span id="cb14-32"></span>
+<span id="cb14-33">        animation.append(images)</span></code></pre></div></div>
 <div class="cell-output cell-output-stderr">
-<pre><code>100%|██████████| 100/100 [07:44&lt;00:00,  4.64s/epochs]</code></pre>
+<pre><code>100%|██████████| 100/100 [05:44&lt;00:00,  3.45s/epochs]</code></pre>
 </div>
 </div>
 <div id="cell-27" class="cell">
@@ -7976,7 +8004,9 @@ font-style: inherit;">**</span>loader_kwargs)</span>
 <span id="cb18-6"><span class="co" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;"># set seed for random generators</span></span>
-<span id="cb18-7">set_random_seed()</span>
+<span id="cb18-7">set_random_seed(seed<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span>SEED)</span>
 <span id="cb18-8"></span>
 <span id="cb18-9"><span class="co" style="color: #5E5E5E;
 background-color: null;
@@ -8045,7 +8075,7 @@ font-style: inherit;">=</span>L2_NORM,</span>
 <span id="cb18-31"></span>
 <span id="cb18-32">criterion <span class="op" style="color: #5E5E5E;
 background-color: null;
-font-style: inherit;">=</span> nn.BCELoss().to(device)</span></code></pre></div></div>
+font-style: inherit;">=</span> nn.BCEWithLogitsLoss().to(device)</span></code></pre></div></div>
 </div>
 <div id="cell-34" class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb19" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb19-1">animation <span class="op" style="color: #5E5E5E;
@@ -8106,7 +8136,7 @@ background-color: null;
 font-style: inherit;">=</span> generator(benchmark_noise)</span>
 <span id="cb19-26">        images <span class="op" style="color: #5E5E5E;
 background-color: null;
-font-style: inherit;">=</span> images.detach().cpu()</span>
+font-style: inherit;">=</span> images.cpu()</span>
 <span id="cb19-27"></span>
 <span id="cb19-28">        images <span class="op" style="color: #5E5E5E;
 background-color: null;
@@ -8119,10 +8149,21 @@ background-color: null;
 font-style: inherit;">=</span><span class="va" style="color: #111111;
 background-color: null;
 font-style: inherit;">True</span>)</span>
-<span id="cb19-29"></span>
-<span id="cb19-30">        animation.append(images)</span></code></pre></div></div>
+<span id="cb19-29">        images <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> (images <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">*</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">255</span>).clamp(<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">255</span>).to(torch.uint8)</span>
+<span id="cb19-30"></span>
+<span id="cb19-31">        animation.append(images)</span></code></pre></div></div>
 <div class="cell-output cell-output-stderr">
-<pre><code>100%|██████████| 100/100 [07:46&lt;00:00,  4.67s/epochs]</code></pre>
+<pre><code>100%|██████████| 100/100 [05:47&lt;00:00,  3.47s/epochs]</code></pre>
 </div>
 </div>
 <div id="cell-35" class="cell">
@@ -8353,7 +8394,7 @@ Total mult-adds (Units.GIGABYTES): 1.76
 Input size (MB): 0.05
 Forward/backward pass size (MB): 24.26
 Params size (MB): 1.25
-Estimated Total Size (MB): 25.57
+Estimated Total Size (MB): 25.56
 ==========================================================================================</code></pre>
 </div>
 </div>
@@ -8489,7 +8530,9 @@ background-color: null;
 font-style: inherit;">=</span><span class="va" style="color: #111111;
 background-color: null;
 font-style: inherit;">False</span>),</span>
-<span id="cb23-15">            nn.Sigmoid(),</span>
+<span id="cb23-15">            <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># nn.Sigmoid(),</span></span>
 <span id="cb23-16">        )</span>
 <span id="cb23-17"></span>
 <span id="cb23-18">    <span class="kw" style="color: #003B4F;
@@ -8545,7 +8588,6 @@ Discriminator                            [128, 1]                  --
 │    └─BatchNorm2d: 2-8                  [128, 128, 4, 4]          256
 │    └─LeakyReLU: 2-9                    [128, 128, 4, 4]          --
 │    └─Conv2d: 2-10                      [128, 1, 1, 1]            2,048
-│    └─Sigmoid: 2-11                     [128, 1, 1, 1]            --
 ==========================================================================================
 Total params: 109,504
 Trainable params: 109,504
@@ -8678,7 +8720,7 @@ font-style: inherit;">=</span>L2_NORM,</span>
 <span id="cb25-38"></span>
 <span id="cb25-39">criterion <span class="op" style="color: #5E5E5E;
 background-color: null;
-font-style: inherit;">=</span> nn.BCELoss().to(device)</span></code></pre></div></div>
+font-style: inherit;">=</span> nn.BCEWithLogitsLoss().to(device)</span></code></pre></div></div>
 </div>
 <div id="cell-47" class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb26" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb26-1">animation <span class="op" style="color: #5E5E5E;
@@ -8739,7 +8781,7 @@ background-color: null;
 font-style: inherit;">=</span> generator(benchmark_noise)</span>
 <span id="cb26-26">        images <span class="op" style="color: #5E5E5E;
 background-color: null;
-font-style: inherit;">=</span> images.detach().cpu()</span>
+font-style: inherit;">=</span> images.cpu()</span>
 <span id="cb26-27"></span>
 <span id="cb26-28">        images <span class="op" style="color: #5E5E5E;
 background-color: null;
@@ -8752,10 +8794,21 @@ background-color: null;
 font-style: inherit;">=</span><span class="va" style="color: #111111;
 background-color: null;
 font-style: inherit;">True</span>)</span>
-<span id="cb26-29"></span>
-<span id="cb26-30">        animation.append(images)</span></code></pre></div></div>
+<span id="cb26-29">        images <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> (images <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">*</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">255</span>).clamp(<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">255</span>).to(torch.uint8)</span>
+<span id="cb26-30"></span>
+<span id="cb26-31">        animation.append(images)</span></code></pre></div></div>
 <div class="cell-output cell-output-stderr">
-<pre><code>100%|██████████| 100/100 [05:22&lt;00:00,  3.22s/epochs]</code></pre>
+<pre><code>100%|██████████| 100/100 [04:50&lt;00:00,  2.91s/epochs]</code></pre>
 </div>
 </div>
 <div id="cell-48" class="cell">
@@ -8884,7 +8937,7 @@ font-style: inherit;">=</span>L2_NORM,</span>
 <span id="cb28-38"></span>
 <span id="cb28-39">criterion <span class="op" style="color: #5E5E5E;
 background-color: null;
-font-style: inherit;">=</span> nn.BCELoss().to(device)</span></code></pre></div></div>
+font-style: inherit;">=</span> nn.BCEWithLogitsLoss().to(device)</span></code></pre></div></div>
 </div>
 <div id="cell-52" class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb29" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb29-1">animation <span class="op" style="color: #5E5E5E;
@@ -8945,7 +8998,7 @@ background-color: null;
 font-style: inherit;">=</span> generator(benchmark_noise)</span>
 <span id="cb29-26">        images <span class="op" style="color: #5E5E5E;
 background-color: null;
-font-style: inherit;">=</span> images.detach().cpu()</span>
+font-style: inherit;">=</span> images.cpu()</span>
 <span id="cb29-27"></span>
 <span id="cb29-28">        images <span class="op" style="color: #5E5E5E;
 background-color: null;
@@ -8958,10 +9011,21 @@ background-color: null;
 font-style: inherit;">=</span><span class="va" style="color: #111111;
 background-color: null;
 font-style: inherit;">True</span>)</span>
-<span id="cb29-29"></span>
-<span id="cb29-30">        animation.append(images)</span></code></pre></div></div>
+<span id="cb29-29">        images <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> (images <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">*</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">255</span>).clamp(<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">255</span>).to(torch.uint8)</span>
+<span id="cb29-30"></span>
+<span id="cb29-31">        animation.append(images)</span></code></pre></div></div>
 <div class="cell-output cell-output-stderr">
-<pre><code>100%|██████████| 100/100 [05:24&lt;00:00,  3.24s/epochs]</code></pre>
+<pre><code>100%|██████████| 100/100 [04:55&lt;00:00,  2.96s/epochs]</code></pre>
 </div>
 </div>
 <div id="cell-53" class="cell">
