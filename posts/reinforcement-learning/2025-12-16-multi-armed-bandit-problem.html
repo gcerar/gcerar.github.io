@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en-us" xml:lang="en-us"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.8.26">
+<meta name="generator" content="quarto-1.9.37">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
@@ -11,6 +11,9 @@
 
 <title>Bernoulli Multi-Armed Bandit Problem – Greg’s blog</title>
 <style>
+/* Default styles provided by pandoc.
+** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+*/
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
 div.columns{display: flex; gap: min(4vw, 1.5em);}
@@ -69,19 +72,18 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <meta name="quarto:offset" content="../../">
 <script src="../../site_libs/quarto-html/quarto.js" type="module"></script>
 <script src="../../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
-<script src="../../site_libs/quarto-html/axe/axe-check.js" type="module"></script>
 <script src="../../site_libs/quarto-html/popper.min.js"></script>
 <script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
 <script src="../../site_libs/quarto-html/anchor.min.js"></script>
 <link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-257311f31c353275a0fc9c1463d94e88.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
-<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-dark-48d47c65b5cdcf4caa257c90842cb98c.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
-<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-257311f31c353275a0fc9c1463d94e88.css" rel="stylesheet" class="quarto-color-scheme-extra" id="quarto-text-highlighting-styles">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-9f4daddb1b95eb1654bf5b2831f7d3d8.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-dark-defd2ba811285abaf17d290cabb20d4a.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-9f4daddb1b95eb1654bf5b2831f7d3d8.css" rel="stylesheet" class="quarto-color-scheme-extra" id="quarto-text-highlighting-styles">
 <script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="../../site_libs/bootstrap/bootstrap-1ca92a1ab776f6c4621c81ac8cbe56f2.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
-<link href="../../site_libs/bootstrap/bootstrap-dark-ccdfa978c4acb782f2bde8bbfe9a074c.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
-<link href="../../site_libs/bootstrap/bootstrap-1ca92a1ab776f6c4621c81ac8cbe56f2.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
+<link href="../../site_libs/bootstrap/bootstrap-6f93b2efeb10a97bcb13c50c13daad8a.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="../../site_libs/bootstrap/bootstrap-dark-28e04a618360d63204bd240a7474ef0a.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
+<link href="../../site_libs/bootstrap/bootstrap-6f93b2efeb10a97bcb13c50c13daad8a.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
@@ -120,7 +122,7 @@ gtag('config', 'G-FB81SP2FX7', { 'anonymize_ip': true});
 </script>
 
   <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
-  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+  <script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
 
 <script type="text/javascript">
 const typesetMath = (el) => {
@@ -152,7 +154,7 @@ window.Quarto = {
 <meta property="og:title" content="Bernoulli Multi-Armed Bandit Problem – Greg’s blog">
 <meta property="og:description" content="The multi-armed bandit (MAB) problem is a classic reinforcement learning problem that illustrates the exploitation-exploration dilemma.">
 <meta property="og:image" content="https://gcerar.github.io/posts/reinforcement-learning/2025-12-16-multi-armed-bandit-problem_files/figure-html/fig-benchmark-output-1.png">
-<meta property="og:site_name" content="Greg's blog">
+<meta property="og:site_name" content="Greg’s blog">
 <meta property="og:locale" content="en_US">
 <meta property="og:image:height" content="894">
 <meta property="og:image:width" content="2423">
@@ -338,19 +340,9 @@ window.Quarto = {
           <div class="collapse navbar-collapse" id="navbarCollapse">
             <ul class="navbar-nav navbar-nav-scroll me-auto">
   <li class="nav-item">
-    <a class="nav-link" href="../../index.html"> <i class="bi bi-house-door" role="img">
-</i> 
-<span class="menu-text">Home</span></a>
-  </li>  
-  <li class="nav-item">
-    <a class="nav-link" href="../../index.html"> <i class="bi bi-file-richtext" role="img">
+    <a class="nav-link" href="../../blog.html"> <i class="bi bi-file-richtext" role="img">
 </i> 
 <span class="menu-text">Blog</span></a>
-  </li>  
-  <li class="nav-item">
-    <a class="nav-link" href="../../about.html"> <i class="bi bi-file-person" role="img">
-</i> 
-<span class="menu-text">About</span></a>
   </li>  
 </ul>
             <ul class="navbar-nav navbar-nav-scroll ms-auto">
@@ -361,6 +353,11 @@ window.Quarto = {
   </li>  
   <li class="nav-item compact">
     <a class="nav-link" href="https://linkedin.com/in/gcerar"> <i class="bi bi-linkedin" role="img" aria-label="LinkedIn page">
+</i> 
+<span class="menu-text"></span></a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://scholar.google.com/citations?user=qWOc0fYAAAAJ"> <i class="bi bi-mortarboard" role="img" aria-label="Google Scholar page">
 </i> 
 <span class="menu-text"></span></a>
   </li>  
@@ -453,7 +450,7 @@ window.Quarto = {
     <div>
     <div class="quarto-title-meta-heading">Modified</div>
     <div class="quarto-title-meta-contents">
-      <p class="date-modified">2025-12-17</p>
+      <p class="date-modified">2026-04-21</p>
     </div>
   </div>
     
@@ -509,7 +506,7 @@ Note
 <p>Second, the reward probabilities are <em>not known ahead of time</em>. You discover them through experiennce. This is what makes the problem interesting.</p>
 </div>
 </div>
-<div id="cell-5" class="cell" data-execution_count="1">
+<div id="cell-5" class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> abc <span class="im">import</span> ABC, abstractmethod</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
@@ -520,7 +517,7 @@ Note
 <span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="op">%</span>config InlineBackend.figure_formats <span class="op">=</span> {<span class="st">'retina'</span>, <span class="st">'png'</span>}</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
-<div id="cell-6" class="cell" data-execution_count="2">
+<div id="cell-6" class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> BaseBandit(ABC):</span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>    k: <span class="bu">int</span>  <span class="co"># number of arms</span></span>
 <span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>    best_proba: <span class="bu">float</span> <span class="op">|</span> np.float64  <span class="co"># hidden to solver; for regret calculation, highest possible reward probability</span></span>
@@ -615,7 +612,7 @@ Note
 <p><span class="math display">\[
 \mathcal{L}_{T} = \mathbb{E}\left[\sum_{t=1}^{T}(\theta^{*} - Q(a_{t}))\right]
 \]</span></p>
-<div id="cell-8" class="cell" data-execution_count="3">
+<div id="cell-8" class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> BernoulliBandit(BaseBandit):</span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> <span class="fu">__init__</span>(</span>
 <span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>,</span>
@@ -713,7 +710,7 @@ Note
 <p>Despite its simplicity, <span class="math inline">\(\epsilon\)</span>-greedy often performs reasonably well. However, because exploration is random and does not depend on uncertainty, it can waste trials on clearly suboptimal actions.</p>
 </div>
 </div>
-<div id="cell-11" class="cell" data-execution_count="4">
+<div id="cell-11" class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> EpsilonGreedy(BaseSolver):</span>
 <span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> <span class="fu">__init__</span>(<span class="va">self</span>, bandit: BaseBandit, eps: <span class="bu">float</span>, init_proba: <span class="bu">float</span> <span class="op">=</span> <span class="fl">1.0</span>, seed: <span class="bu">int</span> <span class="op">|</span> <span class="va">None</span> <span class="op">=</span> <span class="va">None</span>) <span class="op">-&gt;</span> <span class="va">None</span>:</span>
 <span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>        <span class="co">"""</span></span>
@@ -928,7 +925,7 @@ Note
 <p>UCB1 always chooses the action with the <strong>highest plausible reward</strong>, where “plausible” is defined by a confidence interval that shrinks as evidence accumulates.</p>
 </div>
 </div>
-<div id="cell-17" class="cell" data-execution_count="5">
+<div id="cell-17" class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> UCB1(BaseSolver):</span>
 <span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> <span class="fu">__init__</span>(<span class="va">self</span>, bandit: BaseBandit, init_proba: <span class="bu">float</span> <span class="op">=</span> <span class="fl">1.0</span>, seed: <span class="bu">int</span> <span class="op">|</span> <span class="va">None</span> <span class="op">=</span> <span class="va">None</span>):</span>
 <span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>        <span class="bu">super</span>().<span class="fu">__init__</span>(bandit)</span>
@@ -1011,7 +1008,7 @@ a_{t}^{Bayes\text{-}UCB} = \arg\max_{a \in \mathcal{A}}\left[ \mu_{t}(a) + c \si
 </tr>
 </tbody>
 </table>
-<div id="cell-19" class="cell" data-execution_count="6">
+<div id="cell-19" class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> BayesianUCB(BaseSolver):</span>
 <span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> <span class="fu">__init__</span>(</span>
 <span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>, bandit: BaseBandit, c: <span class="bu">float</span> <span class="op">=</span> <span class="dv">2</span>, init_a: <span class="bu">float</span> <span class="op">=</span> <span class="dv">1</span>, init_b: <span class="bu">float</span> <span class="op">=</span> <span class="dv">1</span>, seed: <span class="bu">int</span> <span class="op">|</span> <span class="va">None</span> <span class="op">=</span> <span class="va">None</span></span>
@@ -1137,7 +1134,7 @@ a_t^\textrm{TS} = \arg\max_{a \in \mathcal{A}} \tilde{\theta}_a.
 <p>Bayesian UCB is optimistic; Thompson Sampling is probabilistic.</p>
 </blockquote>
 <p>Both use Bayesian posteriors, but Thompson Sampling avoids manually choosing confidence levels.</p>
-<div id="cell-21" class="cell" data-execution_count="7">
+<div id="cell-21" class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> ThompsonSampling(BaseSolver):</span>
 <span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> <span class="fu">__init__</span>(<span class="va">self</span>, bandit: BaseBandit, init_a: <span class="bu">int</span> <span class="op">=</span> <span class="dv">1</span>, init_b: <span class="bu">int</span> <span class="op">=</span> <span class="dv">1</span>, seed: <span class="bu">int</span> <span class="op">|</span> <span class="va">None</span> <span class="op">=</span> <span class="va">None</span>) <span class="op">-&gt;</span> <span class="va">None</span>:</span>
 <span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>        <span class="bu">super</span>().<span class="fu">__init__</span>(bandit)</span>
@@ -1170,7 +1167,7 @@ a_t^\textrm{TS} = \arg\max_{a \in \mathcal{A}} \tilde{\theta}_a.
 </section>
 <section id="benchmark" class="level1">
 <h1>Benchmark</h1>
-<div id="cell-23" class="cell" data-execution_count="8">
+<div id="cell-23" class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>N_STEPS <span class="op">=</span> <span class="dv">10_000</span></span>
 <span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>SEED <span class="op">=</span> <span class="bn">0x42</span></span>
 <span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>K <span class="op">=</span> <span class="dv">10</span></span>
@@ -1208,7 +1205,7 @@ a_t^\textrm{TS} = \arg\max_{a \in \mathcal{A}} \tilde{\theta}_a.
 <pre><code>[0.  0.1 0.2 0.3 0.4 0.5 0.6 0.7 0.8 0.9]</code></pre>
 </div>
 </div>
-<div id="cell-fig-benchmark" class="cell" data-execution_count="9">
+<div id="cell-fig-benchmark" class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> load_theme(<span class="st">"ambivalent"</span>):</span>
 <span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>    fig, ax <span class="op">=</span> plt.subplots(ncols<span class="op">=</span><span class="dv">3</span>, nrows<span class="op">=</span><span class="dv">1</span>, figsize<span class="op">=</span>(<span class="dv">12</span>, <span class="dv">4</span>), facecolor<span class="op">=</span><span class="st">"none"</span>, layout<span class="op">=</span><span class="st">"constrained"</span>)</span>
 <span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a></span>

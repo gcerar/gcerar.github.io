@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en-us" xml:lang="en-us"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.8.26">
+<meta name="generator" content="quarto-1.9.37">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
@@ -11,6 +11,9 @@
 
 <title>Building a No‑Fluff Report Template in&nbsp;LaTeX – Greg’s blog</title>
 <style>
+/* Default styles provided by pandoc.
+** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+*/
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
 div.columns{display: flex; gap: min(4vw, 1.5em);}
@@ -69,19 +72,18 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <meta name="quarto:offset" content="../../">
 <script src="../../site_libs/quarto-html/quarto.js" type="module"></script>
 <script src="../../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
-<script src="../../site_libs/quarto-html/axe/axe-check.js" type="module"></script>
 <script src="../../site_libs/quarto-html/popper.min.js"></script>
 <script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
 <script src="../../site_libs/quarto-html/anchor.min.js"></script>
 <link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-257311f31c353275a0fc9c1463d94e88.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
-<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-dark-48d47c65b5cdcf4caa257c90842cb98c.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
-<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-257311f31c353275a0fc9c1463d94e88.css" rel="stylesheet" class="quarto-color-scheme-extra" id="quarto-text-highlighting-styles">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-9f4daddb1b95eb1654bf5b2831f7d3d8.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-dark-defd2ba811285abaf17d290cabb20d4a.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-9f4daddb1b95eb1654bf5b2831f7d3d8.css" rel="stylesheet" class="quarto-color-scheme-extra" id="quarto-text-highlighting-styles">
 <script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="../../site_libs/bootstrap/bootstrap-1ca92a1ab776f6c4621c81ac8cbe56f2.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
-<link href="../../site_libs/bootstrap/bootstrap-dark-ccdfa978c4acb782f2bde8bbfe9a074c.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
-<link href="../../site_libs/bootstrap/bootstrap-1ca92a1ab776f6c4621c81ac8cbe56f2.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
+<link href="../../site_libs/bootstrap/bootstrap-6f93b2efeb10a97bcb13c50c13daad8a.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="../../site_libs/bootstrap/bootstrap-dark-28e04a618360d63204bd240a7474ef0a.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
+<link href="../../site_libs/bootstrap/bootstrap-6f93b2efeb10a97bcb13c50c13daad8a.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
@@ -123,7 +125,7 @@ gtag('config', 'G-FB81SP2FX7', { 'anonymize_ip': true});
 <meta property="og:title" content="Building a No‑Fluff Report Template in&nbsp;LaTeX – Greg’s blog">
 <meta property="og:description" content="On a few occasions, I had to write a LaTeX/PDF report or documentation on what I was doing. I often got annoyed with TeX templates, which had lots of wasted whitespace around the title and edges of the document. So, I created a template that improves density, flexibility, and clarity.">
 <meta property="og:image" content="https://gcerar.github.io/posts/2025-05-07-ministate-v3/featured.png">
-<meta property="og:site_name" content="Greg's blog">
+<meta property="og:site_name" content="Greg’s blog">
 <meta property="og:locale" content="en_US">
 <meta property="og:image:height" content="817">
 <meta property="og:image:width" content="817">
@@ -309,19 +311,9 @@ gtag('config', 'G-FB81SP2FX7', { 'anonymize_ip': true});
           <div class="collapse navbar-collapse" id="navbarCollapse">
             <ul class="navbar-nav navbar-nav-scroll me-auto">
   <li class="nav-item">
-    <a class="nav-link" href="../../index.html"> <i class="bi bi-house-door" role="img">
-</i> 
-<span class="menu-text">Home</span></a>
-  </li>  
-  <li class="nav-item">
-    <a class="nav-link" href="../../index.html"> <i class="bi bi-file-richtext" role="img">
+    <a class="nav-link" href="../../blog.html"> <i class="bi bi-file-richtext" role="img">
 </i> 
 <span class="menu-text">Blog</span></a>
-  </li>  
-  <li class="nav-item">
-    <a class="nav-link" href="../../about.html"> <i class="bi bi-file-person" role="img">
-</i> 
-<span class="menu-text">About</span></a>
   </li>  
 </ul>
             <ul class="navbar-nav navbar-nav-scroll ms-auto">
@@ -332,6 +324,11 @@ gtag('config', 'G-FB81SP2FX7', { 'anonymize_ip': true});
   </li>  
   <li class="nav-item compact">
     <a class="nav-link" href="https://linkedin.com/in/gcerar"> <i class="bi bi-linkedin" role="img" aria-label="LinkedIn page">
+</i> 
+<span class="menu-text"></span></a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://scholar.google.com/citations?user=qWOc0fYAAAAJ"> <i class="bi bi-mortarboard" role="img" aria-label="Google Scholar page">
 </i> 
 <span class="menu-text"></span></a>
   </li>  
@@ -358,6 +355,7 @@ gtag('config', 'G-FB81SP2FX7', { 'anonymize_ip': true});
   <ul>
   <li><a href="#why-a-new-template" id="toc-why-a-new-template" class="nav-link active" data-scroll-target="#why-a-new-template">Why a New Template?</a></li>
   <li><a href="#meet-ministate-v3.0" id="toc-meet-ministate-v3.0" class="nav-link" data-scroll-target="#meet-ministate-v3.0">Meet <em>ministate</em> v3.0</a></li>
+  <li><a href="#outcome" id="toc-outcome" class="nav-link" data-scroll-target="#outcome">Outcome</a></li>
   </ul>
 </nav>
 </nav>
@@ -398,7 +396,7 @@ gtag('config', 'G-FB81SP2FX7', { 'anonymize_ip': true});
     <div>
     <div class="quarto-title-meta-heading">Modified</div>
     <div class="quarto-title-meta-contents">
-      <p class="date-modified">2025-12-02</p>
+      <p class="date-modified">2026-04-21</p>
     </div>
   </div>
     
@@ -419,10 +417,10 @@ gtag('config', 'G-FB81SP2FX7', { 'anonymize_ip': true});
 <h2 class="anchored" data-anchor-id="why-a-new-template">Why a New Template?</h2>
 <ol type="1">
 <li><strong>Dense (less fluff)</strong> — Every square centimeter should serve the reader. Tighter vertical spacing and compact headings keep the narrative flowing.</li>
-<li><strong>Optional titles</strong> — Some documents benefit from title; others (like a few‑paragraph conclusion) do not. The template should let me toggle them off with a single flag.</li>
+<li><strong>Optional titles</strong> — Some documents benefit from a title; others (like a brief update) do not. The template should let me toggle them off with a single flag.</li>
 <li><strong>Flexible</strong> — Today, I might need a one‑pager. Tomorrow, a 20‑page appendix. Layout decisions (margins, font, color) should be parameterized — not hard‑wired.</li>
 </ol>
-<p>Existing classes like <code>article</code> or even <code>IEEEtran</code> come close but still force in essential baggage (abstract blocks, keywords, etc.). Then I stumbled upon the elegant <a href="https://www.overleaf.com/latex/templates/minimalstatement/pzgpkvvrzyqj"><code>ministate</code></a> class. So I adapted it.</p>
+<p>Existing classes like <code>article</code> or even <code>IEEEtran</code> come close but still force unnecessary baggage on the author (abstract blocks, keywords, etc.). Then I stumbled upon the elegant <a href="https://www.overleaf.com/latex/templates/minimalstatement/pzgpkvvrzyqj"><code>ministate</code></a> class. So I adapted it.</p>
 </section>
 <section id="meet-ministate-v3.0" class="level2">
 <h2 class="anchored" data-anchor-id="meet-ministate-v3.0">Meet <em>ministate</em> v3.0</h2>
@@ -485,64 +483,60 @@ gtag('config', 'G-FB81SP2FX7', { 'anonymize_ip': true});
 <span id="cb1-53"><a href="#cb1-53" aria-hidden="true" tabindex="-1"></a><span class="fu">\newcommand</span>{<span class="ex">\headertitle</span>}[1]{<span class="fu">\def\@headertitle</span>{#1}}</span>
 <span id="cb1-54"><a href="#cb1-54" aria-hidden="true" tabindex="-1"></a><span class="fu">\newcommand</span>{<span class="ex">\headerauthor</span>}[1]{<span class="fu">\def\@headerauthor</span>{#1}}</span>
 <span id="cb1-55"><a href="#cb1-55" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-56"><a href="#cb1-56" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-57"><a href="#cb1-57" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-58"><a href="#cb1-58" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-59"><a href="#cb1-59" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-60"><a href="#cb1-60" aria-hidden="true" tabindex="-1"></a><span class="fu">\fancypagestyle</span>{ministate}{<span class="co">%</span></span>
-<span id="cb1-61"><a href="#cb1-61" aria-hidden="true" tabindex="-1"></a>  <span class="fu">\fancyhf</span>{}<span class="co">% clear everything</span></span>
-<span id="cb1-62"><a href="#cb1-62" aria-hidden="true" tabindex="-1"></a>  <span class="fu">\fancyhead</span>[L]{<span class="fu">\textbf</span>{<span class="fu">\@headertitle</span>}<span class="fu">\ifx\@headerdate\@empty\else\ </span>(<span class="fu">\@headerdate</span>)<span class="fu">\fi</span>}<span class="co">%</span></span>
-<span id="cb1-63"><a href="#cb1-63" aria-hidden="true" tabindex="-1"></a>  <span class="fu">\fancyhead</span>[R]{<span class="fu">\textbf</span>{<span class="fu">\@headerauthor</span>}}<span class="co">%</span></span>
-<span id="cb1-64"><a href="#cb1-64" aria-hidden="true" tabindex="-1"></a>  <span class="fu">\fancyfoot</span>[C]{<span class="fu">\thepage</span>}<span class="co">%</span></span>
-<span id="cb1-65"><a href="#cb1-65" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb1-66"><a href="#cb1-66" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-67"><a href="#cb1-67" aria-hidden="true" tabindex="-1"></a><span class="fu">\pagestyle</span>{ministate}</span>
+<span id="cb1-56"><a href="#cb1-56" aria-hidden="true" tabindex="-1"></a><span class="fu">\fancypagestyle</span>{ministate}{<span class="co">%</span></span>
+<span id="cb1-57"><a href="#cb1-57" aria-hidden="true" tabindex="-1"></a>  <span class="fu">\fancyhf</span>{}<span class="co">% clear everything</span></span>
+<span id="cb1-58"><a href="#cb1-58" aria-hidden="true" tabindex="-1"></a>  <span class="fu">\fancyhead</span>[L]{<span class="fu">\textbf</span>{<span class="fu">\@headertitle</span>}<span class="fu">\ifx\@headerdate\@empty\else\ </span>(<span class="fu">\@headerdate</span>)<span class="fu">\fi</span>}<span class="co">%</span></span>
+<span id="cb1-59"><a href="#cb1-59" aria-hidden="true" tabindex="-1"></a>  <span class="fu">\fancyhead</span>[R]{<span class="fu">\textbf</span>{<span class="fu">\@headerauthor</span>}}<span class="co">%</span></span>
+<span id="cb1-60"><a href="#cb1-60" aria-hidden="true" tabindex="-1"></a>  <span class="fu">\fancyfoot</span>[C]{<span class="fu">\thepage</span>}<span class="co">%</span></span>
+<span id="cb1-61"><a href="#cb1-61" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb1-62"><a href="#cb1-62" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-63"><a href="#cb1-63" aria-hidden="true" tabindex="-1"></a><span class="fu">\pagestyle</span>{ministate}</span>
+<span id="cb1-64"><a href="#cb1-64" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-65"><a href="#cb1-65" aria-hidden="true" tabindex="-1"></a><span class="co">% Apply header settings including the custom date</span></span>
+<span id="cb1-66"><a href="#cb1-66" aria-hidden="true" tabindex="-1"></a><span class="co">%\fancyhead[L]{\textbf{\@headertitle}\ifx\@headerdate\@empty\else\ (\@headerdate)\fi} % Title (Custom Date)</span></span>
+<span id="cb1-67"><a href="#cb1-67" aria-hidden="true" tabindex="-1"></a><span class="co">%\fancyhead[R]{\textbf{\@headerauthor}} % Author</span></span>
 <span id="cb1-68"><a href="#cb1-68" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-69"><a href="#cb1-69" aria-hidden="true" tabindex="-1"></a><span class="co">% Apply header settings including the custom date</span></span>
-<span id="cb1-70"><a href="#cb1-70" aria-hidden="true" tabindex="-1"></a><span class="co">%\fancyhead[L]{\textbf{\@headertitle}\ifx\@headerdate\@empty\else\ (\@headerdate)\fi} % Title (Custom Date)</span></span>
-<span id="cb1-71"><a href="#cb1-71" aria-hidden="true" tabindex="-1"></a><span class="co">%\fancyhead[R]{\textbf{\@headerauthor}} % Author</span></span>
+<span id="cb1-69"><a href="#cb1-69" aria-hidden="true" tabindex="-1"></a><span class="co">%\fancyfoot{} % Override existing foot numbering</span></span>
+<span id="cb1-70"><a href="#cb1-70" aria-hidden="true" tabindex="-1"></a><span class="co">%\fancyfoot[C]{\thepage} % Page number at center of footer</span></span>
+<span id="cb1-71"><a href="#cb1-71" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb1-72"><a href="#cb1-72" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-73"><a href="#cb1-73" aria-hidden="true" tabindex="-1"></a><span class="co">%\fancyfoot{} % Override existing foot numbering</span></span>
-<span id="cb1-74"><a href="#cb1-74" aria-hidden="true" tabindex="-1"></a><span class="co">%\fancyfoot[C]{\thepage} % Page number at center of footer</span></span>
-<span id="cb1-75"><a href="#cb1-75" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-73"><a href="#cb1-73" aria-hidden="true" tabindex="-1"></a><span class="co">%--------------------------------------------------%</span></span>
+<span id="cb1-74"><a href="#cb1-74" aria-hidden="true" tabindex="-1"></a><span class="co">%                   Document Body                  %</span></span>
+<span id="cb1-75"><a href="#cb1-75" aria-hidden="true" tabindex="-1"></a><span class="co">%--------------------------------------------------%</span></span>
 <span id="cb1-76"><a href="#cb1-76" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-77"><a href="#cb1-77" aria-hidden="true" tabindex="-1"></a><span class="co">%--------------------------------------------------%</span></span>
-<span id="cb1-78"><a href="#cb1-78" aria-hidden="true" tabindex="-1"></a><span class="co">%                   Document Body                  %</span></span>
-<span id="cb1-79"><a href="#cb1-79" aria-hidden="true" tabindex="-1"></a><span class="co">%--------------------------------------------------%</span></span>
-<span id="cb1-80"><a href="#cb1-80" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-81"><a href="#cb1-81" aria-hidden="true" tabindex="-1"></a><span class="co">% Usage:</span></span>
-<span id="cb1-82"><a href="#cb1-82" aria-hidden="true" tabindex="-1"></a><span class="co">% \title{Your Title Here}</span></span>
-<span id="cb1-83"><a href="#cb1-83" aria-hidden="true" tabindex="-1"></a><span class="co">% \author{Author Name}</span></span>
-<span id="cb1-84"><a href="#cb1-84" aria-hidden="true" tabindex="-1"></a><span class="co">% \headertitle{Your Header Title Here} - For custom header title</span></span>
-<span id="cb1-85"><a href="#cb1-85" aria-hidden="true" tabindex="-1"></a><span class="co">% \headerauthor{Your Header Author Here} - For custom header author</span></span>
-<span id="cb1-86"><a href="#cb1-86" aria-hidden="true" tabindex="-1"></a><span class="co">% \date{Custom Date or Empty String} - To change or remove the date</span></span>
-<span id="cb1-87"><a href="#cb1-87" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-88"><a href="#cb1-88" aria-hidden="true" tabindex="-1"></a><span class="co">% Comment this block if we don't want header on the first page</span></span>
-<span id="cb1-89"><a href="#cb1-89" aria-hidden="true" tabindex="-1"></a><span class="bu">\usepackage</span>{<span class="ex">etoolbox</span>}   <span class="co">% load before you patch anything</span></span>
-<span id="cb1-90"><a href="#cb1-90" aria-hidden="true" tabindex="-1"></a><span class="fu">\makeatletter</span></span>
-<span id="cb1-91"><a href="#cb1-91" aria-hidden="true" tabindex="-1"></a><span class="fu">\patchcmd</span>{<span class="fu">\maketitle</span>}<span class="co">%          the command to patch</span></span>
-<span id="cb1-92"><a href="#cb1-92" aria-hidden="true" tabindex="-1"></a>  {<span class="fu">\thispagestyle</span>{plain}}<span class="co">%      code to replace</span></span>
-<span id="cb1-93"><a href="#cb1-93" aria-hidden="true" tabindex="-1"></a>  {<span class="fu">\thispagestyle</span>{ministate}}<span class="co">%  replacement</span></span>
-<span id="cb1-94"><a href="#cb1-94" aria-hidden="true" tabindex="-1"></a>  {}{}                          <span class="co">% ← success / failure actions (empty)</span></span>
-<span id="cb1-95"><a href="#cb1-95" aria-hidden="true" tabindex="-1"></a><span class="fu">\makeatother</span></span>
-<span id="cb1-96"><a href="#cb1-96" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-97"><a href="#cb1-97" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-98"><a href="#cb1-98" aria-hidden="true" tabindex="-1"></a><span class="fu">\makeatletter</span></span>
-<span id="cb1-99"><a href="#cb1-99" aria-hidden="true" tabindex="-1"></a><span class="fu">\def\@maketitle</span>{<span class="co">%</span></span>
-<span id="cb1-100"><a href="#cb1-100" aria-hidden="true" tabindex="-1"></a>  <span class="fu">\newpage</span></span>
-<span id="cb1-101"><a href="#cb1-101" aria-hidden="true" tabindex="-1"></a>  <span class="kw">\begin</span>{<span class="ex">center</span>}<span class="co">%</span></span>
-<span id="cb1-102"><a href="#cb1-102" aria-hidden="true" tabindex="-1"></a>    <span class="fu">\let\footnote\thanks</span></span>
-<span id="cb1-103"><a href="#cb1-103" aria-hidden="true" tabindex="-1"></a>    {<span class="fu">\LARGE</span> <span class="fu">\@title\par</span>}<span class="co">%</span></span>
-<span id="cb1-104"><a href="#cb1-104" aria-hidden="true" tabindex="-1"></a>    <span class="fu">\vskip</span> 0.2em<span class="co">%</span></span>
-<span id="cb1-105"><a href="#cb1-105" aria-hidden="true" tabindex="-1"></a>    {<span class="fu">\large</span><span class="kw">\begin</span>{<span class="ex">tabular</span>}[t]{c}<span class="fu">\@author</span><span class="kw">\end</span>{<span class="ex">tabular</span>}<span class="fu">\par</span>}<span class="co">%</span></span>
-<span id="cb1-106"><a href="#cb1-106" aria-hidden="true" tabindex="-1"></a>    <span class="fu">\vskip</span> 0.2em<span class="co">%</span></span>
-<span id="cb1-107"><a href="#cb1-107" aria-hidden="true" tabindex="-1"></a>    {<span class="fu">\large</span> <span class="fu">\@date</span>}<span class="fu">\vskip</span> 0.2em<span class="co">% % Commented out to remove the date</span></span>
-<span id="cb1-108"><a href="#cb1-108" aria-hidden="true" tabindex="-1"></a>  <span class="kw">\end</span>{<span class="ex">center</span>}<span class="co">%</span></span>
-<span id="cb1-109"><a href="#cb1-109" aria-hidden="true" tabindex="-1"></a>  <span class="fu">\par</span></span>
-<span id="cb1-110"><a href="#cb1-110" aria-hidden="true" tabindex="-1"></a>}<span class="co">%</span></span>
-<span id="cb1-111"><a href="#cb1-111" aria-hidden="true" tabindex="-1"></a><span class="fu">\makeatother</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb1-77"><a href="#cb1-77" aria-hidden="true" tabindex="-1"></a><span class="co">% Usage:</span></span>
+<span id="cb1-78"><a href="#cb1-78" aria-hidden="true" tabindex="-1"></a><span class="co">% \title{Your Title Here}</span></span>
+<span id="cb1-79"><a href="#cb1-79" aria-hidden="true" tabindex="-1"></a><span class="co">% \author{Author Name}</span></span>
+<span id="cb1-80"><a href="#cb1-80" aria-hidden="true" tabindex="-1"></a><span class="co">% \headertitle{Your Header Title Here} - For custom header title</span></span>
+<span id="cb1-81"><a href="#cb1-81" aria-hidden="true" tabindex="-1"></a><span class="co">% \headerauthor{Your Header Author Here} - For custom header author</span></span>
+<span id="cb1-82"><a href="#cb1-82" aria-hidden="true" tabindex="-1"></a><span class="co">% \date{Custom Date or Empty String} - To change or remove the date</span></span>
+<span id="cb1-83"><a href="#cb1-83" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-84"><a href="#cb1-84" aria-hidden="true" tabindex="-1"></a><span class="co">% Comment this block if we don't want header on the first page</span></span>
+<span id="cb1-85"><a href="#cb1-85" aria-hidden="true" tabindex="-1"></a><span class="bu">\usepackage</span>{<span class="ex">etoolbox</span>}   <span class="co">% load before you patch anything</span></span>
+<span id="cb1-86"><a href="#cb1-86" aria-hidden="true" tabindex="-1"></a><span class="fu">\makeatletter</span></span>
+<span id="cb1-87"><a href="#cb1-87" aria-hidden="true" tabindex="-1"></a><span class="fu">\patchcmd</span>{<span class="fu">\maketitle</span>}<span class="co">%          the command to patch</span></span>
+<span id="cb1-88"><a href="#cb1-88" aria-hidden="true" tabindex="-1"></a>  {<span class="fu">\thispagestyle</span>{plain}}<span class="co">%      code to replace</span></span>
+<span id="cb1-89"><a href="#cb1-89" aria-hidden="true" tabindex="-1"></a>  {<span class="fu">\thispagestyle</span>{ministate}}<span class="co">%  replacement</span></span>
+<span id="cb1-90"><a href="#cb1-90" aria-hidden="true" tabindex="-1"></a>  {}{}                          <span class="co">% ← success / failure actions (empty)</span></span>
+<span id="cb1-91"><a href="#cb1-91" aria-hidden="true" tabindex="-1"></a><span class="fu">\makeatother</span></span>
+<span id="cb1-92"><a href="#cb1-92" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-93"><a href="#cb1-93" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-94"><a href="#cb1-94" aria-hidden="true" tabindex="-1"></a><span class="fu">\makeatletter</span></span>
+<span id="cb1-95"><a href="#cb1-95" aria-hidden="true" tabindex="-1"></a><span class="fu">\def\@maketitle</span>{<span class="co">%</span></span>
+<span id="cb1-96"><a href="#cb1-96" aria-hidden="true" tabindex="-1"></a>  <span class="fu">\newpage</span></span>
+<span id="cb1-97"><a href="#cb1-97" aria-hidden="true" tabindex="-1"></a>  <span class="kw">\begin</span>{<span class="ex">center</span>}<span class="co">%</span></span>
+<span id="cb1-98"><a href="#cb1-98" aria-hidden="true" tabindex="-1"></a>    <span class="fu">\let\footnote\thanks</span></span>
+<span id="cb1-99"><a href="#cb1-99" aria-hidden="true" tabindex="-1"></a>    {<span class="fu">\LARGE</span> <span class="fu">\@title\par</span>}<span class="co">%</span></span>
+<span id="cb1-100"><a href="#cb1-100" aria-hidden="true" tabindex="-1"></a>    <span class="fu">\vskip</span> 0.2em<span class="co">%</span></span>
+<span id="cb1-101"><a href="#cb1-101" aria-hidden="true" tabindex="-1"></a>    {<span class="fu">\large</span><span class="kw">\begin</span>{<span class="ex">tabular</span>}[t]{c}<span class="fu">\@author</span><span class="kw">\end</span>{<span class="ex">tabular</span>}<span class="fu">\par</span>}<span class="co">%</span></span>
+<span id="cb1-102"><a href="#cb1-102" aria-hidden="true" tabindex="-1"></a>    <span class="fu">\vskip</span> 0.2em<span class="co">%</span></span>
+<span id="cb1-103"><a href="#cb1-103" aria-hidden="true" tabindex="-1"></a>    {<span class="fu">\large</span> <span class="fu">\@date</span>}<span class="fu">\vskip</span> 0.2em<span class="co">% % Commented out to remove the date</span></span>
+<span id="cb1-104"><a href="#cb1-104" aria-hidden="true" tabindex="-1"></a>  <span class="kw">\end</span>{<span class="ex">center</span>}<span class="co">%</span></span>
+<span id="cb1-105"><a href="#cb1-105" aria-hidden="true" tabindex="-1"></a>  <span class="fu">\par</span></span>
+<span id="cb1-106"><a href="#cb1-106" aria-hidden="true" tabindex="-1"></a>}<span class="co">%</span></span>
+<span id="cb1-107"><a href="#cb1-107" aria-hidden="true" tabindex="-1"></a><span class="fu">\makeatother</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
-<p>The content of <code>example.tex</code> file:</p>
+<p>An example document:</p>
 <div class="code-with-filename">
 <div class="code-with-filename-file">
 <pre><strong>example.tex</strong></pre>
@@ -589,13 +583,13 @@ gtag('config', 'G-FB81SP2FX7', { 'anonymize_ip': true});
 <span id="cb2-40"><a href="#cb2-40" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb2-41"><a href="#cb2-41" aria-hidden="true" tabindex="-1"></a><span class="kw">\end</span>{<span class="ex">document</span>}</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
-<section id="outcome" class="level4">
-<h4 class="anchored" data-anchor-id="outcome">Outcome</h4>
-<p>Below, I embedded the outcome PDF of the above code samples …</p>
+</section>
+<section id="outcome" class="level2">
+<h2 class="anchored" data-anchor-id="outcome">Outcome</h2>
+<p>Below is the rendered PDF output from the code above:</p>
 <embed src="./sample.pdf" width="100%" height="700px">
 
 
-</section>
 </section>
 
 <div id="quarto-appendix" class="default"><section class="quarto-appendix-contents" id="quarto-reuse"><h2 class="anchored quarto-appendix-heading">Reuse</h2><div class="quarto-appendix-contents"><div><a rel="license" href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.en_us">CC BY-NC-SA 4.0</a></div></div></section></div></main> <!-- /main -->

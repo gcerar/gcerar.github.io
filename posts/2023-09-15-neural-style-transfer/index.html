@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en-us" xml:lang="en-us"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.8.26">
+<meta name="generator" content="quarto-1.9.37">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
@@ -11,6 +11,9 @@
 
 <title>Neural Style Transfer – Greg’s blog</title>
 <style>
+/* Default styles provided by pandoc.
+** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+*/
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
 div.columns{display: flex; gap: min(4vw, 1.5em);}
@@ -61,7 +64,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 div.csl-bib-body { }
 div.csl-entry {
   clear: both;
-  margin-bottom: 0em;
 }
 .hanging-indent div.csl-entry {
   margin-left:2em;
@@ -89,19 +91,18 @@ div.csl-indent {
 <meta name="quarto:offset" content="../../">
 <script src="../../site_libs/quarto-html/quarto.js" type="module"></script>
 <script src="../../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
-<script src="../../site_libs/quarto-html/axe/axe-check.js" type="module"></script>
 <script src="../../site_libs/quarto-html/popper.min.js"></script>
 <script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
 <script src="../../site_libs/quarto-html/anchor.min.js"></script>
 <link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-257311f31c353275a0fc9c1463d94e88.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
-<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-dark-48d47c65b5cdcf4caa257c90842cb98c.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
-<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-257311f31c353275a0fc9c1463d94e88.css" rel="stylesheet" class="quarto-color-scheme-extra" id="quarto-text-highlighting-styles">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-9f4daddb1b95eb1654bf5b2831f7d3d8.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-dark-defd2ba811285abaf17d290cabb20d4a.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-9f4daddb1b95eb1654bf5b2831f7d3d8.css" rel="stylesheet" class="quarto-color-scheme-extra" id="quarto-text-highlighting-styles">
 <script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="../../site_libs/bootstrap/bootstrap-1ca92a1ab776f6c4621c81ac8cbe56f2.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
-<link href="../../site_libs/bootstrap/bootstrap-dark-ccdfa978c4acb782f2bde8bbfe9a074c.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
-<link href="../../site_libs/bootstrap/bootstrap-1ca92a1ab776f6c4621c81ac8cbe56f2.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
+<link href="../../site_libs/bootstrap/bootstrap-6f93b2efeb10a97bcb13c50c13daad8a.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="../../site_libs/bootstrap/bootstrap-dark-28e04a618360d63204bd240a7474ef0a.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
+<link href="../../site_libs/bootstrap/bootstrap-6f93b2efeb10a97bcb13c50c13daad8a.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
@@ -140,7 +141,7 @@ gtag('config', 'G-FB81SP2FX7', { 'anonymize_ip': true});
 </script>
 
   <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
-  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+  <script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
 
 <script type="text/javascript">
 const typesetMath = (el) => {
@@ -172,7 +173,7 @@ window.Quarto = {
 <meta property="og:title" content="Neural Style Transfer – Greg’s blog">
 <meta property="og:description" content="Neural Style Transfer (NST) was a breakthrough deep learning approach that can transfer artistic style from one image to another. Eager to learn how it works, I’ve implemented the original approach from scratch.">
 <meta property="og:image" content="https://gcerar.github.io/posts/2023-09-15-neural-style-transfer/featured.webp">
-<meta property="og:site_name" content="Greg's blog">
+<meta property="og:site_name" content="Greg’s blog">
 <meta property="og:locale" content="en_US">
 </head>
 
@@ -356,19 +357,9 @@ window.Quarto = {
           <div class="collapse navbar-collapse" id="navbarCollapse">
             <ul class="navbar-nav navbar-nav-scroll me-auto">
   <li class="nav-item">
-    <a class="nav-link" href="../../index.html"> <i class="bi bi-house-door" role="img">
-</i> 
-<span class="menu-text">Home</span></a>
-  </li>  
-  <li class="nav-item">
-    <a class="nav-link" href="../../index.html"> <i class="bi bi-file-richtext" role="img">
+    <a class="nav-link" href="../../blog.html"> <i class="bi bi-file-richtext" role="img">
 </i> 
 <span class="menu-text">Blog</span></a>
-  </li>  
-  <li class="nav-item">
-    <a class="nav-link" href="../../about.html"> <i class="bi bi-file-person" role="img">
-</i> 
-<span class="menu-text">About</span></a>
   </li>  
 </ul>
             <ul class="navbar-nav navbar-nav-scroll ms-auto">
@@ -379,6 +370,11 @@ window.Quarto = {
   </li>  
   <li class="nav-item compact">
     <a class="nav-link" href="https://linkedin.com/in/gcerar"> <i class="bi bi-linkedin" role="img" aria-label="LinkedIn page">
+</i> 
+<span class="menu-text"></span></a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://scholar.google.com/citations?user=qWOc0fYAAAAJ"> <i class="bi bi-mortarboard" role="img" aria-label="Google Scholar page">
 </i> 
 <span class="menu-text"></span></a>
   </li>  
@@ -464,7 +460,7 @@ window.Quarto = {
     <div>
     <div class="quarto-title-meta-heading">Modified</div>
     <div class="quarto-title-meta-contents">
-      <p class="date-modified">2025-11-20</p>
+      <p class="date-modified">2026-04-21</p>
     </div>
   </div>
     
@@ -485,12 +481,12 @@ window.Quarto = {
 <h1>Introduction</h1>
 <p><a href="https://en.wikipedia.org/wiki/Neural_style_transfer">Neural Style Transfer</a> (NST) is a deep learning technique that combines the <strong>content</strong> of one image with the <strong>style</strong> of another, like giving your photo a Van Gogh-esque makeover.</p>
 <p>Using convolutional neural networks, NST examines both images’ features and creates a new image that merges the content’s structure with the style’s attributes. This technique became a hit due to its novel outcomes, leading to its adoption in various apps and platforms and highlighting deep learning’s prowess in image transformation.</p>
-<p>Introduced initially in “<a href="https://arxiv.org/abs/1508.06576">A Neural Algorithm of Artistic Style</a>” <span class="citation" data-cites="gatys2015neural">(<a href="#ref-gatys2015neural" role="doc-biblioref">Gatys, Ecker, and Bethge 2015</a>)</span>, this method transfers art styles between images. Eager to learn how it works, I’ve implemented the original approach from scratch and presented a few cherry-picked transformed examples.</p>
+<p>Introduced initially in “<a href="https://arxiv.org/abs/1508.06576">A Neural Algorithm of Artistic Style</a>” <span class="citation" data-cites="gatys2015neural">(<a href="#ref-gatys2015neural" role="doc-biblioref">Gatys et al. 2015</a>)</span>, this method transfers art styles between images. Eager to learn how it works, I’ve implemented the original approach from scratch and presented a few cherry-picked transformed examples.</p>
 </section>
 <section id="prerequisites" class="level1">
 <h1>Prerequisites</h1>
 <p>Before we get started, we need to install <a href="https://numpy.org/">NumPy</a>, <a href="https://matplotlib.org/">Matplotlib</a>, <a href="https://pytorch.org/">PyTorch</a> deep learning framework, and finally, <a href="https://pytorch.org/vision/stable/index.html">Torchvision</a> library.</p>
-<div id="cell-3" class="cell" data-execution_count="1">
+<div id="cell-3" class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> collections.abc <span class="im">import</span> Iterable, Sequence</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> pathlib <span class="im">import</span> Path</span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -516,7 +512,7 @@ window.Quarto = {
 <span id="cb1-23"><a href="#cb1-23" aria-hidden="true" tabindex="-1"></a>IMG_SIZE <span class="op">=</span> <span class="dv">512</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <p>Although it is possible to run neural networks on a CPU, using compute accelerators, such as GPU, will do transformation much faster. Here, I utilize my NVIDIA RTX 3090, where I also took advantage of available tensor cores and reduced precision data type <a href="https://en.wikipedia.org/wiki/Bfloat16_floating-point_format">bfloat16</a> for faster transformation.</p>
-<div id="cell-6" class="cell" data-execution_count="3">
+<div id="cell-6" class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>AMP_ENABLED <span class="op">=</span> <span class="va">False</span></span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>device <span class="op">=</span> torch.device(<span class="st">"cpu"</span>)</span>
@@ -548,7 +544,7 @@ Figure&nbsp;1: The Neural Style Transfer framework introduced by Gatys <em>et al
 <li>Adjust the neural network to extract features during forward-backward passes, applying gradient modifications to the target image. The neural network stays unchanged in the process.</li>
 <li>Iterate through this process.</li>
 </ul>
-<div id="cell-8" class="cell" data-execution_count="4">
+<div id="cell-8" class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Weights for different features (were these used by original authors?)</span></span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>STYLE_LAYERS_DEFAULT <span class="op">=</span> {</span>
 <span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>    <span class="st">"conv1_1"</span>: <span class="fl">0.75</span>,</span>
@@ -578,7 +574,7 @@ Figure&nbsp;1: The Neural Style Transfer framework introduced by Gatys <em>et al
 <p><span class="math display">\[
 \mathcal{L}_{content}(\vec{p}, \vec{x}, l) = \frac{1}{2}\sum_{i,j} (F^{l}_{ij} - P^{l}_{ij})^2
 \]</span></p>
-<div id="cell-11" class="cell" data-execution_count="5">
+<div id="cell-11" class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> content_loss_func(target_features: <span class="bu">dict</span>[<span class="bu">str</span>, Tensor], precomputed_content_features: <span class="bu">dict</span>[<span class="bu">str</span>, Tensor]) <span class="op">-&gt;</span> Tensor:</span>
 <span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""Calculate content loss metric for give layers."""</span></span>
 <span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -623,7 +619,7 @@ E_l = \frac{1}{4 N^{2}_{l} M^{2}_{l}} \sum_{i,j}(G^l_{ij} - A^l_{ij})^2
 <p><span class="math display">\[
 \mathcal{L}_{style}(\vec{a}, \vec{x}) = \sum_{l=0}^{L} w_l E_l
 \]</span></p>
-<div id="cell-15" class="cell" data-execution_count="7">
+<div id="cell-15" class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> style_loss_func(</span>
 <span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>    target_features: <span class="bu">dict</span>[<span class="bu">str</span>, Tensor], style_features: <span class="bu">dict</span>[<span class="bu">str</span>, Tensor], precomputed_style_grams: <span class="bu">dict</span>[<span class="bu">str</span>, Tensor]</span>
 <span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>) <span class="op">-&gt;</span> Tensor:</span>
@@ -654,7 +650,7 @@ E_l = \frac{1}{4 N^{2}_{l} M^{2}_{l}} \sum_{i,j}(G^l_{ij} - A^l_{ij})^2
 \]</span></p>
 <p>where <span class="math inline">\(x_{i,j}\)</span> is the pixel value at position <span class="math inline">\((i,j)\)</span>.</p>
 <p>In simple terms, this loss penalizes abrupt changes in pixel values from one to its neighbors. By minimizing this loss, the generated image becomes smoother, reducing artifacts and unwanted noise. When combined with content and style losses, the TV loss ensures that the resulting image not only captures the content and style of the source images but also looks visually coherent and smooth.</p>
-<div id="cell-17" class="cell" data-execution_count="8">
+<div id="cell-17" class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> total_variance_loss_func(target: Tensor) <span class="op">-&gt;</span> Tensor:</span>
 <span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>    tv_loss <span class="op">=</span> F.l1_loss(target[:, :, :, :<span class="op">-</span><span class="dv">1</span>], target[:, :, :, <span class="dv">1</span>:]) <span class="op">+</span> F.l1_loss(</span>
 <span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>        target[:, :, :<span class="op">-</span><span class="dv">1</span>, :], target[:, :, <span class="dv">1</span>:, :]</span>
@@ -681,7 +677,7 @@ E_l = \frac{1}{4 N^{2}_{l} M^{2}_{l}} \sum_{i,j}(G^l_{ij} - A^l_{ij})^2
 <section id="input-preparation" class="level2">
 <h2 class="anchored" data-anchor-id="input-preparation">Input preparation</h2>
 <p>Here we specify path to content and style images:</p>
-<div id="cell-21" class="cell" data-execution_count="9">
+<div id="cell-21" class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>content_path <span class="op">=</span> <span class="st">"./bridge.jpg"</span></span>
 <span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>style_path <span class="op">=</span> <span class="st">"./walking-in-the-rain.jpg"</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
@@ -702,7 +698,7 @@ Note
 <p>An intriguing choice by Gatys <em>et al.</em> was to modify VGG-19, replacing max pooling with average pooling, aiming for visually superior results. However, a challenge arises: our NN was initially trained with <code>MaxPool2d</code> layers. Substituting them can affect activations due to reduced output values. To counteract this, we’ve introduced a custom <code>ScaledAvgPool2d</code>.</p>
 </div>
 </div>
-<div id="cell-23" class="cell" data-execution_count="10">
+<div id="cell-23" class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="co"># We will use a frozen pre-trained VGG neural network for feature extraction.</span></span>
 <span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="co"># In the original paper, authors have used VGG19 (without batch normalization)</span></span>
 <span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>model <span class="op">=</span> models.vgg19(weights<span class="op">=</span>models.VGG19_Weights.IMAGENET1K_V1).features</span>
@@ -735,7 +731,7 @@ Note
 <li>Converting to tensors.</li>
 <li>Normalizing using ImageNet weights.</li>
 </ul>
-<div id="cell-25" class="cell" data-execution_count="11">
+<div id="cell-25" class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="co"># ImageNet normalization weights per channel</span></span>
 <span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>IMAGENET_MEAN <span class="op">=</span> (<span class="fl">0.485</span>, <span class="fl">0.456</span>, <span class="fl">0.406</span>)</span>
 <span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>IMAGENET_STD <span class="op">=</span> (<span class="fl">0.229</span>, <span class="fl">0.224</span>, <span class="fl">0.225</span>)</span>
@@ -761,7 +757,7 @@ Note
 <span id="cb10-23"><a href="#cb10-23" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> img</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <p>The following code will prepares content <span class="math inline">\(\vec{p}\)</span>, style <span class="math inline">\(\vec{a}\)</span>, and target <span class="math inline">\(\vec{x}\)</span> images. The target image is a clone of the content image and we enable computation of gradients on it.</p>
-<div id="cell-27" class="cell" data-execution_count="12">
+<div id="cell-27" class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="co"># The "style" image from which we obtain style</span></span>
 <span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>style <span class="op">=</span> load_image(style_path).to(device)</span>
 <span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -776,7 +772,7 @@ Note
 <li>Content feature map comes from <code>relu5_2</code>.</li>
 <li>Style feature maps are sourced from <code>relu1_1</code>, <code>relu2_1</code>, <code>relu3_1</code>, <code>relu4_1</code>, and <code>relu5_1</code>.</li>
 </ul>
-<div id="cell-29" class="cell" data-execution_count="13">
+<div id="cell-29" class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> get_features(image: Tensor, model: nn.Module, layers: Iterable[<span class="bu">str</span>] <span class="op">|</span> <span class="va">None</span> <span class="op">=</span> <span class="va">None</span>) <span class="op">-&gt;</span> <span class="bu">dict</span>[<span class="bu">str</span>, Tensor]:</span>
 <span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> layers <span class="kw">is</span> <span class="va">None</span>:</span>
 <span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>        layers <span class="op">=</span> <span class="bu">tuple</span>(STYLE_LAYERS_DEFAULT.keys()) <span class="op">+</span> CONTENT_LAYERS_DEFAULT</span>
@@ -812,7 +808,7 @@ Note
 <span id="cb12-33"><a href="#cb12-33" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> features</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <p>Since content and style images never change, we can precompute their feature maps and grams to speed up the NST process.</p>
-<div id="cell-31" class="cell" data-execution_count="14">
+<div id="cell-31" class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Precompute content features, style features, and style gram matrices.</span></span>
 <span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>content_features <span class="op">=</span> get_features(content, model, CONTENT_LAYERS_DEFAULT)</span>
 <span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>style_features <span class="op">=</span> get_features(style, model, STYLE_LAYERS_DEFAULT)</span>
@@ -820,12 +816,12 @@ Note
 <span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>style_grams <span class="op">=</span> {layer: gram_matrix(style_features[layer]) <span class="cf">for</span> layer <span class="kw">in</span> style_features}</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <p>Next, we will use <a href="https://pytorch.org/docs/stable/generated/torch.optim.Adam.html">Adam</a> optimizer, where we specify that only target image <span class="math inline">\(\vec{x}\)</span> is considered for optimization.</p>
-<div id="cell-33" class="cell" data-execution_count="15">
+<div id="cell-33" class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb14"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>optimizer <span class="op">=</span> optim.Adam([target], lr<span class="op">=</span>LEARNING_RATE)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <p>The final step of NST is to transfer style using everything we’ve implemented. We extract feature maps, compute total loss, perform steps using gradient descent, and repeat the process <code>N_EPOCHS</code> times. Gradient changes will apply only to the target image.</p>
 <p>To notably enhance NST speed, I utilized mixed precision with the unique <code>bfloat16</code> found in newer hardware. Traditional half-precision float16 doesn’t yield the same results. I’ve tested it. Probably because of the issue with gradient scaling.</p>
-<div id="cell-35" class="cell" data-execution_count="16">
+<div id="cell-35" class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb15"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>pbar <span class="op">=</span> tqdm(<span class="bu">range</span>(N_EPOCHS))</span>
 <span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> _ <span class="kw">in</span> pbar:</span>
@@ -854,7 +850,7 @@ Note
 </div>
 </div>
 <p>As mentioned before, images need to be denormalized (<em>i.e.</em> reverted back) to correct colors. After that we compare content, style and target images side-by-side.</p>
-<div id="cell-37" class="cell" data-execution_count="17">
+<div id="cell-37" class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb17"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> InverseNormalize:</span>
 <span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> <span class="fu">__init__</span>(<span class="va">self</span>, mean: Sequence[<span class="bu">float</span>], std: Sequence[<span class="bu">float</span>]) <span class="op">-&gt;</span> <span class="va">None</span>:</span>
 <span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.mean <span class="op">=</span> torch.as_tensor(mean)</span>
@@ -959,7 +955,7 @@ Note
 </section>
 </section>
 
-<div id="quarto-appendix" class="default"><section class="quarto-appendix-contents" role="doc-bibliography" id="quarto-bibliography"><h2 class="anchored quarto-appendix-heading">References</h2><div id="refs" class="references csl-bib-body hanging-indent" data-entry-spacing="0" role="list">
+<div id="quarto-appendix" class="default"><section class="quarto-appendix-contents" role="doc-bibliography" id="quarto-bibliography"><h2 class="anchored quarto-appendix-heading">References</h2><div id="refs" class="references csl-bib-body hanging-indent" role="list">
 <div id="ref-gatys2015neural" class="csl-entry" role="listitem">
 Gatys, Leon A, Alexander S Ecker, and Matthias Bethge. 2015. <span>“A Neural Algorithm of Artistic Style.”</span> <em>arXiv Preprint arXiv:1508.06576</em>.
 </div>
