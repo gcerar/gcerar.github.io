@@ -440,7 +440,7 @@ window.Quarto = {
     <div>
     <div class="quarto-title-meta-heading">Modified</div>
     <div class="quarto-title-meta-contents">
-      <p class="date-modified">2026-04-22</p>
+      <p class="date-modified">2026-04-23</p>
     </div>
   </div>
     
@@ -457,12 +457,12 @@ window.Quarto = {
 </header>
 
 
-<p>As I started exploring reinforcement learning, a colleague suggested me to start with a <strong>Q-learning</strong>, one of the simplest and most widely used algorithms in the field. To get a hands-on feel for the fundamentals, I decided to replicate the official <a href="https://gymnasium.farama.org/tutorials/training_agents/frozenlake_q_learning/">Solving Frozenlake with Tabular Q-Learning</a> tutorial from the <a href="https://gymnasium.farama.org/">Gymnasium docs</a>.</p>
+<p>As I started exploring reinforcement learning, a colleague suggested that I start with <strong>Q-learning</strong>, one of the simplest and most widely used algorithms in the field. To get a hands-on feel for the fundamentals, I decided to replicate the official <a href="https://gymnasium.farama.org/tutorials/training_agents/frozenlake_q_learning/">Solving Frozenlake with Tabular Q-Learning</a> tutorial from the <a href="https://gymnasium.farama.org/">Gymnasium docs</a>.</p>
 <p>This post captures that learning journey: walking through the environment, understanding the Q-learning steps, and getting comfortable with Gymnasium library along the way.</p>
 <section id="the-frozen-lake-environment" class="level1">
 <h1>The Frozen Lake Environment</h1>
 <p>The frozen lake is a small, grid-based reinforcement learning environment. We play as an elf whose goal is to cross a frozen lake from the starting tile (top-left corner) to a present (bottom-right) corner, without falling into any holes along the way.</p>
-<p>To make the task more interesting (and more realistic), the lake can be <strong>slippery</strong>. When Sliperiness is enabled, the elf does not always move exactly in the intended direction and may occasionally slip sideways.</p>
+<p>To make the task more interesting (and more realistic), the lake can be <strong>slippery</strong>. When Slippery is enabled, the elf does not always move exactly in the intended direction and may occasionally slip sideways.</p>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
 <p><img src="./frozenlake-sample.png" class="img-fluid figure-img"></p>
@@ -498,8 +498,8 @@ window.Quarto = {
 \]</span></p>
 <p>where:</p>
 <ul>
-<li>where <span class="math inline">\(r\)</span> is row index,</li>
-<li><span class="math inline">\(c\)</span> is column index,</li>
+<li><span class="math inline">\(r\)</span> is the row index,</li>
+<li><span class="math inline">\(c\)</span> is the column index,</li>
 <li><span class="math inline">\(N_{\text{cols}}\)</span> is number of columns in grid.</li>
 </ul>
 <p>This discrete state representation makes Frozen Lake particularly well-suited for tabular methods such as Q-learning.</p>
@@ -523,7 +523,7 @@ window.Quarto = {
 <h2 class="anchored" data-anchor-id="state-space-mathcals">State Space <span class="math inline">\(\mathcal{S}\)</span></h2>
 <p>The state space consists of all discrete tiles on the grid:</p>
 <p><span class="math display">\[
-\mathcal{S} = \{ 0, 1, \dots, (N_\text{rows}\cdot{}N_\text{cols}-1) \}.
+\mathcal{S} = \{ 0, 1, \dots, (N_\text{rows}\cdot N_\text{cols}-1) \}.
 \]</span></p>
 <p>Each state uniquely represents the agent’s current position in the lake.</p>
 </section>
@@ -531,7 +531,7 @@ window.Quarto = {
 <h2 class="anchored" data-anchor-id="action-space-mathcala">Action Space <span class="math inline">\(\mathcal{A}\)</span></h2>
 <p>At each time step, the agent can choose one of four actions:</p>
 <p><span class="math display">\[
-\mathcal{A} = \{ \text{left}, \text{down}, \text{right}, \text{up} \}.
+\mathcal{A} = \{ \text{left}, \text{right}, \text{down}, \text{up} \}.
 \]</span></p>
 <p>These actions correspond to deterministic intentions, even though the actual transition may be stochastic when the lake is slippery.</p>
 </section>
@@ -584,7 +584,7 @@ R(s, a, s') = \begin{cases}
 <span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>    epsilon: <span class="bu">float</span> <span class="op">=</span> <span class="fl">0.1</span>  <span class="co"># probability of exploration vs. exploitation</span></span>
 <span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>    proba_frozen: <span class="bu">float</span> <span class="op">=</span> <span class="fl">0.9</span>  <span class="co"># probability that a tile is frozen (not a hole)</span></span>
 <span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>    is_slippery: <span class="bu">bool</span> <span class="op">=</span> <span class="va">False</span>  <span class="co"># enables slipping: 1/3 forward, 1/3 left, 1/3 right</span></span>
-<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>    seed: <span class="bu">int</span> <span class="op">=</span> <span class="dv">123</span>  <span class="co"># seed for reproducability</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>    seed: <span class="bu">int</span> <span class="op">=</span> <span class="dv">123</span>  <span class="co"># seed for reproducibility</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <div id="e9e1d9c2" class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>SHOW_PROGRESS: <span class="bu">bool</span> <span class="op">=</span> <span class="va">False</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
@@ -668,7 +668,7 @@ R(s, a, s') = \begin{cases}
 <span id="cb6-27"><a href="#cb6-27" aria-hidden="true" tabindex="-1"></a>                <span class="co"># take the action $a$ and observe the outcome state $s'$ and reward $r$</span></span>
 <span id="cb6-28"><a href="#cb6-28" aria-hidden="true" tabindex="-1"></a>                new_state, reward, terminated, truncated, info <span class="op">=</span> env.step(action)</span>
 <span id="cb6-29"><a href="#cb6-29" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-30"><a href="#cb6-30" aria-hidden="true" tabindex="-1"></a>                <span class="co"># mark as done whether game was terminated (victory, hole) or truncated (wall)</span></span>
+<span id="cb6-30"><a href="#cb6-30" aria-hidden="true" tabindex="-1"></a>                <span class="co"># Mark the episode as done if the game terminated (victory/hole) or was truncated (wall)</span></span>
 <span id="cb6-31"><a href="#cb6-31" aria-hidden="true" tabindex="-1"></a>                done <span class="op">=</span> terminated <span class="kw">or</span> truncated</span>
 <span id="cb6-32"><a href="#cb6-32" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb6-33"><a href="#cb6-33" aria-hidden="true" tabindex="-1"></a>                <span class="co"># learner updates Q-table</span></span>

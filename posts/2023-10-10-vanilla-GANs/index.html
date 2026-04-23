@@ -478,7 +478,7 @@ window.Quarto = {
     <div>
     <div class="quarto-title-meta-heading">Modified</div>
     <div class="quarto-title-meta-contents">
-      <p class="date-modified">2026-04-22</p>
+      <p class="date-modified">2026-04-23</p>
     </div>
   </div>
     
@@ -689,7 +689,7 @@ Estimated Total Size (MB): 8.63
 <ul>
 <li><strong>Input:</strong> Takes either real data samples or those from the Generator.</li>
 <li><strong>Architecture:</strong> Employs dense layers for binary classification of the input.</li>
-<li><strong>Output:</strong> Uses a sigmoid activation, yielding a score between 0-1, reflecting the data’s authenticity.</li>
+<li><strong>Output:</strong> Produces raw logits (unbounded scores) evaluated by <code>BCEWithLogitsLoss</code>, which applies an implicit sigmoid for numerical stability.</li>
 <li><strong>Objective:</strong> Recognize real data and identify fake data from the Generator.</li>
 </ul>
 <div id="cell-15" class="cell">
@@ -707,15 +707,14 @@ Estimated Total Size (MB): 8.63
 <span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a>            nn.LeakyReLU(alpha, inplace<span class="op">=</span><span class="va">True</span>),</span>
 <span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a>            nn.Dropout(<span class="fl">0.3</span>),</span>
 <span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a>            nn.Linear(ndf, <span class="dv">1</span>),</span>
-<span id="cb6-15"><a href="#cb6-15" aria-hidden="true" tabindex="-1"></a>            <span class="co"># nn.Sigmoid(),</span></span>
-<span id="cb6-16"><a href="#cb6-16" aria-hidden="true" tabindex="-1"></a>        )</span>
-<span id="cb6-17"><a href="#cb6-17" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-18"><a href="#cb6-18" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> forward(<span class="va">self</span>, x: Tensor) <span class="op">-&gt;</span> Tensor:</span>
-<span id="cb6-19"><a href="#cb6-19" aria-hidden="true" tabindex="-1"></a>        x <span class="op">=</span> torch.reshape(x, (x.size(<span class="dv">0</span>), <span class="op">-</span><span class="dv">1</span>))</span>
-<span id="cb6-20"><a href="#cb6-20" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> <span class="va">self</span>.model(x)</span>
+<span id="cb6-15"><a href="#cb6-15" aria-hidden="true" tabindex="-1"></a>        )</span>
+<span id="cb6-16"><a href="#cb6-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-17"><a href="#cb6-17" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> forward(<span class="va">self</span>, x: Tensor) <span class="op">-&gt;</span> Tensor:</span>
+<span id="cb6-18"><a href="#cb6-18" aria-hidden="true" tabindex="-1"></a>        x <span class="op">=</span> torch.reshape(x, (x.size(<span class="dv">0</span>), <span class="op">-</span><span class="dv">1</span>))</span>
+<span id="cb6-19"><a href="#cb6-19" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> <span class="va">self</span>.model(x)</span>
+<span id="cb6-20"><a href="#cb6-20" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb6-21"><a href="#cb6-21" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-22"><a href="#cb6-22" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-23"><a href="#cb6-23" aria-hidden="true" tabindex="-1"></a>summary(Discriminator(input_dim<span class="op">=</span>(<span class="dv">1</span>, <span class="dv">28</span>, <span class="dv">28</span>)), input_size<span class="op">=</span>[<span class="dv">128</span>, <span class="dv">1</span>, <span class="dv">28</span>, <span class="dv">28</span>])</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb6-22"><a href="#cb6-22" aria-hidden="true" tabindex="-1"></a>summary(Discriminator(input_dim<span class="op">=</span>(<span class="dv">1</span>, <span class="dv">28</span>, <span class="dv">28</span>)), input_size<span class="op">=</span>[<span class="dv">128</span>, <span class="dv">1</span>, <span class="dv">28</span>, <span class="dv">28</span>])</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-display">
 <pre><code>==========================================================================================
 Layer (type:depth-idx)                   Output Shape              Param #
@@ -1134,16 +1133,15 @@ Estimated Total Size (MB): 25.56
 <span id="cb23-12"><a href="#cb23-12" aria-hidden="true" tabindex="-1"></a>            nn.BatchNorm2d(<span class="dv">4</span> <span class="op">*</span> ndf),</span>
 <span id="cb23-13"><a href="#cb23-13" aria-hidden="true" tabindex="-1"></a>            nn.LeakyReLU(alpha, inplace<span class="op">=</span><span class="va">True</span>),</span>
 <span id="cb23-14"><a href="#cb23-14" aria-hidden="true" tabindex="-1"></a>            nn.Conv2d(<span class="dv">4</span> <span class="op">*</span> ndf, <span class="dv">1</span>, <span class="dv">4</span>, <span class="dv">1</span>, <span class="dv">0</span>, bias<span class="op">=</span><span class="va">False</span>),</span>
-<span id="cb23-15"><a href="#cb23-15" aria-hidden="true" tabindex="-1"></a>            <span class="co"># nn.Sigmoid(),</span></span>
-<span id="cb23-16"><a href="#cb23-16" aria-hidden="true" tabindex="-1"></a>        )</span>
-<span id="cb23-17"><a href="#cb23-17" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb23-18"><a href="#cb23-18" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> forward(<span class="va">self</span>, x: Tensor) <span class="op">-&gt;</span> Tensor:</span>
-<span id="cb23-19"><a href="#cb23-19" aria-hidden="true" tabindex="-1"></a>        x <span class="op">=</span> <span class="va">self</span>.layers(x)</span>
-<span id="cb23-20"><a href="#cb23-20" aria-hidden="true" tabindex="-1"></a>        x <span class="op">=</span> torch.reshape(x, (x.size(<span class="dv">0</span>), <span class="op">-</span><span class="dv">1</span>))</span>
-<span id="cb23-21"><a href="#cb23-21" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> x</span>
+<span id="cb23-15"><a href="#cb23-15" aria-hidden="true" tabindex="-1"></a>        )</span>
+<span id="cb23-16"><a href="#cb23-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-17"><a href="#cb23-17" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> forward(<span class="va">self</span>, x: Tensor) <span class="op">-&gt;</span> Tensor:</span>
+<span id="cb23-18"><a href="#cb23-18" aria-hidden="true" tabindex="-1"></a>        x <span class="op">=</span> <span class="va">self</span>.layers(x)</span>
+<span id="cb23-19"><a href="#cb23-19" aria-hidden="true" tabindex="-1"></a>        x <span class="op">=</span> torch.reshape(x, (x.size(<span class="dv">0</span>), <span class="op">-</span><span class="dv">1</span>))</span>
+<span id="cb23-20"><a href="#cb23-20" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> x</span>
+<span id="cb23-21"><a href="#cb23-21" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb23-22"><a href="#cb23-22" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb23-23"><a href="#cb23-23" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb23-24"><a href="#cb23-24" aria-hidden="true" tabindex="-1"></a>summary(Discriminator(), input_size<span class="op">=</span>(BATCH_SIZE, <span class="dv">1</span>, <span class="dv">28</span>, <span class="dv">28</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb23-23"><a href="#cb23-23" aria-hidden="true" tabindex="-1"></a>summary(Discriminator(), input_size<span class="op">=</span>(BATCH_SIZE, <span class="dv">1</span>, <span class="dv">28</span>, <span class="dv">28</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-display">
 <pre><code>==========================================================================================
 Layer (type:depth-idx)                   Output Shape              Param #
@@ -1367,19 +1365,6 @@ Estimated Total Size (MB): 24.30
 <ul>
 <li><a href="https://machinelearningmastery.com/impressive-applications-of-generative-adversarial-networks/">18 Impressive Applications of Generative Adversarial Networks (GANs)</a></li>
 </ul>
-<div class="callout callout-style-default callout-tip callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-Tip
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<p><strong>TODO for future refactoring</strong>: Replace <code>nn.Sigmoid()</code> in both Discriminator classes with raw logits and use <code>nn.BCEWithLogitsLoss()</code> instead of <code>nn.BCELoss()</code>. This combines the Sigmoid activation with the binary cross-entropy loss in a single numerically stable operation, following PyTorch best practices for GAN training.</p>
-</div>
-</div>
 
 
 
