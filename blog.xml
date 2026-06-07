@@ -9,8 +9,327 @@
 <link>https://gcerar.github.io/blog.html</link>
 <atom:link href="https://gcerar.github.io/blog.xml" rel="self" type="application/rss+xml"/>
 <description>Greg&#39;s personal blog</description>
-<generator>quarto-1.9.37</generator>
-<lastBuildDate>Tue, 16 Dec 2025 23:00:00 GMT</lastBuildDate>
+<generator>quarto-1.9.36</generator>
+<lastBuildDate>Sat, 06 Jun 2026 22:00:00 GMT</lastBuildDate>
+<item>
+  <title>Down the Rabbit Hole: Setting Up a Local LLM with llama.cpp</title>
+  <dc:creator>Gregor Cerar</dc:creator>
+  <link>https://gcerar.github.io/posts/2026-06-07-local-llm-llama-cpp/</link>
+  <description><![CDATA[ 
+
+
+
+
+
+<section id="the-gpu-that-started-it-all" class="level2">
+<h2 class="anchored" data-anchor-id="the-gpu-that-started-it-all">The GPU That Started It All</h2>
+<p>My local LLM journey began with a graphics card, specifically an NVIDIA GeForce RTX 3090 with 24 GB of VRAM. I did not buy it from a computer store or unbox it fresh from a retail package. Instead, I got it from a former crypto miner who went late and blindly into crypto and burned himself when Ethereum changed the algorithm. Prices for any decent GPU were still high at the time, as the crypto craze had transitioned to the AI craze.</p>
+<p>He had several of these cards, and I picked up one at a price that felt almost charitable. Looking back, I regret not buying the second one he had available.</p>
+<p>That single RTX 3090 joined my setup in May 2023, replacing an RTX 2080 Ti I had bought second-hand in November 2020 to work around limited lab access to GPUs. The RTX 2080 Ti carried me through most of my PhD research (I completed my doctorate in August 2021), and now sits retired in a closet. It is a quiet reminder of where this journey started. The 3090, by contrast, mostly saw gaming duty during my postdoc years; I simply did not have time for more research after September 2021.</p>
+<p>The GPU stayed the same through all the years that followed. Everything else around it changed, going from an Intel Core i5-6500 to a Ryzen 5 3600, and finally to a Ryzen 7 5800X. But the RTX 3090 remained the constant heart of my workstation.</p>
+</section>
+<section id="the-idle-period" class="level2">
+<h2 class="anchored" data-anchor-id="the-idle-period">The Idle Period</h2>
+<p>After finishing my PhD and entering a two-year-long period as a full-time postdoc, I did not have much time to meaningfully use that GPU beyond casual gaming. It sat there, with this powerful accelerator built for massive parallel computation, rendering game frames and not much else.</p>
+<p>For work, I used ChatGPT with subscription the way many people do these days. It became my go-to assistant for generating reports, drafting text from bullet points, summarizing papers, and a dozen other tasks where a capable language model saves hours of effort. It was convenient, powerful, and completely remote. I never thought much about what happened behind that API endpoint.</p>
+<p>I did not jump directly into local LLMs though. While I was a full-time postdoc, I tested Galactica and Meta’s Llama models using PyTorch during scarce pockets of free time. I even tried to implement a simple RAG system. But I thought to myself at the time that we are not there yet.</p>
+<p>Then came the LLM hype cycle (again), followed by the agent hype. And somewhere in the noise, I started wondering: <em>what if I could run something like this locally?</em></p>
+</section>
+<section id="from-browsing-to-trying" class="level2">
+<h2 class="anchored" data-anchor-id="from-browsing-to-trying">From Browsing to Trying</h2>
+<p>I started casually browsing Reddit communities like r/LocalLLM and r/LocalLLaMA. Scrolling through posts of people running impressive setups, where quantized models squeezed through consumer GPUs and custom prompts turned LLMs into code reviewers and research assistants, gradually seeded a question that would not go away: <em>could I do this too?</em></p>
+<p>The barrier to entry felt lower than I expected. People were discussing GGUF formats, quantization schemes, and model architectures like it was a hobby anyone could pick up. The community posts made it look accessible enough that I figured: <em>why not?</em></p>
+</section>
+<section id="from-ollama-to-llama.cpp-a-three-stage-journey" class="level2">
+<h2 class="anchored" data-anchor-id="from-ollama-to-llama.cpp-a-three-stage-journey">From Ollama to llama.cpp: A Three-Stage Journey</h2>
+<section id="stage-1-ollama-for-exploration" class="level3">
+<h3 class="anchored" data-anchor-id="stage-1-ollama-for-exploration">Stage 1: Ollama for Exploration</h3>
+<p>I started with <a href="https://ollama.com/">Ollama</a>, largely because it is the path of least resistance. I just pulled the Docker container using a single command, and pulling a model was a simple copy-paste of its name into the OpenWebUI frontend. So, having something running locally with a working chat interface took about five minutes total. This was exactly what I needed at this stage: a low-friction way to get a feel for what local models are capable of.</p>
+<p>I experimented with a handful of models, typed in basic prompts, and formed initial impressions. Could a local model actually help with coding tasks? Was the quality anywhere near ChatGPT level? Ollama gave me answers to these questions without requiring any technical deep-dives.</p>
+</section>
+<section id="stage-2-ollama-as-an-openai-compatible-endpoint" class="level3">
+<h3 class="anchored" data-anchor-id="stage-2-ollama-as-an-openai-compatible-endpoint">Stage 2: Ollama as an OpenAI-Compatible Endpoint</h3>
+<p>After getting comfortable with the basics, I wanted to test integrations. Could I plug a local model into tools that expect an OpenAI API? Fortunately, Ollama serves an OpenAI-compliant endpoint out of the box (<code>/v1/chat/completions</code>), so I used it as a drop-in replacement for testing various client applications and scripts.</p>
+<p>This stage was short-lived but informative. It confirmed that local models could indeed function as API backends, opening up possibilities beyond just chatting in a web interface. But I also hit the natural limits of this approach: limited control over inference parameters, no visibility into what was happening under the hood, and growing curiosity about whether I could get better performance.</p>
+</section>
+<section id="stage-3-llama.cpp-as-my-personal-llm-endpoint" class="level3">
+<h3 class="anchored" data-anchor-id="stage-3-llama.cpp-as-my-personal-llm-endpoint">Stage 3: llama.cpp as My Personal LLM Endpoint</h3>
+<p>I substituted Ollama with <code>llama.cpp</code>, which has evolved significantly since its early days. It now includes its own web-based UI for quick testing and token generation inspection, which effectively bridges the usability gap that Ollama originally filled. But more importantly, <code>llama.cpp</code> offers far greater control over inference: GPU layer offloading, custom batch sizes, KV cache configuration, and a multitude of quantization options.</p>
+<p>Today, I use <code>llama.cpp</code> as my personal LLM endpoint. I am the only user. It serves requests to agentic tools like Cline, provides the backend for local code review sessions, and runs experiments whenever I want to test a new model or quantization. The llama.cpp server mode (<code>server</code> binary with <code>--host</code> and <code>--port</code> flags) gives me a reliable API endpoint that any client can talk to, while the built-in web UI at <code>/chat</code> lets me quickly test prompts and observe token generation without writing any code.</p>
+</section>
+</section>
+<section id="the-model-zoo-testing-what-fits-qwen-gemma-and-gams" class="level2">
+<h2 class="anchored" data-anchor-id="the-model-zoo-testing-what-fits-qwen-gemma-and-gams">The Model Zoo: Testing What Fits (Qwen, Gemma, and GaMS)</h2>
+<p>Once I had a working inference pipeline, the real experimentation began: which model should I actually run? I tested many models beyond these, but I highlight <strong>Qwen</strong>, <strong>Gemma</strong>, and <strong>GaMS</strong> here for different reasons.</p>
+<p>Qwen is Alibaba’s open-weight model family, and it has become one of the default names in local-LLM discussions. The variants that kept showing up in my searches were the 27B dense model and the 35B-A3B Mixture-of-Experts model: large enough to be interesting, but still realistic to attempt on a 24 GB card with quantization.</p>
+<p>Gemma is Google’s open-weight model family. Gemma 4 was especially relevant for this setup because it offers a spread of sizes and architectures, from smaller edge-oriented models to larger dense and MoE variants, making it a useful comparison point for both quality and hardware fit.</p>
+<p>GaMS (Generative Model for Slovene) is a family, specialized for Slovene language trained within the <a href="https://www.cjvt.si/povejmo/en/project/">PoVeJMo</a> research program. The latest iteration <a href="https://huggingface.co/cjvt/GaMS3-12B-Instruct">GaMS3</a> is built on a Gemma 3 backbone, and it was quite an exciting project in our local community.</p>
+<p>I went for those families because they’re popular. Popular means collective problem detection and resolution. It also means for me less time wasting (re)exploring and dealing with issues.</p>
+<p>I include GaMS for context, but the benchmarks below focus on Qwen and Gemma because those were the model families I tested systematically.</p>
+<section id="quantization-the-art-of-compromise-context" class="level3">
+<h3 class="anchored" data-anchor-id="quantization-the-art-of-compromise-context">Quantization: The Art of Compromise (Context)</h3>
+<p>For local LLM work, one of the most important practical limits is the effective context window: how many tokens the model can keep “in mind” at once while still running at a useful speed.</p>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Note
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>There is a small naming trap here. People often use <code>128k</code>, <code>131k</code>, <code>256k</code>, <code>262k</code>, <code>131072</code>, and <code>262144</code> almost interchangeably when talking about context length. The confusion comes from mixing decimal kilo (<code>1000</code>) and binary kibi (<code>1024</code>) units. For example, the Hugging Face <a href="https://huggingface.co/unsloth/Qwen3.6-35B-A3B-GGUF/blob/main/Qwen3.6-35B-A3B-UD-Q4_K_XL.gguf">model card</a> for Qwen lists <code>qwen35moe.context_length</code> as <code>262144</code>. Dividing that by <code>1024</code> gives <code>256</code>, so I will refer to it as a 256K-token context window throughout this post.</p>
+</div>
+</div>
+<p>The models I tested sit in this long-context range. Qwen 3.6 advertises a 256K-token context window, while Gemma 4 spans 128K for the smaller variants and 256K for the larger ones. Those advertised lengths are important, but they are not the same thing as “this will fit comfortably on my GPU.”</p>
+<p>An advertised context length is best understood as the supported operating range. It is not merely a soft recommendation, but it is also not a hard physical wall. The model was trained or tuned to handle sequences up to that length, its positional encoding (RoPE) is calibrated around that range, and attention behavior should remain reasonably stable inside it. You can push beyond it, much like overclocking hardware, but then you are outside the specification. Techniques such as <a href="https://github.com/jquesnelle/yarn">YaRN</a> can extend context further, even toward 1M tokens, but that is outside the scope of this post.</p>
+<p>Longer context is useful, especially for code, documents, and agent workflows, but it is not free. The context is stored in the KV cache, and the KV cache consumes memory. On a local setup, that memory is usually scarce GPU memory. Offloading to system RAM is possible, but it quickly becomes a performance tradeoff. For comparison, my RTX 3090 FE has a theoretical memory bandwidth of 936.2 GB/s, while dual-channel DDR4 at 3600 MHz on the Ryzen system reaches 57.6 GB/s. That gap is large enough to feel in practice.</p>
+<p>This is where quantization enters. Quantization reduces the precision used to store model weights, and in some cases the KV cache, so the same model can fit into less memory. The image analogy is pixelation: you keep the overall structure, but you throw away detail. Lower precision usually means lower memory use and sometimes higher speed, but it can also reduce output quality, weaken multi-step reasoning, or make long-context behavior less stable.</p>
+<p>The rest of this section looks at the tradeoff from a few angles: model size, runnable context, KV-cache precision, CPU/GPU placement, and long-context generation speed. I tweak one subset of parameters at a time so the compromises are easier to see.</p>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Note
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>By default, <code>llama.cpp</code> uses <code>float16</code>/<code>f16</code> for the KV cache. For Qwen 3.6, Unsloth <a href="https://unsloth.ai/docs/models/qwen3.6#recommended-settings">recommends</a> <code>bfloat16</code>/<code>bf16</code> instead. Since Qwen 3.6 was trained with <code>bf16</code>, and NVIDIA Ampere cards such as the RTX 3090 support <code>bf16</code> natively, I set the KV cache type explicitly in the benchmarks. The difference between F16 and BF16 is explained <a href="https://en.wikipedia.org/wiki/Bfloat16_floating-point_format">here</a>.</p>
+</div>
+</div>
+<section id="how-i-estimate-fit-and-measure-speed" class="level4">
+<h4 class="anchored" data-anchor-id="how-i-estimate-fit-and-measure-speed">How I Estimate Fit and Measure Speed</h4>
+<p>I split the benchmarking into two separate questions.</p>
+<p>First, I ask a sizing question: <em>how much context can this model theoretically fit into my available VRAM?</em> For that, I use <code>llama-fit-params</code>. It estimates the memory needed for model weights, KV cache, compute buffers, and backend overhead, then reports either the maximum context size that should fit or the offload parameters needed to reach a target context size.</p>
+<p>Second, I ask a performance question: <em>how fast does it actually run once loaded?</em> For that, I use <code>llama-bench</code>, because fitting into memory and being pleasant to use are not the same thing. A configuration can technically support a large context window while becoming too slow for interactive work.</p>
+<p>The workflow is:</p>
+<ol type="1">
+<li>Use <code>llama-fit-params</code> to estimate whether the model and KV cache fit in VRAM.</li>
+<li>If the full target context does not fit, let <code>llama-fit-params</code> suggest CPU/GPU offload parameters.</li>
+<li>For MoE models, test special placement options such as <code>-cmoe</code>, which offloads expert layers to CPU.</li>
+<li>Run <code>llama-bench</code> on the resulting configuration to measure generation speed at increasing context depth.</li>
+<li>Compare the tradeoff between context length, quantization, offloading, and throughput.</li>
+</ol>
+<p>For the maximum-context experiment, the input is only the model and quantization choice:</p>
+<div class="cell" data-layout-align="default">
+<div class="cell-output-display">
+<div>
+<p></p><figure class="figure"><p></p>
+<div>
+<pre class="mermaid mermaid-js">flowchart LR
+
+models@{ shape: db, label: "(model, quant.)" }
+llama["llama-fit-params"]
+out["projected max.&lt;br&gt;context size"]
+
+models --&gt; llama --&gt; out
+</pre>
+</div>
+<p></p><figcaption> The way to find maximum window.</figcaption> </figure><p></p>
+</div>
+</div>
+</div>
+<p>For the hybrid/offload experiment, I fix the target context length first and let <code>llama-fit-params</code> search for a placement strategy:</p>
+<div class="cell" data-layout-align="default">
+<div class="cell-output-display">
+<div>
+<p></p><figure class="figure"><p></p>
+<div>
+<pre class="mermaid mermaid-js">flowchart LR
+
+models@{ shape: db, label: "(model, quant., ctx size)" }
+llama["llama-fit-params"]
+out["offload tune&lt;br&gt;parameters"]
+
+models --&gt; llama --&gt; out
+</pre>
+</div>
+<p></p><figcaption> The way to find what offload tuning parameters to reach target context length.</figcaption> </figure><p></p>
+</div>
+</div>
+</div>
+</section>
+<section id="model-sizes" class="level4">
+<h4 class="anchored" data-anchor-id="model-sizes">Model Sizes</h4>
+<p>Before context length enters the picture, the first constraint is simply the model size. The quantized weights need to fit in VRAM with enough room left for the KV cache and compute buffers. On a 24 GB GPU, this already narrows the field.</p>
+<table class="caption-top table">
+<caption>GGUF model sizes reported by <code>llama-bench</code> in <code>results-b9519.json</code>; quantization labels are preserved as reported.</caption>
+<colgroup>
+<col style="width: 54%">
+<col style="width: 8%">
+<col style="width: 19%">
+<col style="width: 16%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Model</th>
+<th style="text-align: left;">Type</th>
+<th style="text-align: left;">Quantization</th>
+<th style="text-align: right;">Size (MiB)</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;"><code>unsloth/Qwen3.6-35B-A3B-GGUF</code></td>
+<td style="text-align: left;">MoE</td>
+<td style="text-align: left;"><code>UD-Q6_K_XL</code></td>
+<td style="text-align: right;">30,358</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>unsloth/Qwen3.6-35B-A3B-GGUF</code></td>
+<td style="text-align: left;">MoE</td>
+<td style="text-align: left;"><code>Q5_K_XL</code></td>
+<td style="text-align: right;">25,350</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>unsloth/Qwen3.6-35B-A3B-GGUF</code></td>
+<td style="text-align: left;">MoE</td>
+<td style="text-align: left;"><code>UD-Q4_K_XL</code></td>
+<td style="text-align: right;">21,314</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>unsloth/Qwen3.6-27B-GGUF</code></td>
+<td style="text-align: left;">Dense</td>
+<td style="text-align: left;"><code>UD-Q4_K_XL</code></td>
+<td style="text-align: right;">16,786</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>unsloth/gemma-4-26B-A4B-it-GGUF</code></td>
+<td style="text-align: left;">MoE</td>
+<td style="text-align: left;"><code>UD-Q6_K_XL</code></td>
+<td style="text-align: right;">22,201</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>unsloth/gemma-4-26B-A4B-it-GGUF</code></td>
+<td style="text-align: left;">MoE</td>
+<td style="text-align: left;"><code>UD-Q5_K_XL</code></td>
+<td style="text-align: right;">20,220</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>unsloth/gemma-4-26B-A4B-it-GGUF</code></td>
+<td style="text-align: left;">MoE</td>
+<td style="text-align: left;"><code>UD-Q4_K_XL</code></td>
+<td style="text-align: right;">16,208</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>unsloth/gemma-4-12B-it-GGUF</code></td>
+<td style="text-align: left;">Dense</td>
+<td style="text-align: left;"><code>UD-Q8_K_XL</code></td>
+<td style="text-align: right;">12,990</td>
+</tr>
+</tbody>
+</table>
+<p>These sizes are not the full runtime memory requirement, but they are a useful first filter. If the model weights already fill most of the card, a long context window will require KV-cache quantization, CPU/GPU offloading, or both.</p>
+</section>
+<section id="estimating-runnable-context" class="level4">
+<h4 class="anchored" data-anchor-id="estimating-runnable-context">Estimating Runnable Context</h4>
+<p>After checking model sizes, the next question is not simply whether the model can load, but how much context can remain on the GPU with it. I used <code>llama-fit-params</code> for this step instead of calculating the memory budget by hand.</p>
+<p>The tool inspects the selected model, quantization, KV-cache type, available GPU memory, and <code>llama.cpp</code> runtime buffers. It then either reduces the projected context size to something that fits, or suggests CPU/GPU placement parameters when I ask for a specific target context.</p>
+<p>These results are specific to my RTX 3090, my <code>llama.cpp</code> build, and the amount of free VRAM at the time of testing. I therefore treat them as sizing results, not reusable command-line recipes. The exact offload pattern may change on another machine.</p>
+<p>The important pattern is simple: model weights and KV cache compete for the same VRAM. Higher-precision KV cache keeps more numerical detail but leaves less room for long context. Quantized KV cache gives up some precision, but it can make much larger context windows fit.</p>
+<p>For reproducibility, one example <code>llama-fit-params</code> invocation and output is included in the appendix.</p>
+</section>
+<section id="benchmarking-long-context-generation" class="level4">
+<h4 class="anchored" data-anchor-id="benchmarking-long-context-generation">Benchmarking Long-Context Generation</h4>
+<p>These benchmarks focus on decode speed at different context depths. In <code>llama-bench</code>, I set <code>n_prompt = 0</code>, kept <code>n_gen</code> at the default <code>128</code>, and increased <code>n_depth</code> across powers of two. This means the benchmark does not measure prompt processing speed, time to first token, or full request latency. It measures how quickly the model can continue generating once the KV cache is already populated.</p>
+<p>That is the behavior I care about for long-running chats, code-review sessions, and agent workflows. In those cases, the model may already be carrying tens or hundreds of thousands of tokens, and the practical question becomes: <em>how much does generation slow down as the context grows?</em></p>
+<p>The benchmark machine was:</p>
+<ul>
+<li>Ryzen 7 5800X (8C/16T)</li>
+<li>ASUS TUF Gaming B550M-Plus WiFi II, PCIe 4.0 x16</li>
+<li>32 GB DDR4 at 3600 MHz</li>
+<li>NVIDIA RTX 3090 FE, 24 GB VRAM</li>
+<li><code>llama.cpp</code> build <code>9519</code> (<code>7fe2ae45a</code>)</li>
+</ul>
+<p>The figures below are generated from <code>results-b9519.json</code>. Each curve represents a runnable configuration after the fit step: model quantization, KV-cache type, target context, and any CPU/GPU placement selected by <code>llama-fit-params</code>.</p>
+<p>These plots should not be read as general model-quality rankings or full end-to-end serving benchmarks. They isolate one performance question: generation throughput while carrying a large context.</p>
+<p>The figures are grouped by model family and quantization. The x-axis is existing context depth, while the y-axis is generation throughput.</p>
+<section id="qwen-3.6" class="level5">
+<h5 class="anchored" data-anchor-id="qwen-3.6">Qwen 3.6</h5>
+<p>For Qwen, I tested both the 35B-A3B MoE variants and the 27B dense variant. This makes the comparison useful for separating model-size pressure from architecture differences.</p>
+<p><a href="./figures/unsloth-qwen3-6-35b-a3b-gguf-ud-q4-k-xl.png" class="lightbox" data-gallery="my-results"><img src="https://gcerar.github.io/posts/2026-06-07-local-llm-llama-cpp/figures/unsloth-qwen3-6-35b-a3b-gguf-ud-q4-k-xl.png" class="img-fluid"></a></p>
+<p><a href="./figures/unsloth-qwen3-6-35b-a3b-gguf-q5-k-xl.png" class="lightbox" data-gallery="my-results"><img src="https://gcerar.github.io/posts/2026-06-07-local-llm-llama-cpp/figures/unsloth-qwen3-6-35b-a3b-gguf-q5-k-xl.png" class="img-fluid"></a></p>
+<p><a href="./figures/unsloth-qwen3-6-35b-a3b-gguf-ud-q6-k-xl.png" class="lightbox" data-gallery="my-results"><img src="https://gcerar.github.io/posts/2026-06-07-local-llm-llama-cpp/figures/unsloth-qwen3-6-35b-a3b-gguf-ud-q6-k-xl.png" class="img-fluid"></a></p>
+<p><a href="./figures/unsloth-qwen3-6-27b-gguf-ud-q4-k-xl.png" class="lightbox" data-gallery="my-results"><img src="https://gcerar.github.io/posts/2026-06-07-local-llm-llama-cpp/figures/unsloth-qwen3-6-27b-gguf-ud-q4-k-xl.png" class="img-fluid"></a></p>
+</section>
+<section id="gemma-4" class="level5">
+<h5 class="anchored" data-anchor-id="gemma-4">Gemma 4</h5>
+<p>For Gemma, I tested the 12B dense model and the 26B-A4B MoE variants. This gives a second model family for checking whether the same context-depth patterns hold beyond Qwen.</p>
+<p><a href="./figures/unsloth-gemma-4-12b-it-gguf-ud-q8-k-xl.png" class="lightbox" data-gallery="my-results"><img src="https://gcerar.github.io/posts/2026-06-07-local-llm-llama-cpp/figures/unsloth-gemma-4-12b-it-gguf-ud-q8-k-xl.png" class="img-fluid"></a></p>
+<p><a href="./figures/unsloth-gemma-4-26b-a4b-it-gguf-ud-q4-k-xl.png" class="lightbox" data-gallery="my-results"><img src="https://gcerar.github.io/posts/2026-06-07-local-llm-llama-cpp/figures/unsloth-gemma-4-26b-a4b-it-gguf-ud-q4-k-xl.png" class="img-fluid"></a></p>
+<p><a href="./figures/unsloth-gemma-4-26b-a4b-it-gguf-ud-q5-k-xl.png" class="lightbox" data-gallery="my-results"><img src="https://gcerar.github.io/posts/2026-06-07-local-llm-llama-cpp/figures/unsloth-gemma-4-26b-a4b-it-gguf-ud-q5-k-xl.png" class="img-fluid"></a></p>
+<p><a href="./figures/unsloth-gemma-4-26b-a4b-it-gguf-ud-q6-k-xl.png" class="lightbox" data-gallery="my-results"><img src="https://gcerar.github.io/posts/2026-06-07-local-llm-llama-cpp/figures/unsloth-gemma-4-26b-a4b-it-gguf-ud-q6-k-xl.png" class="img-fluid"></a></p>
+<p>The pattern is more useful than any single number. Larger quantizations consume more memory before generation even begins. Higher-precision KV cache leaves less room for context. CPU/GPU hybrid placement can make otherwise impossible contexts load, but it may reduce throughput sharply. Quantized KV cache is often the more attractive compromise when the goal is to keep long context on the GPU.</p>
+</section>
+</section>
+</section>
+</section>
+<section id="appendix" class="level1 unnumbered">
+<h1 class="unnumbered">Appendix</h1>
+<!-- {-} remove counter -->
+<section id="example-llama-fit-params-output" class="level2">
+<h2 class="anchored" data-anchor-id="example-llama-fit-params-output">Example <code>llama-fit-params</code> Output</h2>
+<p>This is one representative fit run. The exact output is hardware-specific, but it shows the kind of decision <code>llama-fit-params</code> makes before benchmarking.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1" style="background: #f1f3f5;"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb1-1"><span class="ex" style="color: null;
+background-color: null;
+font-style: inherit;">./llama-fit-params</span> <span class="dt" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">\</span></span>
+<span id="cb1-2">  <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">-hf</span> unsloth/Qwen3.6-35B-A3B-GGUF:Q4_K_M <span class="dt" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">\</span></span>
+<span id="cb1-3">  <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">-fit</span> off <span class="dt" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">\</span></span>
+<span id="cb1-4">  <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">-fa</span> on <span class="dt" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">\</span></span>
+<span id="cb1-5">  <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">-ctk</span> bf16 <span class="dt" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">\</span></span>
+<span id="cb1-6">  <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">-ctv</span> bf16 <span class="dt" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">\</span></span>
+<span id="cb1-7">  <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">-fitt</span> 128</span></code></pre></div></div>
+<p>The relevant output is:</p>
+<pre class="text"><code>projected to use 26570 MiB of device memory vs. 23784 MiB of free device memory
+cannot meet free memory target of 128 MiB, need to reduce device memory by 2914 MiB
+context size reduced from 262144 to 121344
+main: printing fitted CLI arguments to stdout...
+-c 121344 -ngl -1</code></pre>
+<p>In this case, the model could stay fully on the GPU only by reducing the context window from 256K tokens to about 118K tokens.</p>
+<!--
+## Reproducibility
+
+The benchmark data is available as [`results-b9519.json`](./results-b9519.json), the plotting notebook as [`demo.ipynb`](./demo.ipynb), and the benchmark script as [`benchmark.py`](./benchmark.py).
+-->
+
+
+</section>
+</section>
+
+<div id="quarto-appendix" class="default"><section class="quarto-appendix-contents" id="quarto-reuse"><h2 class="anchored quarto-appendix-heading">Reuse</h2><div class="quarto-appendix-contents"><div><a rel="license" href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.en_us">CC BY-NC-SA 4.0</a></div></div></section></div> ]]></description>
+  <category>tech</category>
+  <category>LLM</category>
+  <category>hardware</category>
+  <guid>https://gcerar.github.io/posts/2026-06-07-local-llm-llama-cpp/</guid>
+  <pubDate>Sat, 06 Jun 2026 22:00:00 GMT</pubDate>
+</item>
 <item>
   <title>Reinforcement Learning: Tabular Q-Learning</title>
   <dc:creator>Gregor Cerar</dc:creator>

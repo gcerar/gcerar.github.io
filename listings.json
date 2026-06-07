@@ -1,7 +1,8 @@
 [
   {
-    "listing": "/index.html",
+    "listing": "/blog.html",
     "items": [
+      "/posts/2026-06-07-local-llm-llama-cpp/index.html",
       "/posts/reinforcement-learning/2025-12-17-tabular-q-learning.html",
       "/posts/reinforcement-learning/2025-12-16-multi-armed-bandit-problem.html",
       "/posts/2025-05-07-ministate-v3/index.html",
@@ -12,8 +13,9 @@
     ]
   },
   {
-    "listing": "/blog.html",
+    "listing": "/index.html",
     "items": [
+      "/posts/2026-06-07-local-llm-llama-cpp/index.html",
       "/posts/reinforcement-learning/2025-12-17-tabular-q-learning.html",
       "/posts/reinforcement-learning/2025-12-16-multi-armed-bandit-problem.html",
       "/posts/2025-05-07-ministate-v3/index.html",
