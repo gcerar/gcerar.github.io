@@ -418,7 +418,7 @@ gtag('config', 'G-FB81SP2FX7', { 'anonymize_ip': true});
     <div>
     <div class="quarto-title-meta-heading">Modified</div>
     <div class="quarto-title-meta-contents">
-      <p class="date-modified">2026-06-07</p>
+      <p class="date-modified">2026-06-08</p>
     </div>
   </div>
     
@@ -650,9 +650,9 @@ models --&gt; llama --&gt; out
 <li>ASUS TUF Gaming B550M-Plus WiFi II, PCIe 4.0 x16</li>
 <li>32 GB DDR4 at 3600 MHz</li>
 <li>NVIDIA RTX 3090 FE, 24 GB VRAM</li>
-<li><code>llama.cpp</code> build <code>9519</code> (<code>7fe2ae45a</code>)</li>
+<li><code>llama.cpp</code> build <code>9544</code> (<code>98d5e8ba8</code>)</li>
 </ul>
-<p>The figures below are generated from <code>results-b9519.json</code>. Each curve represents a runnable configuration after the fit step: model quantization, KV-cache type, target context, and any CPU/GPU placement selected by <code>llama-fit-params</code>.</p>
+<p>The figures below are generated from <code>results-b9544.json</code>. Each curve represents a runnable configuration after the fit step: model quantization, KV-cache type, target context, and any CPU/GPU placement selected by <code>llama-fit-params</code>.</p>
 <p>These plots should not be read as general model-quality rankings or full end-to-end serving benchmarks. They isolate one performance question: generation throughput while carrying a large context.</p>
 <p>The figures are grouped by model family and quantization. The x-axis is existing context depth, while the y-axis is generation throughput.</p>
 <section id="qwen-3.6" class="level5">
@@ -666,7 +666,6 @@ models --&gt; llama --&gt; out
 <section id="gemma-4" class="level5">
 <h5 class="anchored" data-anchor-id="gemma-4">Gemma 4</h5>
 <p>For Gemma, I tested the 12B dense model and the 26B-A4B MoE variants. This gives a second model family for checking whether the same context-depth patterns hold beyond Qwen.</p>
-<p><a href="./figures/unsloth-gemma-4-12b-it-gguf-ud-q8-k-xl.png" class="lightbox" data-gallery="my-results"><img src="./figures/unsloth-gemma-4-12b-it-gguf-ud-q8-k-xl.png" class="img-fluid"></a></p>
 <p><a href="./figures/unsloth-gemma-4-26b-a4b-it-gguf-ud-q4-k-xl.png" class="lightbox" data-gallery="my-results"><img src="./figures/unsloth-gemma-4-26b-a4b-it-gguf-ud-q4-k-xl.png" class="img-fluid"></a></p>
 <p><a href="./figures/unsloth-gemma-4-26b-a4b-it-gguf-ud-q5-k-xl.png" class="lightbox" data-gallery="my-results"><img src="./figures/unsloth-gemma-4-26b-a4b-it-gguf-ud-q5-k-xl.png" class="img-fluid"></a></p>
 <p><a href="./figures/unsloth-gemma-4-26b-a4b-it-gguf-ud-q6-k-xl.png" class="lightbox" data-gallery="my-results"><img src="./figures/unsloth-gemma-4-26b-a4b-it-gguf-ud-q6-k-xl.png" class="img-fluid"></a></p>
@@ -698,7 +697,7 @@ main: printing fitted CLI arguments to stdout...
 <!--
 ## Reproducibility
 
-The benchmark data is available as [`results-b9519.json`](./results-b9519.json), the plotting notebook as [`demo.ipynb`](./demo.ipynb), and the benchmark script as [`benchmark.py`](./benchmark.py).
+The benchmark data is available as [`results-b9544.json`](./results-b9544.json), the plotting notebook as [`demo.ipynb`](./demo.ipynb), and the benchmark script as [`benchmark.py`](./benchmark.py).
 -->
 
 
