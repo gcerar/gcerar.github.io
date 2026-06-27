@@ -1,7 +1,9 @@
 [
   {
     "listing": "/experiments.html",
-    "items": []
+    "items": [
+      "/experiments/2026-05-21-flux2-color.html"
+    ]
   },
   {
     "listing": "/blog.html",

@@ -88,7 +88,7 @@ ul.task-list li input[type="checkbox"] {
     const options = {
       valueNames: ['listing-title','listing-image','listing-date',{ data: ['index'] },{ data: ['categories'] },{ data: ['listing-date-sort'] },{ data: ['listing-file-modified-sort'] }],
       
-      searchColumns: [],
+      searchColumns: ["listing-title","listing-author","listing-date","listing-image","listing-description"],
     };
 
     window['quarto-listings'] = window['quarto-listings'] || {};
@@ -403,7 +403,22 @@ window.Quarto = {
 
 <div class="quarto-listing quarto-listing-container-grid" id="listing-listing">
 <div class="list grid quarto-listing-cols-3">
-
+<div class="g-col-1" data-index="0" data-categories="cHl0b3JjaCUyQ2RpZmZ1c2lvbiUyQ2ltYWdlLWdlbmVyYXRpb24lMkNmbHV4" data-listing-date-sort="1779314400000" data-listing-file-modified-sort="1782589506492" data-listing-date-modified-sort="1782589506000" data-listing-reading-time-sort="3" data-listing-word-count-sort="439">
+<a href="./experiments/2026-05-21-flux2-color.html" class="quarto-grid-link">
+<div class="quarto-grid-item card h-100 card-left">
+<p class="card-img-top"><img loading='lazy' src="experiments/2026-05-21-flux2-color_files/figure-html/cell-7-output-3.png" style="height: 150px;"  class="thumbnail-image card-img"/></p>
+<div class="card-body post-contents">
+<h5 class="no-anchor card-title listing-title">
+Image Generation and Editing with FLUX.2 Klein
+</h5>
+<div class="card-attribution card-text-small end">
+<div class="listing-date">
+May 21, 2026
+</div>
+</div>
+</div>
+</div></a>
+</div>
 </div>
 <div class="listing-no-matching d-none">No matching items</div>
 </div></main> <!-- /main -->
