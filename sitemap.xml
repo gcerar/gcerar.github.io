@@ -1,24 +1,24 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
-    <loc>https://gcerar.github.io/posts/2026-06-07-local-llm-llama-cpp/index.html</loc>
-    <lastmod>2026-06-12T18:21:35.600Z</lastmod>
+    <loc>https://gcerar.github.io/posts/2023-10-10-vanilla-GANs/index.html</loc>
+    <lastmod>2026-06-27T16:50:02.717Z</lastmod>
   </url>
   <url>
-    <loc>https://gcerar.github.io/posts/reinforcement-learning/2025-12-17-tabular-q-learning.html</loc>
-    <lastmod>2026-06-12T18:35:29.144Z</lastmod>
+    <loc>https://gcerar.github.io/posts/reinforcement-learning/2025-12-16-multi-armed-bandit-problem.html</loc>
+    <lastmod>2026-06-27T16:50:02.608Z</lastmod>
   </url>
   <url>
-    <loc>https://gcerar.github.io/posts/2025-05-06-feature-maps/index.html</loc>
-    <lastmod>2026-06-12T18:35:29.149Z</lastmod>
-  </url>
-  <url>
-    <loc>https://gcerar.github.io/posts/2023-09-15-neural-style-transfer/index.html</loc>
-    <lastmod>2026-06-12T18:35:29.321Z</lastmod>
+    <loc>https://gcerar.github.io/posts/2025-05-07-ministate-v3/index.html</loc>
+    <lastmod>2026-04-21T13:32:14.593Z</lastmod>
   </url>
   <url>
     <loc>https://gcerar.github.io/posts/2023-11-20-research-compute-infrastructure/index.html</loc>
     <lastmod>2026-04-21T11:14:20.327Z</lastmod>
+  </url>
+  <url>
+    <loc>https://gcerar.github.io/experiments.html</loc>
+    <lastmod>2026-06-27T09:09:34.202Z</lastmod>
   </url>
   <url>
     <loc>https://gcerar.github.io/blog.html</loc>
@@ -26,18 +26,22 @@
   </url>
   <url>
     <loc>https://gcerar.github.io/index.html</loc>
-    <lastmod>2026-04-21T11:14:20.255Z</lastmod>
+    <lastmod>2026-06-27T16:47:37.034Z</lastmod>
   </url>
   <url>
-    <loc>https://gcerar.github.io/posts/2025-05-07-ministate-v3/index.html</loc>
-    <lastmod>2026-04-21T13:32:14.593Z</lastmod>
+    <loc>https://gcerar.github.io/posts/2023-09-15-neural-style-transfer/index.html</loc>
+    <lastmod>2026-06-27T16:50:02.621Z</lastmod>
   </url>
   <url>
-    <loc>https://gcerar.github.io/posts/reinforcement-learning/2025-12-16-multi-armed-bandit-problem.html</loc>
-    <lastmod>2026-06-12T18:35:29.167Z</lastmod>
+    <loc>https://gcerar.github.io/posts/2025-05-06-feature-maps/index.html</loc>
+    <lastmod>2026-06-27T16:50:02.668Z</lastmod>
   </url>
   <url>
-    <loc>https://gcerar.github.io/posts/2023-10-10-vanilla-GANs/index.html</loc>
-    <lastmod>2026-06-12T18:35:29.133Z</lastmod>
+    <loc>https://gcerar.github.io/posts/reinforcement-learning/2025-12-17-tabular-q-learning.html</loc>
+    <lastmod>2026-06-27T16:50:02.710Z</lastmod>
+  </url>
+  <url>
+    <loc>https://gcerar.github.io/posts/2026-06-07-local-llm-llama-cpp/index.html</loc>
+    <lastmod>2026-06-12T18:21:35.600Z</lastmod>
   </url>
 </urlset>

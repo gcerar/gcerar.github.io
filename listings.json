@@ -1,5 +1,9 @@
 [
   {
+    "listing": "/experiments.html",
+    "items": []
+  },
+  {
     "listing": "/blog.html",
     "items": [
       "/posts/2026-06-07-local-llm-llama-cpp/index.html",
